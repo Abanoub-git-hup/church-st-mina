@@ -89,7 +89,8 @@ button{font:inherit;color:inherit}
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;isolation:isolate;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:-3;overflow:hidden}
 .hero-bg img{width:100%;height:110%;object-fit:cover;object-position:center 30%;transform-origin:50% 30%}
-.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(23,15,9,.72) 0%,rgba(23,15,9,.3) 32%,rgba(23,15,9,.45) 62%,var(--umber-700) 100%)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(23,15,9,.72) 0%,rgba(23,15,9,.3) 32%,rgba(23,15,9,.5) 70%,rgba(23,15,9,.35) 100%);-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
+.hero-bg,.rays,#dust{-webkit-mask-image:linear-gradient(180deg,#000 66%,transparent 98%);mask-image:linear-gradient(180deg,#000 66%,transparent 98%)}
 .rays{position:absolute;inset:0;z-index:-1;pointer-events:none;mix-blend-mode:screen;overflow:hidden;opacity:.75}
 .rays .window{position:absolute;top:-20%;left:4%;width:55%;height:65%;background:radial-gradient(ellipse at 40% 20%, rgba(255,222,165,.55), rgba(255,190,110,.18) 35%, transparent 70%);filter:blur(10px)}
 .ray{position:absolute;top:-25%;height:150%;transform-origin:top center;filter:blur(20px);background:linear-gradient(180deg, rgba(255,222,165,.45), rgba(255,196,120,.12) 55%, transparent 85%);animation:ray 9s ease-in-out infinite alternate}
@@ -100,7 +101,6 @@ button{font:inherit;color:inherit}
 .ray:nth-child(6){left:4%;width:50px;transform:rotate(-22deg);animation-delay:-3s}
 @keyframes ray{0%{opacity:.3;translate:0 0}100%{opacity:.8;translate:24px 0}}
 #dust{position:absolute;inset:0;z-index:-1;pointer-events:none;mix-blend-mode:screen}
-#smoke{position:absolute;inset:0;z-index:-1;pointer-events:none}
 
 .hero-top .wrap{display:flex;justify-content:space-between;align-items:center;gap:var(--s-6);padding-block:var(--s-6)}
 .brand{display:flex;align-items:center;gap:var(--s-3);min-width:0}
@@ -108,7 +108,8 @@ button{font:inherit;color:inherit}
 .brand span{font-size:.88rem;line-height:1.5;font-weight:300}
 .brand b{display:block;font-weight:500}
 .socials{display:flex;gap:var(--s-2)}
-.menu-btn{display:grid;width:48px;height:48px;border-radius:50%;place-items:center;background:var(--cream);color:var(--ink);border:0;cursor:pointer;flex:none}
+.menu-btn{display:grid;width:48px;height:48px;border-radius:50%;place-items:center;background:var(--gold);color:var(--ink);border:0;cursor:pointer;flex:none;transition:background var(--t-fast)}
+.menu-btn:hover{background:var(--gold-soft)}
 .top-nav{display:none}
 .top-nav ul{display:flex;gap:var(--s-1)}
 .top-nav a{display:block;padding:6px 16px;border-radius:var(--r-full);color:var(--cream-2);font-size:.95rem;transition:all var(--t-fast)}
@@ -128,7 +129,7 @@ button{font:inherit;color:inherit}
 .pill.ghost{background:rgba(246,236,220,.1);color:var(--cream);border:1px solid var(--line-strong);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .pill.ghost .dot{background:var(--cream);color:var(--ink)}
 .pill.ghost:hover{background:rgba(246,236,220,.18)}
-@media (max-width:600px){.hero-ctas .pill{width:100%;justify-content:space-between}.hero-center{padding-bottom:var(--s-16)}}
+@media (max-width:600px){.hero-ctas .pill{width:100%;justify-content:space-between}.hero-center{padding-bottom:var(--s-24)}}
 
 /* الدوائر الأربعة أسفل الواجهة */
 .hero-cards{position:relative;z-index:2;margin-top:-150px}
@@ -141,7 +142,8 @@ button{font:inherit;color:inherit}
 .hc .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 1px rgba(243,201,135,.3)}
 .hc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
 .hc:hover img{transform:scale(1.08)}
-.hc.photo .bi::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(23,15,9,.2),rgba(23,15,9,.8))}
+.hc.photo .bi::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(23,15,9,.62) 0%,rgba(23,15,9,.5) 45%,rgba(23,15,9,.82) 100%)}
+.hc.photo .hc-tx{text-shadow:0 1px 12px rgba(0,0,0,.8)}
 a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold-soft)}
 .hc-tx{position:relative;z-index:1;text-align:center;padding:15%;display:grid;justify-items:center;gap:4px}
 .hc-tx small{color:var(--gold-soft);font-size:.75rem}
@@ -164,7 +166,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .hc .lbl{display:inline-flex;align-items:center;gap:6px;font-size:.92rem}
 .hc .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:#E5634F;box-shadow:0 0 0 4px rgba(229,99,79,.25)}
 @media (max-width:600px){
-  .hero-cards{margin-top:-56px}
+  .hero-cards{margin-top:-24px}
   .hcirc{gap:var(--s-3)}
   .hc.next{--w:52vw;margin-top:0}
   .hc.live{--w:36vw;margin-top:44px}
@@ -418,11 +420,13 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .ring-btn small{color:var(--muted);font-size:.75rem}
 .ring-btn:hover{background:rgba(243,201,135,.1);transform:scale(1.04)}
 .gcl{position:relative;width:100%;max-width:660px;aspect-ratio:1;justify-self:center}
-.gcl .g{position:absolute;margin:0;width:calc(var(--gs) * 1%);left:calc(var(--gx) * 1% - var(--gs) * .5%);top:calc(var(--gy) * 1% - var(--gs) * .5%)}
+.gcl .g{position:absolute;margin:0;width:calc(var(--gs) * 1%);left:calc(var(--gl) * 1%);top:calc(var(--gt) * 1%)}
 .gcl .g:not(.big) .cap{display:none}
 .gcl .g.big .bi{box-shadow:0 40px 90px -30px rgba(0,0,0,.75),0 0 0 1px var(--line)}
 @media (max-width:700px){
-  .gcl .g{width:calc(var(--ms) * 1%);left:calc(var(--mx) * 1% - var(--ms) * .5%);top:calc(var(--my) * 1% - var(--ms) * .5%)}
+  .gcl{aspect-ratio:1 / 2}
+  .gcl .g{width:calc(var(--ms) * 1%);left:calc(var(--ml) * 1%);top:calc(var(--mt) * 1%)}
+  .gcl .g .cap{display:none}
   .ring-btn{width:120px;height:120px}
 }
 
@@ -483,7 +487,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .anim [data-clip]{clip-path:inset(100% 0 0 0)}
 .anim [data-bub]{opacity:0;transform:scale(.6)}
 .anim .hero-bg img{transform:scale(1.15)}
-.anim .rays,.anim #dust,.anim #smoke,.anim .hero [data-intro],.anim [data-tile]{opacity:0}
+.anim .rays,.anim #dust,.anim .hero [data-intro],.anim [data-tile]{opacity:0}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -545,7 +549,6 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 <section class="hero" id="top" aria-label="الترحيب">
   <div class="hero-bg"><img src="../media/church/hero-prayer.png" alt="شاب يصلي داخل الكنيسة"></div>
   <div class="rays" aria-hidden="true"><span class="window"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span></div>
-  <canvas id="smoke" aria-hidden="true"></canvas>
   <canvas id="dust" aria-hidden="true"></canvas>
 
   <header class="hero-top">
@@ -767,22 +770,22 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
       <button class="ring-btn" id="allPhotos" data-rise>كل الصور<svg class="icon"><use href="#i-nw"/></svg><small>16 صورة</small></button>
     </div>
     <div class="gcl" aria-label="صور من حياة الكنيسة">
-      <button class="g big" style="--gx:50;--gy:50;--gs:44;--mx:50;--my:50;--ms:46" data-lb data-cap="قداس الشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="الشباب مع أب الكاهن داخل الكنيسة" loading="lazy"><span class="cap">قداس الشباب<small>العبادة</small></span></span></button>
-      <button class="g" style="--gx:22;--gy:16;--gs:16;--mx:50;--my:14;--ms:17" data-lb data-cap="مسابقة كرة القدم لمرحلة ابتدائي" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-football-1.jpg" alt="تسليم ميداليات المسابقة" loading="lazy"></span></button>
-      <button class="g" style="--gx:52;--gy:9;--gs:11;--mx:69.5;--my:19.7;--ms:17" data-lb data-cap="قداس ليلي للشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-night-liturgy-2.jpeg" alt="الشمامسة في الهيكل" loading="lazy"></span></button>
-      <button class="g" style="--gx:78;--gy:14;--gs:13;--mx:82.7;--my:35;--ms:17" data-lb data-cap="رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-1.jpeg" alt="الشباب في رحلة أديرة المنيا" loading="lazy"></span></button>
-      <button class="g" style="--gx:92;--gy:34;--gs:9;--mx:85.6;--my:55.1;--ms:17" data-lb data-cap="مؤتمر عنبر 11 للشباب 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/youth-conference-anbar11-2026.jpeg" alt="مؤتمر الشباب" loading="lazy"></span></button>
-      <button class="g" style="--gx:86;--gy:58;--gs:15;--mx:77.2;--my:73.6;--ms:17" data-lb data-cap="عرض اسمه يسوع" data-bub><span class="bi"><img class="grade" src="../media/services/theater/theater-ismuh-yasou.jpg" alt="عرض مسرحي داخل الكنيسة" loading="lazy"></span></button>
-      <button class="g" style="--gx:93;--gy:80;--gs:8;--mx:60.1;--my:84.5;--ms:17" data-lb data-cap="مؤتمر ابتدائي 2026" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-conference-2026-2.jpg" alt="مؤتمر ابتدائي" loading="lazy"></span></button>
-      <button class="g" style="--gx:72;--gy:86;--gs:12;--mx:39.9;--my:84.5;--ms:17" data-lb data-cap="زيارة دير ضمن رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-2.jpeg" alt="الشباب داخل كنيسة أثرية" loading="lazy"></span></button>
-      <button class="g" style="--gx:50;--gy:92;--gs:14;--mx:22.8;--my:73.6;--ms:17" data-lb data-cap="الآباء مع الشمامسة أمام الهيكل" data-bub><span class="bi"><img class="grade" src="../media/worship/deacons.jpeg" alt="الآباء مع الشمامسة أمام الهيكل" loading="lazy"></span></button>
-      <button class="g" style="--gx:28;--gy:86;--gs:10;--mx:14.4;--my:55.1;--ms:17" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-1.jpeg" alt="أمسية العبور" loading="lazy"></span></button>
-      <button class="g" style="--gx:12;--gy:70;--gs:13;--mx:17.3;--my:35;--ms:17" data-lb data-cap="فريق المسرح" data-bub><span class="bi"><img class="grade" src="../media/services/theater/theater-team.jpg" alt="صورة جماعية لفريق المسرح" loading="lazy"></span></button>
-      <button class="g" style="--gx:6;--gy:48;--gs:8;--mx:30.5;--my:19.7;--ms:17" data-lb data-cap="أبطال مسابقة كرة القدم" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-football-2.jpg" alt="الأطفال بالميداليات" loading="lazy"></span></button>
-      <button class="g" style="--gx:13;--gy:32;--gs:10;--mx:7;--my:7;--ms:11" data-lb data-cap="مؤتمر ثانوي 2015" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/secondary-conference-2015.jpeg" alt="مؤتمر ثانوي" loading="lazy"></span></button>
-      <button class="g" style="--gx:36;--gy:6;--gs:7;--mx:93;--my:7;--ms:11" data-lb data-cap="كورال ترينتي" data-bub><span class="bi"><img class="grade" src="../media/services/choir/trinity-choir.jpg" alt="كورال ترينتي على المسرح" loading="lazy"></span></button>
-      <button class="g" style="--gx:68;--gy:30;--gs:7;--mx:93;--my:93;--ms:11" data-lb data-cap="كلمة الأب في مؤتمر ابتدائي 2026" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-conference-2026-3.jpg" alt="أب كاهن يتحدث مع الأطفال" loading="lazy"></span></button>
-      <button class="g" style="--gx:32;--gy:72;--gs:7;--mx:7;--my:93;--ms:11" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-2.jpeg" alt="صورة جماعية ليلية" loading="lazy"></span></button>
+      <button class="g big" style="--gl:15;--gt:17;--gs:38;--ml:13;--mt:8.5;--ms:54" data-lb data-cap="قداس الشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="الشباب مع أب الكاهن داخل الكنيسة" loading="lazy"><span class="cap">قداس الشباب<small>العبادة</small></span></span></button>
+      <button class="g big" style="--gl:57;--gt:53;--gs:30;--ml:39;--mt:64;--ms:48" data-lb data-cap="الآباء مع الشمامسة أمام الهيكل" data-bub><span class="bi"><img class="grade" src="../media/worship/deacons.jpeg" alt="الآباء مع الشمامسة أمام الهيكل" loading="lazy"><span class="cap">الآباء مع الشمامسة<small>العبادة</small></span></span></button>
+      <button class="g" style="--gl:0.97;--gt:5.14;--gs:17;--ml:51.86;--mt:34.22;--ms:30" data-lb data-cap="مسابقة كرة القدم لمرحلة ابتدائي" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-football-1.jpg" alt="تسليم ميداليات المسابقة" loading="lazy"></span></button>
+      <button class="g" style="--gl:25.19;--gt:83.13;--gs:15;--ml:73.83;--mt:16.06;--ms:25" data-lb data-cap="قداس ليلي للشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-night-liturgy-2.jpeg" alt="الشمامسة في الهيكل" loading="lazy"></span></button>
+      <button class="g" style="--gl:6.41;--gt:78.51;--gs:14;--ml:0.67;--mt:34.35;--ms:22" data-lb data-cap="رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-1.jpeg" alt="الشباب في رحلة أديرة المنيا" loading="lazy"></span></button>
+      <button class="g" style="--gl:72;--gt:3.48;--gs:13;--ml:60.05;--mt:0.2;--ms:20" data-lb data-cap="مؤتمر عنبر 11 للشباب 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/youth-conference-anbar11-2026.jpeg" alt="مؤتمر الشباب" loading="lazy"></span></button>
+      <button class="g" style="--gl:37.43;--gt:1.78;--gs:12;--ml:4.15;--mt:2.5;--ms:18" data-lb data-cap="عرض اسمه يسوع" data-bub><span class="bi"><img class="grade" src="../media/services/theater/theater-ismuh-yasou.jpg" alt="عرض مسرحي داخل الكنيسة" loading="lazy"></span></button>
+      <button class="g" style="--gl:80.35;--gt:28.37;--gs:12;--ml:82.55;--mt:5.83;--ms:16" data-lb data-cap="مؤتمر ابتدائي 2026" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-conference-2026-2.jpg" alt="مؤتمر ابتدائي" loading="lazy"></span></button>
+      <button class="g" style="--gl:16.94;--gt:56.27;--gs:11;--ml:33.64;--mt:39.26;--ms:14" data-lb data-cap="زيارة دير ضمن رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-2.jpeg" alt="الشباب داخل كنيسة أثرية" loading="lazy"></span></button>
+      <button class="g" style="--gl:86.44;--gt:75.42;--gs:10;--ml:6.68;--mt:54.32;--ms:28" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-1.jpeg" alt="أمسية العبور" loading="lazy"></span></button>
+      <button class="g" style="--gl:53.48;--gt:86.75;--gs:10;--ml:6.55;--mt:87.48;--ms:24" data-lb data-cap="فريق المسرح" data-bub><span class="bi"><img class="grade" src="../media/services/theater/theater-team.jpg" alt="صورة جماعية لفريق المسرح" loading="lazy"></span></button>
+      <button class="g" style="--gl:88.04;--gt:49.92;--gs:9;--ml:70.75;--mt:87.69;--ms:21" data-lb data-cap="أبطال مسابقة كرة القدم" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-football-2.jpg" alt="الأطفال بالميداليات" loading="lazy"></span></button>
+      <button class="g" style="--gl:68.74;--gt:88.9;--gs:9;--ml:62.82;--mt:52.19;--ms:19" data-lb data-cap="مؤتمر ثانوي 2015" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/secondary-conference-2015.jpeg" alt="مؤتمر ثانوي" loading="lazy"></span></button>
+      <button class="g" style="--gl:39.56;--gt:59.1;--gs:8;--ml:8.26;--mt:71.52;--ms:17" data-lb data-cap="كورال ترينتي" data-bub><span class="bi"><img class="grade" src="../media/services/choir/trinity-choir.jpg" alt="كورال ترينتي على المسرح" loading="lazy"></span></button>
+      <button class="g" style="--gl:58.02;--gt:1.32;--gs:8;--ml:43.2;--mt:52.67;--ms:15" data-lb data-cap="كلمة الأب في مؤتمر ابتدائي 2026" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-conference-2026-3.jpg" alt="أب كاهن يتحدث مع الأطفال" loading="lazy"></span></button>
+      <button class="g" style="--gl:47.14;--gt:52.72;--gs:7;--ml:24.23;--mt:80.86;--ms:13" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-2.jpeg" alt="صورة جماعية ليلية" loading="lazy"></span></button>
     </div>
   </div>
 </section>
@@ -1001,19 +1004,11 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
   const tick = () => { const s = Math.max(0, Math.floor((target - Date.now()) / 1000)); const v = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 }; for (const k in v) $(`[data-u="${k}"]`, cd).textContent = pad(v[k]); };
   tick(); setInterval(tick, 1000);
 
-  // ---------- ذرات الغبار ودخان البخور في الواجهة ----------
+  // ---------- ذرات الغبار في ضوء الواجهة ----------
   if (!reduced) {
-    const cv = $('#dust'), ctx = cv.getContext('2d'), sc = $('#smoke'), sx = sc.getContext('2d');
-    let W, H, motes = [], puffs = [], running = true;
-    const sprite = document.createElement('canvas'); sprite.width = sprite.height = 128;
-    const sg = sprite.getContext('2d'), grd = sg.createRadialGradient(64, 64, 0, 64, 64, 64);
-    grd.addColorStop(0, 'rgba(255,240,220,.55)'); grd.addColorStop(.45, 'rgba(250,228,200,.22)'); grd.addColorStop(1, 'rgba(250,228,200,0)');
-    sg.fillStyle = grd; sg.fillRect(0, 0, 128, 128);
-    const fit = c => { const dpr = Math.min(devicePixelRatio || 1, 2); c.width = W * dpr; c.height = H * dpr; c.style.width = W + 'px'; c.style.height = H + 'px'; c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); };
-    const size = () => { const r = frame.getBoundingClientRect(); W = r.width; H = r.height; fit(cv); fit(sc); };
+    const cv = $('#dust'), ctx = cv.getContext('2d'); let W, H, motes = [], running = true;
+    const size = () => { const r = frame.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
     const seed = () => { motes = Array.from({ length: W < 700 ? 40 : 90 }, () => ({ x: Math.random() * W * .65, y: Math.random() * H, r: Math.random() * 1.8 + .4, vx: Math.random() * .25 + .05, vy: -(Math.random() * .2 + .05), a: Math.random() * .6 + .2, p: Math.random() * Math.PI * 2 })); };
-    const maxPuffs = () => W < 700 ? 22 : 42;
-    const puff = () => ({ x0: W * (.12 + Math.random() * .76), y: H + 60, r: 40 + Math.random() * 50, gr: .12 + Math.random() * .22, vy: .35 + Math.random() * .45, amp: 18 + Math.random() * 46, ph: Math.random() * 6.28, life: 0, max: 700 + Math.random() * 500 });
     const draw = () => {
       if (!running) return;
       ctx.clearRect(0, 0, W, H);
@@ -1023,17 +1018,6 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
         ctx.beginPath(); ctx.arc(m.x, m.y, m.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,224,170,${m.a * (.6 + .4 * Math.sin(m.p))})`; ctx.fill();
       }
-      sx.clearRect(0, 0, W, H);
-      if (puffs.length < maxPuffs() && Math.random() < .12) puffs.push(puff());
-      puffs = puffs.filter(p => p.life < p.max);
-      for (const p of puffs) {
-        p.life++; p.y -= p.vy;
-        const t = p.life / p.max, size = p.r + p.life * p.gr;
-        const x = p.x0 + Math.sin(p.life * .008 + p.ph) * p.amp * (.3 + t * 1.4);
-        sx.globalAlpha = Math.sin(Math.PI * t) * .32;
-        sx.drawImage(sprite, x - size, p.y - size, size * 2, size * 2);
-      }
-      sx.globalAlpha = 1;
       requestAnimationFrame(draw);
     };
     size(); seed(); draw();
@@ -1068,7 +1052,6 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
     .to('.hero-bg img', { scale: 1, duration: 2.8, ease: 'power2.out' }, 0)
     .to('.rays', { opacity: 1, duration: 2.4 }, .2)
     .to('#dust', { opacity: 1, duration: 2 }, .8)
-    .to('#smoke', { opacity: 1, duration: 3 }, .6)
     .to('.hero h1 .w > span', { y: 0, duration: 1.3, stagger: .1 }, .4)
     .to('.hero [data-intro]', { opacity: 1, duration: 1.1, stagger: .07, startAt: { y: 24 }, y: 0 }, .9)
     .to('[data-tile]', { opacity: 1, duration: 1.3, stagger: .14, startAt: { scale: .7 }, scale: 1, ease: 'back.out(1.4)' }, 1.1);

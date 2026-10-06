@@ -1,4 +1,0 @@
-# معاينة الصفحة الرئيسية على Netlify (نسخة مؤقتة غير مفهرسة)
-[build]
-  command = "node tools/build-preview.js"
-  publish = "dist"
