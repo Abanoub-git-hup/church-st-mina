@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>قالب الصفحة الداخلية | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
-<meta name="description" content="القالب الموحّد لكل الصفحات الداخلية في موقع الكنيسة، مع عيّنة من المكوّنات.">
+<title>نشأة الكنيسة | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
+<meta name="description" content="نشأة وتاريخ كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس، عرب العيايدة، ناحية الجبل الأصفر، مطرانية شبين القناطر وتوابعها.">
 <script>
   document.documentElement.classList.add('anim');
 </script>
@@ -13,8 +13,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <style>
-/* خاص بالقالب: لافتة توضّح أن الصفحة نموذج للمراجعة */
-.sample-note{display:flex;align-items:center;justify-content:center;gap:var(--s-2);margin:var(--s-3) var(--s-3) 0;padding:var(--s-2) var(--s-4);border-radius:var(--r-full);border:1px dashed rgba(243,201,135,.45);color:var(--gold-soft);font-size:.85rem;text-align:center}
+/* خاص بالنشأة: 3 دوائر للشفعاء */
+.infos.saints{grid-template-columns:repeat(3,minmax(0,1fr));max-width:760px}
+@media (max-width:760px){.infos.saints{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:var(--s-3)}.infos.saints .info:nth-child(even){top:var(--s-6)}.infos.saints .info-tx{padding:10%}.infos.saints .info-tx .icon{width:22px;height:22px}.infos.saints .info-tx small{font-size:.7rem}.infos.saints .info-tx b{font-size:.8rem}}
 </style>
 </head>
 <body>
@@ -73,9 +74,8 @@
 
 <main id="main">
 
-<!-- ===== الواجهة الداخلية: صورة الصفحة + أشعة + مسار التنقل + العنوان ===== -->
 <section class="page-hero" aria-labelledby="t-page">
-  <div class="hero-bg"><img src="../media/church/bg-window-rays.jpg" alt=""></div>
+  <div class="hero-bg"><img src="../media/church/nave-real.jpeg" alt="" style="object-position:center 45%"></div>
   <div class="rays" aria-hidden="true"><span class="window"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span></div>
   <canvas id="dust" aria-hidden="true"></canvas>
 
@@ -83,7 +83,7 @@
     <div class="wrap">
       <a class="brand" href="home.html" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
       <nav class="top-nav" aria-label="القائمة الرئيسية" data-intro>
-        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="home.html#schedule" aria-current="page">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html" aria-current="page">الكنيسة</a></li><li><a href="home.html#schedule">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
       </nav>
       <div class="socials" data-intro>
         <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
@@ -96,136 +96,73 @@
 
   <div class="wrap page-head">
     <nav class="crumbs" aria-label="مسار التنقل" data-intro>
-      <ol><li><a href="home.html">الرئيسية</a></li><li><a href="#">القسم</a></li><li><span aria-current="page">عنوان الصفحة</span></li></ol>
+      <ol><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><span aria-current="page">النشأة</span></li></ol>
     </nav>
-    <span class="eyebrow" data-intro>سطر صغير فوق العنوان</span>
-    <h1 class="title" id="t-page" data-split>عنوان <b>الصفحة</b> الداخلية</h1>
-    <p class="lead" data-intro>وصف قصير للصفحة في سطر أو سطرين. كل صفحة داخلية لها صورة خلفية خاصة بها، بنفس الفلتر الدافئ والأشعة الخفيفة.</p>
+    <span class="eyebrow" data-intro>عن كنيستنا</span>
+    <h1 class="title" id="t-page" data-split>بيت الله <b>وباب السماء</b></h1>
+    <p class="lead" data-intro>كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس، عرب العيايدة، ناحية الجبل الأصفر، مطرانية شبين القناطر وتوابعها.</p>
   </div>
 </section>
 
-<p class="sample-note" data-rise><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg>صفحة نموذج: المكوّنات التالية أمثلة تُستخدم حسب كل صفحة، والنصوص مؤقتة.</p>
+<nav class="subnav" aria-label="صفحات الكنيسة"><div class="wrap"><ul><li><a href="church-history.html" aria-current="page">النشأة</a></li><li><a href="church-fathers.html">الآباء</a></li><li><a href="church-gallery.html">الصور</a></li><li><a href="church-location.html">الموقع</a></li></ul></div></nav>
 
-<!-- ===== 1. نص قراءة واسع بصورة مقوّسة (النشأة، صفحة الخبر، صفحة الخدمة) ===== -->
-<section class="sec pool" data-cover-start aria-labelledby="t-prose">
+<!-- ===== قصة الكنيسة ===== -->
+<section class="sec pool" data-cover-start aria-labelledby="t-story">
   <div class="wrap">
     <article class="prose">
-      <span class="eyebrow" data-rise>نص القراءة</span>
-      <h2 class="title" id="t-prose" data-split style="margin-top:0">بيت الله <b>وباب السماء</b></h2>
-      <p data-rise>هنا يظهر النص الطويل للصفحة بعرض مريح للقراءة لا يزيد عن 720px، بخط Alexandria بوزن خفيف وارتفاع سطر واسع. يكتب محرر المحتوى هذا النص من لوحة التحكم، وتظهر <strong>الكلمات المهمة</strong> بلون أفتح، و<a href="#">الروابط</a> بخط ذهبي تحتها.</p>
-      <p data-rise>تُقسَّم الفقرات بمسافات واضحة، ويمكن أن تتخللها صورة مقوّسة تشبه شباك الكنيسة، أو آية بخط أميري.</p>
+      <span class="eyebrow" data-rise>قصة الكنيسة</span>
+      <h2 class="title" id="t-story" data-split style="margin-top:0">كيف <b>بدأت</b></h2>
+      <p data-rise>هنا يكتب محرر المحتوى قصة نشأة الكنيسة: متى بدأت الصلاة في المكان، ومن الآباء الذين خدموا فيه، وكيف بُنيت الكنيسة الكبيرة والكنيسة الصغيرة.</p>
+      <p data-rise>فقرة ثانية عن مراحل البناء والتجديد، وتدشين المذابح، ومنها مذبح البابا كيرلس السادس بالكنيسة الكبيرة.</p>
       <figure class="arch-fig" data-clip>
-        <div class="im"><img class="grade" data-parallax src="../media/worship/youth-night-liturgy-1.jpeg" alt="أب كاهن يصلي عند المذبح" loading="lazy"></div>
-        <figcaption>تعليق قصير على الصورة</figcaption>
+        <div class="im"><img class="grade" data-parallax src="../media/worship/youth-night-liturgy-1.jpeg" alt="أب كاهن عند المذبح والصحن في الخلفية" loading="lazy"></div>
+        <figcaption>من داخل الكنيسة</figcaption>
       </figure>
-      <h3 data-rise>عنوان فرعي داخل النص</h3>
-      <p data-rise>فقرة بعد العنوان الفرعي. ويمكن أن يحتوي النص على قائمة نقاط:</p>
-      <ul data-rise>
-        <li>نقطة أولى بدائرة ذهبية صغيرة.</li>
-        <li>نقطة ثانية أطول قليلًا لتوضيح شكل السطر الثاني عندما ينكسر النص على الموبايل.</li>
-        <li>نقطة ثالثة.</li>
-      </ul>
-      <blockquote data-rise>«اِفْرَحُوا فِي ٱلرَّبِّ كُلَّ حِينٍ، وَأَقُولُ أَيْضًا: ٱفْرَحُوا»<cite>(فيلبي 4: 4)</cite></blockquote>
+      <p data-rise>فقرة عن الكنيسة اليوم: الخدمات، والاجتماعات، والشعب الذي يجتمع فيها.</p>
+      <blockquote data-rise>«مَا أَرْهَبَ هذَا ٱلْمَكَانَ! مَا هذَا إِلاَّ بَيْتُ ٱللهِ، وَهذَا بَابُ ٱلسَّمَاءِ»<cite>(تكوين 28: 17)</cite></blockquote>
     </article>
   </div>
 </section>
 
-<!-- ===== 2. دوائر المعلومات (صفحة الخدمة، الاعتراف، الموقع) ===== -->
-<section class="sec deep" aria-labelledby="t-infos">
+<!-- ===== شفعاء الكنيسة ===== -->
+<section class="sec deep" aria-labelledby="t-saints">
   <div class="wrap">
     <div style="text-align:center;margin-bottom:var(--s-12)">
-      <span class="eyebrow" data-rise>دوائر المعلومات</span>
-      <h2 class="title" id="t-infos" data-split>كل ما <b>تحتاج معرفته</b></h2>
+      <span class="eyebrow" data-rise>شفعاء الكنيسة</span>
+      <h2 class="title" id="t-saints" data-split>بشفاعة <b>القديسين</b></h2>
     </div>
-    <div class="infos">
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg><small>عن الخدمة</small><b>وصف قصير في سطرين</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><small>الموعد</small><b>الجمعة<br>3:00 – 5:00 م</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><small>المسؤول</small><b>اسم الأب أو الخادم</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg><small>التواصل</small><b><a href="#">راسلنا على واتساب</a></b></span></span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 3. تبويبات (العبادة: الجدول المعتاد / الأصوام، الأخبار: الكل / أخبار / إعلانات) ===== -->
-<section class="sec pool-l" aria-labelledby="t-tabs">
-  <div class="wrap">
-    <div style="text-align:center;margin-bottom:var(--s-10)">
-      <span class="eyebrow" data-rise>التبويبات</span>
-      <h2 class="title" id="t-tabs" data-split>مواعيد <b>القداسات</b></h2>
-    </div>
-    <div class="tabs-wrap" data-rise>
-      <div class="tabs" role="tablist" aria-label="نوع الجدول">
-        <button class="chip" role="tab" id="tab-a" aria-controls="panel-a" aria-selected="true" aria-pressed="true">الجدول المعتاد</button>
-        <button class="chip" role="tab" id="tab-b" aria-controls="panel-b" aria-selected="false" aria-pressed="false" tabindex="-1">في الأصوام</button>
-      </div>
-    </div>
-    <div style="max-width:820px;margin-inline:auto">
-      <div role="tabpanel" id="panel-a" aria-labelledby="tab-a">
-        <div class="days" style="margin-top:0">
-          <div class="day" data-day="0" data-rise><div class="day-n">الأحد</div><div class="slots"><span>7:00 – 10:00 ص</span><span>9:00 – 11:00 ص</span></div></div>
-          <div class="day" data-day="2" data-rise><div class="day-n">الثلاثاء</div><div class="slots"><span>8:00 – 9:30 ص</span></div></div>
-          <div class="day" data-day="3" data-rise><div class="day-n">الأربعاء</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
-          <div class="day" data-day="5" data-rise><div class="day-n">الجمعة</div><div class="slots"><span>7:00 – 9:00 ص <em>التربية الكنسية</em></span><span>7:00 – 9:30 ص <em>الشعب</em></span><span>10:00 – 12:00 ظ</span><span class="meet">3:00 – 5:00 م <em>صلاة ودراسة الكتاب</em></span></div></div>
-          <div class="day" data-day="6" data-rise><div class="day-n">السبت</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
-        </div>
-      </div>
-      <div role="tabpanel" id="panel-b" aria-labelledby="tab-b" hidden>
-        <div class="days" style="margin-top:0">
-          <div class="day"><div class="day-n">يوميًا</div><div class="slots"><span>جدول الأصوام يُضاف هنا <em>(بانتظار المواعيد)</em></span></div></div>
-        </div>
-      </div>
+    <div class="infos saints">
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg><small>والدة الإله</small><b>السيدة العذراء مريم</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><small>الشهيد العظيم</small><b>مارمينا العجايبي</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-candle"/></svg><small>البطريرك 116</small><b>البابا كيرلس السادس</b></span></span></div>
     </div>
   </div>
 </section>
 
-<!-- ===== 4. عمودان: نص وصورة (الآباء، البث المباشر، الاعتراف) ===== -->
-<section class="sec deep" aria-labelledby="t-split">
-  <div class="wrap split">
-    <div>
-      <span class="eyebrow" data-rise>نص وصورة</span>
-      <h2 class="title" id="t-split" data-split>قسم <b>بعمودين</b></h2>
-      <p class="lead" data-rise>النص على اليمين والصورة على الشمال، ويمكن عكس الترتيب. على الموبايل يصبحان فوق بعض.</p>
-      <div style="margin-top:var(--s-8);display:flex;gap:var(--s-6);align-items:center;flex-wrap:wrap" data-rise>
-        <a class="pill" href="#">زر أساسي <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
-        <a class="link" href="#">رابط ثانوي <svg class="icon"><use href="#i-nw"/></svg></a>
-      </div>
-    </div>
-    <div class="sched-media" data-clip>
-      <img class="grade" data-parallax src="../media/worship/deacons.jpeg" alt="شمامسة الكنيسة" loading="lazy">
-      <div class="badge"><small>شارة على الصورة</small><b>عنوان قصير</b></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== 5. خط زمني رأسي (النشأة) ===== -->
-<section class="sec pool" aria-labelledby="t-tl">
+<!-- ===== محطات ===== -->
+<section class="sec pool-l" aria-labelledby="t-tl">
   <div class="wrap">
     <div style="text-align:center;margin-bottom:var(--s-12)">
       <span class="eyebrow" data-rise>خط زمني</span>
       <h2 class="title" id="t-tl" data-split>محطات <b>في تاريخ الكنيسة</b></h2>
     </div>
     <div class="timeline">
-      <div class="tl" data-rise><span class="yr">0000</span><h3>عنوان المحطة الأولى</h3><p>وصف قصير لما حدث في هذه السنة.</p></div>
-      <div class="tl" data-rise><span class="yr">0000</span><h3>عنوان المحطة الثانية</h3><p>وصف قصير لما حدث في هذه السنة.</p></div>
-      <div class="tl" data-rise><span class="yr">0000</span><h3>عنوان المحطة الثالثة</h3><p>وصف قصير لما حدث في هذه السنة.</p></div>
+      <div class="tl" data-rise><span class="yr">0000</span><h3>بداية الصلاة في المكان</h3><p>تُكتب السنة والتفاصيل بعد التأكد منها.</p></div>
+      <div class="tl" data-rise><span class="yr">0000</span><h3>بناء الكنيسة</h3><p>تُكتب السنة والتفاصيل بعد التأكد منها.</p></div>
+      <div class="tl" data-rise><span class="yr">0000</span><h3>تدشين المذابح</h3><p>تُكتب السنة والتفاصيل بعد التأكد منها.</p></div>
+      <div class="tl" data-rise><span class="yr">0000</span><h3>الكنيسة اليوم</h3><p>تُكتب التفاصيل بعد التأكد منها.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ===== 6. صفحات أخرى (آخر كل صفحة تفاصيل) ===== -->
+<!-- ===== صفحات الكنيسة ===== -->
 <section class="sec deep" aria-labelledby="t-more">
   <div class="wrap">
-    <div class="more-head">
-      <div>
-        <span class="eyebrow" data-rise>اقرأ أيضًا</span>
-        <h2 class="title" id="t-more" data-split>صفحات <b>أخرى</b></h2>
-      </div>
-      <a class="link" href="home.html#news" data-rise>كل الأخبار <svg class="icon"><use href="#i-nw"/></svg></a>
-    </div>
-    <div class="cards">
-      <a class="news" href="#" data-rise><div class="im top"><img src="../media/events/virgin-mary-revival-2026.jpg" alt="إعلان نهضة السيدة العذراء" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>أغسطس</span></div><h3>نهضة السيدة العذراء</h3><p>وصف قصير للخبر.</p></div></a>
-      <a class="news" href="#" data-rise><div class="im top"><img src="../media/events/pope-kyrillos-revival.jpg" alt="إعلان نهضة البابا كيرلس السادس" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>6 – 9 مارس</span></div><h3>نهضة البابا كيرلس السادس</h3><p>وصف قصير للخبر.</p></div></a>
-      <a class="news" href="#" data-rise><div class="im top"><img src="../media/events/annual-party-umm-lilbay.jpg" alt="إعلان الحفل السنوي" loading="lazy"></div><div class="bd"><div class="k"><span>خبر</span><span>التاريخ</span></div><h3>الحفل السنوي</h3><p>وصف قصير للخبر.</p></div></a>
+    <div class="more-head"><div><span class="eyebrow" data-rise>تعرّف أكثر</span><h2 class="title" id="t-more" data-split>كنيستنا</h2></div></div>
+    <div class="disc">
+      <a class="dcard paper" href="church-fathers.html" data-rise><img src="../media/priests/fathers-group.png" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>الآباء الكهنة</h3><p>آباء الكنيسة الثلاثة وأقوالهم.</p></a>
+      <a class="dcard" href="church-gallery.html" data-rise><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>صور الكنيسة</h3><p>العبادة والخدمات والأنشطة.</p></a>
+      <a class="dcard" href="church-location.html" data-rise><img class="grade" src="../media/church/bg-window-rays.jpg" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>موقع الكنيسة</h3><p>العنوان وطريقة الوصول.</p></a>
     </div>
   </div>
 </section>

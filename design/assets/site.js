@@ -42,6 +42,7 @@
   }));
   filter($$('[data-f]'), 'f', $$('.svc'), 'g');
   filter($$('.tabs .chip[data-n]'), 'n', $$('.news, .nbub'), 't');
+  filter($$('.chip[data-gf]'), 'gf', $$('.g[data-c]'), 'c');
 
   // ---------- التبويبات (role=tab يتحكم في role=tabpanel) ----------
   $$('[role=tablist]:not(.qs-dots)').forEach(list => {
@@ -97,9 +98,10 @@
   // ---------- عارض الصور ----------
   const lb = $('#lightbox');
   if (lb) {
-    const lbImg = $('#lbImg'), lbCap = $('#lbCap'), items = $$('[data-lb]'); let idx = 0;
+    const lbImg = $('#lbImg'), lbCap = $('#lbCap'), all = $$('[data-lb]'); let items = all, idx = 0;
     const show = i => { idx = (i + items.length) % items.length; const im = $('img', items[idx]); lbImg.src = im.src; lbImg.alt = im.alt; lbCap.textContent = items[idx].dataset.cap || ''; };
-    items.forEach((it, i) => it.addEventListener('click', () => { if (it.classList.contains('qs') && !it.classList.contains('is-active')) return; show(i); lb.showModal(); }));
+    // التنقل بين الصور الظاهرة فقط (بعد الفلترة)
+    all.forEach(it => it.addEventListener('click', () => { if (it.classList.contains('qs') && !it.classList.contains('is-active')) return; items = all.filter(x => !x.classList.contains('hide')); show(items.indexOf(it)); lb.showModal(); }));
     $('#lbClose').addEventListener('click', () => lb.close());
     $('#lbPrev').addEventListener('click', () => show(idx - 1));
     $('#lbNext').addEventListener('click', () => show(idx + 1));

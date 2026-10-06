@@ -443,14 +443,14 @@ body{background:var(--umber-700)}
    ===================================================================== */
 
 /* ===== الواجهة الداخلية القصيرة ===== */
-.page-hero{position:relative;min-height:58svh;display:flex;flex-direction:column;isolation:isolate;overflow:hidden}
-.page-hero .hero-bg img{height:115%;object-position:center 40%;filter:sepia(.35) saturate(1.05) brightness(.62) contrast(1.06)}
-.page-hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(23,15,9,.85) 0%,rgba(23,15,9,.45) 38%,rgba(23,15,9,.7) 78%,rgba(23,15,9,.55) 100%);-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
+.page-hero{position:relative;min-height:80svh;display:flex;flex-direction:column;isolation:isolate;overflow:hidden}
+.page-hero .hero-bg img{height:115%;object-position:center 40%;filter:sepia(.3) saturate(1.05) brightness(.84) contrast(1.05)}
+.page-hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(23,15,9,.62) 0%,rgba(23,15,9,.12) 22%,rgba(23,15,9,.08) 42%,rgba(23,15,9,.6) 68%,rgba(23,15,9,.82) 100%);-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
 .page-hero .rays{opacity:.75}
 .page-head{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding-block:var(--s-12) var(--s-20)}
 .page-head .title{font-size:clamp(2.4rem,5.6vw,4.6rem);text-shadow:0 4px 30px rgba(0,0,0,.5)}
-.page-head .lead{margin-top:var(--s-4)}
-@media (max-width:600px){.page-hero{min-height:62svh}.page-head{padding-block:var(--s-10) var(--s-16)}}
+.page-head .lead{margin-top:var(--s-4);text-shadow:0 2px 16px rgba(0,0,0,.6)}
+@media (max-width:600px){.page-hero{min-height:80svh}.page-head{padding-block:var(--s-10) var(--s-16)}}
 
 /* مسار التنقل */
 .crumbs ol{display:flex;flex-wrap:wrap;align-items:center;gap:var(--s-2);list-style:none;margin:0 0 var(--s-5);padding:0;font-size:.88rem;color:var(--cream-2)}
@@ -512,3 +512,16 @@ body{background:var(--umber-700)}
 /* ===== شريط "صفحات أخرى" ===== */
 .more-head{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s-6);flex-wrap:wrap;margin-bottom:var(--s-10)}
 .more-head .title{font-size:clamp(1.8rem,3.4vw,2.6rem)}
+
+/* ===== تنقل فرعي بين صفحات القسم (صفحات الكنيسة) ===== */
+.subnav{position:relative;z-index:2;margin-top:calc(var(--s-8) * -1)}
+.subnav ul{display:flex;justify-content:center;flex-wrap:wrap;gap:var(--s-1);width:max-content;max-width:100%;margin-inline:auto;padding:5px;border-radius:var(--r-full);border:1px solid var(--line-strong);background:rgba(30,20,13,.78);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.subnav a{display:block;min-height:44px;padding:9px 20px;border-radius:var(--r-full);color:var(--cream-2);font-size:.92rem;transition:all var(--t-fast)}
+.subnav a:hover{color:var(--cream);background:rgba(246,236,220,.08)}
+.subnav a[aria-current=page]{background:var(--cream);color:var(--ink)}
+@media (max-width:600px){.subnav ul{border-radius:var(--r-lg)}.subnav a{padding:9px 14px;font-size:.88rem}}
+
+/* ===== فلترة صور المعرض ===== */
+.g.hide{display:none}
+.gal-chips{display:flex;justify-content:center;flex-wrap:wrap;gap:var(--s-2);margin-bottom:var(--s-12)}
+.gal-chips .chip{min-height:44px}

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>اجتماع الشباب | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
-<meta name="description" content="اجتماع الشباب في كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر: الموعد والمكان والمسؤول وصور الأنشطة.">
+<title>آباء الكنيسة | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
+<meta name="description" content="آباء كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر: القمص كيرلس روماني، والقس أرسانيوس عزت، والقس فام عبد المسيح.">
 <script>
   document.documentElement.classList.add('anim');
 </script>
@@ -13,8 +13,18 @@
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <style>
-/* خاص بصفحة الخدمة: عنوان مخفي للقارئ الآلي */
-.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* خاص بالآباء: دائرة صورة كبيرة، وملصقات الأقوال */
+.face-wrap{position:relative;width:360px;max-width:100%;aspect-ratio:1;justify-self:center}
+.face{--k:5.625;position:absolute;inset:0;border-radius:50%;background-color:var(--cream);background-repeat:no-repeat;background-size:calc(var(--w) * var(--k) * 1px) auto;background-position:calc(var(--x) * var(--k) * 1px) calc(var(--y) * var(--k) * 1px);box-shadow:0 0 0 2px var(--gold),0 0 0 12px rgba(224,176,96,.12),0 40px 90px -30px rgba(0,0,0,.75);animation:float 8s ease-in-out infinite alternate}
+@media (max-width:600px){.face-wrap{width:280px}.face{--k:4.375}}
+.sub-h{font-size:1.2rem;font-weight:400;color:var(--gold-soft);margin-top:var(--s-10)}
+.posters{display:flex;flex-wrap:wrap;gap:var(--s-4);margin-top:var(--s-5)}
+.poster{position:relative;width:132px;aspect-ratio:4/5;padding:0;border:1px solid rgba(243,201,135,.3);border-radius:var(--r-md);overflow:hidden;background:var(--umber-800);cursor:zoom-in;transition:transform var(--t-base) var(--ease),border-color var(--t-base)}
+.poster img{width:100%;height:100%;object-fit:cover;object-position:top}
+.poster .zoom{position:absolute;bottom:var(--s-2);inset-inline-end:var(--s-2);width:32px;height:32px;border-radius:50%;background:rgba(23,15,9,.7);color:var(--gold-soft);display:grid;place-items:center}
+.poster .zoom .icon{width:14px;height:14px}
+.poster:hover{transform:translateY(-4px);border-color:var(--gold-soft)}
+@media (max-width:600px){.poster{width:calc(33.33% - 11px)}}
 </style>
 </head>
 <body>
@@ -53,7 +63,7 @@
 <div class="float-nav" id="floatNav">
   <a class="brand" href="home.html"><img src="../media/brand/logo.png" alt="" width="38" height="38"><span><b>كنيسة العذراء ومارمينا والبابا كيرلس</b>الجبل الأصفر</span></a>
   <nav aria-label="القائمة">
-    <ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+    <ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="home.html#schedule">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
   </nav>
   <button class="menu-btn" data-open-menu aria-label="فتح القائمة" aria-controls="drawer"><svg class="icon"><use href="#i-menu"/></svg></button>
 </div>
@@ -63,7 +73,7 @@
     <a class="brand" href="home.html"><img src="../media/brand/logo.png" alt=""><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
     <button class="menu-btn" id="menuClose" aria-label="إغلاق القائمة"><svg class="icon"><use href="#i-x"/></svg></button>
   </div>
-  <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+  <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="home.html#schedule">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
   <div class="socials">
     <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
     <a class="circle" href="#" aria-label="يوتيوب"><svg class="icon"><use href="#i-youtube"/></svg></a>
@@ -73,9 +83,8 @@
 
 <main id="main">
 
-<!-- ===== الواجهة الداخلية (صورة الخدمة) ===== -->
 <section class="page-hero" aria-labelledby="t-page">
-  <div class="hero-bg"><img src="../media/services/youth/youth-meeting-2026.jpeg" alt=""></div>
+  <div class="hero-bg"><img src="../media/worship/deacons.jpeg" alt=""></div>
   <div class="rays" aria-hidden="true"><span class="window"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span></div>
   <canvas id="dust" aria-hidden="true"></canvas>
 
@@ -83,7 +92,7 @@
     <div class="wrap">
       <a class="brand" href="home.html" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
       <nav class="top-nav" aria-label="القائمة الرئيسية" data-intro>
-        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html" aria-current="page">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html" aria-current="page">الكنيسة</a></li><li><a href="home.html#schedule">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
       </nav>
       <div class="socials" data-intro>
         <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
@@ -96,73 +105,65 @@
 
   <div class="wrap page-head">
     <nav class="crumbs" aria-label="مسار التنقل" data-intro>
-      <ol><li><a href="home.html">الرئيسية</a></li><li><a href="services.html">الخدمات</a></li><li><a href="services.html#g-meet">الاجتماعات</a></li><li><span aria-current="page">اجتماع الشباب</span></li></ol>
+      <ol><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><span aria-current="page">الآباء</span></li></ol>
     </nav>
-    <span class="eyebrow" data-intro>الاجتماعات</span>
-    <h1 class="title" id="t-page" data-split>اجتماع <b>الشباب</b></h1>
-    <p class="lead" data-intro>وصف قصير للخدمة في سطر أو سطرين، يكتبه محرر المحتوى من لوحة التحكم.</p>
+    <span class="eyebrow" data-intro>الآباء الكهنة</span>
+    <h1 class="title" id="t-page" data-split>آباء <b>الكنيسة</b></h1>
+    <p class="lead" data-intro>القمص كيرلس روماني، والقس أرسانيوس عزت، والقس فام عبد المسيح.</p>
   </div>
 </section>
 
-<!-- ===== معلومات الخدمة ===== -->
-<section class="sec pool" data-cover-start aria-labelledby="t-infos">
-  <div class="wrap">
-    <h2 class="sr" id="t-infos">معلومات الخدمة</h2>
-    <div class="infos">
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><small>الموعد</small><b>اليوم<br>والساعة</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><small>المكان</small><b>مكان الاجتماع<br>في الكنيسة</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><small>المسؤول</small><b>اسم الأب<br>أو الخادم</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg><small>التواصل</small><b><a href="#">راسل الخادم<br>على واتساب</a></b></span></span></div>
-    </div>
-  </div>
+<nav class="subnav" aria-label="صفحات الكنيسة"><div class="wrap"><ul><li><a href="church-history.html">النشأة</a></li><li><a href="church-fathers.html" aria-current="page">الآباء</a></li><li><a href="church-gallery.html">الصور</a></li><li><a href="church-location.html">الموقع</a></li></ul></div></nav>
+
+<!-- ===== الآباء معًا ===== -->
+<section class="sec pool-l" aria-label="الآباء معًا">
+  <div class="wrap"><div class="arch" data-clip style="margin-inline:auto"><img src="../media/priests/fathers-group.png" alt="آباء الكنيسة الثلاثة"></div></div>
 </section>
 
-<!-- ===== عن الخدمة ===== -->
-<section class="sec deep" aria-labelledby="t-about">
-  <div class="wrap">
-    <article class="prose">
-      <span class="eyebrow" data-rise>عن الخدمة</span>
-      <h2 class="title" id="t-about" data-split style="margin-top:0">مكانك <b>معنا</b></h2>
-      <p data-rise>هنا يكتب محرر المحتوى نبذة عن الخدمة: لمن هي، وماذا يحدث في الاجتماع، والأنشطة على مدار السنة مثل المؤتمرات والرحلات والأمسيات.</p>
-      <p data-rise>فقرة ثانية اختيارية عن طريقة الانضمام، أو عن نشاط قادم.</p>
-    </article>
-  </div>
-</section>
-
-<!-- ===== صور الخدمة ===== -->
-<section class="sec pool-l" aria-labelledby="t-gal">
-  <div class="wrap">
-    <div style="text-align:center;margin-bottom:var(--s-12)">
-      <span class="eyebrow" data-rise>من أنشطة الخدمة</span>
-      <h2 class="title" id="t-gal" data-split>صور <b>الاجتماع</b></h2>
-    </div>
-    <div class="gfield">
-      <button class="g l" data-lb data-cap="اجتماع الشباب 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/youth-meeting-2026.jpeg" alt="اجتماع الشباب 2026" loading="lazy"><span class="cap">اجتماع الشباب 2026</span></span></button>
-      <button class="g" data-lb data-cap="مؤتمر &quot;عنبر 11&quot; للشباب 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/youth-conference-anbar11-2026.jpeg" alt="مؤتمر &quot;عنبر 11&quot; للشباب 2026" loading="lazy"><span class="cap">مؤتمر "عنبر 11" للشباب 2026</span></span></button>
-      <button class="g s" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-1.jpeg" alt="أمسية العبور 2025" loading="lazy"><span class="cap">أمسية العبور 2025</span></span></button>
-      <button class="g" data-lb data-cap="رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-1.jpeg" alt="رحلة أديرة المنيا 2026" loading="lazy"><span class="cap">رحلة أديرة المنيا 2026</span></span></button>
-      <button class="g l" data-lb data-cap="قداس الشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="قداس الشباب" loading="lazy"><span class="cap">قداس الشباب</span></span></button>
-      <button class="g" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-2.jpeg" alt="أمسية العبور 2025" loading="lazy"><span class="cap">أمسية العبور 2025</span></span></button>
-      <button class="g s" data-lb data-cap="رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-2.jpeg" alt="رحلة أديرة المنيا 2026" loading="lazy"><span class="cap">رحلة أديرة المنيا 2026</span></span></button>
-    </div>
-  </div>
-</section>
-
-<!-- ===== خدمات أخرى في نفس المجموعة ===== -->
-<section class="sec deep" aria-labelledby="t-more">
-  <div class="wrap">
-    <div class="more-head">
-      <div>
-        <span class="eyebrow" data-rise>في نفس المجموعة</span>
-        <h2 class="title" id="t-more" data-split>اجتماعات <b>أخرى</b></h2>
+<section class="sec pool" data-cover-start aria-labelledby="t-f0">
+  <div class="wrap split">
+    <div class="face-wrap" data-bub><span class="face" style="background-image:url('../media/priests/quote-kyrillos-3.jpg');--w:265;--x:-32;--y:-233" role="img" aria-label="القمص كيرلس روماني"></span></div>
+    <div>
+      <span class="eyebrow" data-rise>كاهن الكنيسة</span>
+      <h2 class="title" id="t-f0" data-split>القمص <b>كيرلس روماني</b></h2>
+      <p class="lead" data-rise>نبذة قصيرة عن أبينا: سنة الرسامة، والخدمات التي يرعاها. يكتبها محرر المحتوى.</p>
+      <h3 class="sub-h" data-rise>من أقواله</h3>
+      <div class="posters" data-rise>
+        <button class="poster" data-lb data-cap="قول للقمص كيرلس روماني عن القيامة · القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-1.jpg" alt="قول للقمص كيرلس روماني عن القيامة" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
+        <button class="poster" data-lb data-cap="قول للقمص كيرلس روماني · القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-2.jpg" alt="قول للقمص كيرلس روماني" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
+        <button class="poster" data-lb data-cap="صلاة للقمص كيرلس روماني · القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-3.jpg" alt="صلاة للقمص كيرلس روماني" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
       </div>
-      <a class="link" href="services.html" data-rise>كل الخدمات <svg class="icon"><use href="#i-nw"/></svg></a>
     </div>
-    <div class="svc-grid" style="margin-top:0">
-      <a class="svc top" data-g="meet" href="service.html" data-rise><img src="../media/services/bible-study/prayer-bible-study-poster.jpg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><small>الاجتماعات · الجمعة 3–5 م</small><h3>صلاة ودراسة الكتاب المقدس</h3></a>
-      <a class="svc" data-g="meet" href="service.html" data-rise><img class="grade" src="../media/worship/deacons.jpeg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><small>الاجتماعات</small><h3>اجتماع الألحان</h3></a>
-      <a class="svc temp" data-g="meet" href="service.html" data-rise><img class="grade" src="../media/church/nave-real.jpeg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><em class="tmp">صورة مؤقتة</em><small>الاجتماعات</small><h3>اجتماع الشعب</h3></a>
-      <a class="svc temp" data-g="meet" href="service.html" data-rise><img class="grade" src="../media/worship/youth-night-liturgy-3.jpeg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><em class="tmp">صورة مؤقتة</em><small>الاجتماعات</small><h3>اجتماع السيدات</h3></a>
+  </div>
+</section>
+
+<section class="sec deep" aria-labelledby="t-f1">
+  <div class="wrap split rev">
+    <div class="face-wrap" data-bub><span class="face" style="background-image:url('../media/priests/quote-arsanios-1.jpg');--w:252;--x:-49;--y:-84" role="img" aria-label="القس أرسانيوس عزت"></span></div>
+    <div>
+      <span class="eyebrow" data-rise>كاهن الكنيسة</span>
+      <h2 class="title" id="t-f1" data-split>القس <b>أرسانيوس عزت</b></h2>
+      <p class="lead" data-rise>نبذة قصيرة عن أبينا: سنة الرسامة، والخدمات التي يرعاها. يكتبها محرر المحتوى.</p>
+      <h3 class="sub-h" data-rise>من أقواله</h3>
+      <div class="posters" data-rise>
+        <button class="poster" data-lb data-cap="خادم مش مصلي.. غصنه ناشف · القس أرسانيوس عزت"><img src="../media/priests/quote-arsanios-1.jpg" alt="خادم مش مصلي.. غصنه ناشف" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
+        <button class="poster" data-lb data-cap="قول للقس أرسانيوس عزت · القس أرسانيوس عزت"><img src="../media/priests/quote-arsanios-2.jpg" alt="قول للقس أرسانيوس عزت" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec pool" aria-labelledby="t-f2">
+  <div class="wrap split">
+    <div class="face-wrap" data-bub><span class="face" style="background-image:url('../media/priests/quote-fam.jpg');--w:301;--x:-5;--y:-115" role="img" aria-label="القس فام عبد المسيح"></span></div>
+    <div>
+      <span class="eyebrow" data-rise>كاهن الكنيسة</span>
+      <h2 class="title" id="t-f2" data-split>القس <b>فام عبد المسيح</b></h2>
+      <p class="lead" data-rise>نبذة قصيرة عن أبينا: سنة الرسامة، والخدمات التي يرعاها. يكتبها محرر المحتوى.</p>
+      <h3 class="sub-h" data-rise>من أقواله</h3>
+      <div class="posters" data-rise>
+        <button class="poster" data-lb data-cap="قول للقس فام عبد المسيح · القس فام عبد المسيح"><img src="../media/priests/quote-fam.jpg" alt="قول للقس فام عبد المسيح" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
+      </div>
     </div>
   </div>
 </section>
@@ -186,7 +187,7 @@
           <a class="circle" href="#" aria-label="واتساب"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
         </div>
       </div>
-      <div><h4>الموقع</h4><ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li><li><a href="church-gallery.html">صور الكنيسة</a></li></ul></div>
+      <div><h4>الموقع</h4><ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="home.html#schedule">العبادة</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li><li><a href="church-gallery.html">صور الكنيسة</a></li></ul></div>
       <div><h4>الخدمات</h4><ul><li><a href="services.html">مدارس الأحد</a></li><li><a href="services.html">الاجتماعات</a></li><li><a href="services.html">الخدام</a></li><li><a href="services.html">الفرق والأنشطة</a></li><li><a href="services.html">الأسرة والمجتمع</a></li></ul></div>
       <div><h4>تواصل معنا</h4><ul><li>عرب العيايدة، ناحية الجبل الأصفر</li><li>رقم هاتف الكنيسة</li><li><a href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener">صفحة الكنيسة على فيسبوك</a></li></ul></div>
     </div>
