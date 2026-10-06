@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>العبادة: مواعيد القداسات والقراءات | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
-<meta name="description" content="مواعيد القداسات والاجتماعات في كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر، والقراءات اليومية، وسر الاعتراف.">
+<title>اجتماع الشباب | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
+<meta name="description" content="اجتماع الشباب في كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر: الموعد والمكان والمسؤول وصور الأنشطة.">
 <script>
   document.documentElement.classList.add('anim');
 </script>
@@ -13,23 +13,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <style>
-/* خاص بالعبادة: عنوان الاجتماعات، ودائرة القراءات */
-.sub-h{font-size:1.25rem;font-weight:400;color:var(--gold-soft);margin-top:var(--s-12)}
-.sub-h + .days{margin-top:var(--s-4)}
-.read-actions{display:flex;align-items:center;gap:var(--s-4);flex-wrap:wrap;margin-top:var(--s-8)}
-.read-actions small{color:var(--muted);font-size:.85rem}
-.read-circle{position:relative;display:block;width:min(440px,78vw);aspect-ratio:1;justify-self:center;color:var(--cream)}
-.read-circle .bi{box-shadow:0 40px 90px -30px rgba(0,0,0,.75),0 0 0 1px rgba(243,201,135,.35)}
-.read-circle img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
-.read-circle .bi::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(23,15,9,.55),rgba(23,15,9,.82))}
-.read-circle:hover img{transform:scale(1.07)}
-.read-circle:hover .bi{box-shadow:0 40px 90px -30px rgba(0,0,0,.75),0 0 0 2px var(--gold-soft)}
-.rc-tx{position:relative;z-index:1;display:grid;justify-items:center;gap:var(--s-2);text-align:center;padding:16%}
-.rc-ic{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:var(--ink);margin-bottom:var(--s-2);transition:transform var(--t-base) var(--ease)}
-.rc-ic .icon{width:28px;height:28px}
-.read-circle:hover .rc-ic{transform:scale(1.08)}
-.rc-tx small{color:var(--gold-soft);font-size:.9rem}
-.rc-tx b{font-weight:300;font-size:clamp(1.3rem,2.4vw,1.8rem);line-height:1.4}
+/* خاص بصفحة الخدمة: عنوان مخفي للقارئ الآلي */
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
 <body>
@@ -88,9 +73,9 @@
 
 <main id="main">
 
-<!-- ===== الواجهة الداخلية ===== -->
+<!-- ===== الواجهة الداخلية (صورة الخدمة) ===== -->
 <section class="page-hero" aria-labelledby="t-page">
-  <div class="hero-bg"><img src="../media/worship/youth-night-liturgy-3.jpeg" alt=""></div>
+  <div class="hero-bg"><img src="../media/services/youth/youth-meeting-2026.jpeg" alt=""></div>
   <div class="rays" aria-hidden="true"><span class="window"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span></div>
   <canvas id="dust" aria-hidden="true"></canvas>
 
@@ -98,7 +83,7 @@
     <div class="wrap">
       <a class="brand" href="home.html" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
       <nav class="top-nav" aria-label="القائمة الرئيسية" data-intro>
-        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="home.html#about">الكنيسة</a></li><li><a href="worship.html" aria-current="page">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="home.html#about">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html" aria-current="page">الخدمات</a></li><li><a href="home.html#sermons">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
       </nav>
       <div class="socials" data-intro>
         <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
@@ -111,115 +96,78 @@
 
   <div class="wrap page-head">
     <nav class="crumbs" aria-label="مسار التنقل" data-intro>
-      <ol><li><a href="home.html">الرئيسية</a></li><li><span aria-current="page">العبادة</span></li></ol>
+      <ol><li><a href="home.html">الرئيسية</a></li><li><a href="services.html">الخدمات</a></li><li><a href="services.html#g-meet">الاجتماعات</a></li><li><span aria-current="page">اجتماع الشباب</span></li></ol>
     </nav>
-    <span class="eyebrow" data-intro>صلِّ معنا</span>
-    <h1 class="title" id="t-page" data-split>العبادة <b>والقداسات</b></h1>
-    <p class="lead" data-intro>مواعيد القداسات والاجتماعات طوال الأسبوع، وقراءات كل يوم، وسر التوبة والاعتراف.</p>
+    <span class="eyebrow" data-intro>الاجتماعات</span>
+    <h1 class="title" id="t-page" data-split>اجتماع <b>الشباب</b></h1>
+    <p class="lead" data-intro>وصف قصير للخدمة في سطر أو سطرين، يكتبه محرر المحتوى من لوحة التحكم.</p>
   </div>
 </section>
 
-<!-- ===== مواعيد القداسات والاجتماعات ===== -->
-<section class="sec pool" id="schedule" data-cover-start aria-labelledby="t-sched">
-  <div class="wrap sched">
-    <div>
-      <span class="eyebrow" data-rise>الجدول المعتاد</span>
-      <h2 class="title" id="t-sched" data-split>مواعيد <b>القداسات</b></h2>
-      <div class="days">
-        <div class="day" data-day="0" data-rise><div class="day-n">الأحد</div><div class="slots"><span>7:00 – 10:00 ص</span><span>9:00 – 11:00 ص</span></div></div>
-        <div class="day" data-day="2" data-rise><div class="day-n">الثلاثاء</div><div class="slots"><span>8:00 – 9:30 ص</span></div></div>
-        <div class="day" data-day="3" data-rise><div class="day-n">الأربعاء</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
-        <div class="day" data-day="5" data-rise><div class="day-n">الجمعة</div><div class="slots"><span>7:00 – 9:00 ص <em>التربية الكنسية</em></span><span>7:00 – 9:30 ص <em>الشعب</em></span><span>10:00 – 12:00 ظ</span></div></div>
-        <div class="day" data-day="6" data-rise><div class="day-n">السبت</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
-      </div>
-
-      <h3 class="sub-h" data-rise>الاجتماعات الثابتة</h3>
-      <div class="days">
-        <div class="day" data-rise><div class="day-n">الجمعة</div><div class="slots"><span class="meet">3:00 – 5:00 م <em>اجتماع الصلاة ودراسة الكتاب المقدس · الدور الأرضي</em></span></div></div>
-      </div>
-
-      <div class="sched-foot" data-rise>
-        <p>تتغير المواعيد في الأصوام والأعياد، وتُعلن في الأخبار.</p>
-        <a class="pill" href="home.html#news">مواعيد المواسم في الأخبار <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
-      </div>
-    </div>
-    <div class="sched-media" data-clip>
-      <img class="grade" data-parallax src="../media/worship/deacons.jpeg" alt="آباء الكنيسة مع الشمامسة أمام الهيكل" loading="lazy">
-      <div class="badge"><small>أماكن الصلاة</small><b>الكنيسة الكبيرة والكنيسة الصغيرة</b></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== القراءات اليومية (رابط خارجي، بدون نسخ المحتوى) ===== -->
-<section class="sec deep" id="readings" aria-labelledby="t-read">
-  <div class="wrap split">
-    <div>
-      <span class="eyebrow" data-rise>كلمة الله كل يوم</span>
-      <h2 class="title" id="t-read" data-split>القراءات <b>اليومية</b></h2>
-      <p class="lead" data-rise>قراءات عشية وباكر والقداس والسنكسار حسب الكاتامارس القبطي، على موقع الأنبا تكلا هيمانوت.</p>
-      <div class="read-actions" data-rise>
-        <a class="pill gold" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener">اقرأ قراءات اليوم <span class="dot"><svg class="icon"><use href="#i-nw"/></svg></span></a>
-        <small>تفتح في موقع خارجي</small>
-      </div>
-    </div>
-    <a class="read-circle" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener" aria-label="قراءات اليوم على موقع الأنبا تكلا هيمانوت" data-bub>
-      <span class="bi"><img class="grade" src="../media/worship/youth-night-liturgy-2.jpeg" alt="" loading="lazy">
-        <span class="rc-tx">
-          <span class="rc-ic"><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg></span>
-          <small>قراءات اليوم</small>
-          <b id="readDate">الكاتامارس</b>
-        </span>
-      </span>
-    </a>
-  </div>
-</section>
-
-<!-- ===== آية عن الصلاة ===== -->
-<section class="has-bg candle-sec" aria-label="كلمة عن الصلاة">
-  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt="" loading="lazy"></div>
-  <span class="flame-glow" aria-hidden="true"></span>
+<!-- ===== معلومات الخدمة ===== -->
+<section class="sec pool" data-cover-start aria-labelledby="t-infos">
   <div class="wrap">
-    <div class="candle" aria-hidden="true" data-rise></div>
-    <span class="eyebrow" data-rise>كلمة عن الصلاة</span>
-    <blockquote data-split>اِسْهَرُوا وَصَلُّوا لِئَلاَّ تَدْخُلُوا فِي تَجْرِبَةٍ</blockquote>
-    <cite data-rise>(متى 26: 41)</cite>
+    <h2 class="sr" id="t-infos">معلومات الخدمة</h2>
+    <div class="infos">
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><small>الموعد</small><b>اليوم<br>والساعة</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><small>المكان</small><b>مكان الاجتماع<br>في الكنيسة</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><small>المسؤول</small><b>اسم الأب<br>أو الخادم</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg><small>التواصل</small><b><a href="#">راسل الخادم<br>على واتساب</a></b></span></span></div>
+    </div>
   </div>
 </section>
 
-<!-- ===== الاعتراف ===== -->
-<section class="sec pool-l" id="confession" aria-labelledby="t-conf">
+<!-- ===== عن الخدمة ===== -->
+<section class="sec deep" aria-labelledby="t-about">
   <div class="wrap">
     <article class="prose">
-      <span class="eyebrow" data-rise>الاعتراف</span>
-      <h2 class="title" id="t-conf" data-split style="margin-top:0">سر <b>التوبة</b> والاعتراف</h2>
-      <p data-rise>نص قصير عن سر التوبة والاعتراف يكتبه محرر المحتوى من لوحة التحكم: معنى التوبة، ودور أب الاعتراف، والاستعداد للتناول من الأسرار المقدسة.</p>
-      <p data-rise>للاعتراف، تواصل مع أب اعترافك من آباء الكنيسة لتحديد موعد مناسب.</p>
-      <blockquote data-rise>«إِنِ ٱعْتَرَفْنَا بِخَطَايَانَا فَهُوَ أَمِينٌ وَعَادِلٌ، حَتَّى يَغْفِرَ لَنَا خَطَايَانَا وَيُطَهِّرَنَا مِنْ كُلِّ إِثْمٍ»<cite>(1 يوحنا 1: 9)</cite></blockquote>
-      <div data-rise><a class="pill" href="home.html#about">آباء الكنيسة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a></div>
+      <span class="eyebrow" data-rise>عن الخدمة</span>
+      <h2 class="title" id="t-about" data-split style="margin-top:0">مكانك <b>معنا</b></h2>
+      <p data-rise>هنا يكتب محرر المحتوى نبذة عن الخدمة: لمن هي، وماذا يحدث في الاجتماع، والأنشطة على مدار السنة مثل المؤتمرات والرحلات والأمسيات.</p>
+      <p data-rise>فقرة ثانية اختيارية عن طريقة الانضمام، أو عن نشاط قادم.</p>
     </article>
   </div>
 </section>
 
-<!-- ===== اقرأ أيضًا ===== -->
+<!-- ===== صور الخدمة ===== -->
+<section class="sec pool-l" aria-labelledby="t-gal">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:var(--s-12)">
+      <span class="eyebrow" data-rise>من أنشطة الخدمة</span>
+      <h2 class="title" id="t-gal" data-split>صور <b>الاجتماع</b></h2>
+    </div>
+    <div class="gfield">
+      <button class="g l" data-lb data-cap="اجتماع الشباب 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/youth-meeting-2026.jpeg" alt="اجتماع الشباب 2026" loading="lazy"><span class="cap">اجتماع الشباب 2026</span></span></button>
+      <button class="g" data-lb data-cap="مؤتمر &quot;عنبر 11&quot; للشباب 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/youth-conference-anbar11-2026.jpeg" alt="مؤتمر &quot;عنبر 11&quot; للشباب 2026" loading="lazy"><span class="cap">مؤتمر "عنبر 11" للشباب 2026</span></span></button>
+      <button class="g s" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-1.jpeg" alt="أمسية العبور 2025" loading="lazy"><span class="cap">أمسية العبور 2025</span></span></button>
+      <button class="g" data-lb data-cap="رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-1.jpeg" alt="رحلة أديرة المنيا 2026" loading="lazy"><span class="cap">رحلة أديرة المنيا 2026</span></span></button>
+      <button class="g l" data-lb data-cap="قداس الشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="قداس الشباب" loading="lazy"><span class="cap">قداس الشباب</span></span></button>
+      <button class="g" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-2.jpeg" alt="أمسية العبور 2025" loading="lazy"><span class="cap">أمسية العبور 2025</span></span></button>
+      <button class="g s" data-lb data-cap="رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-2.jpeg" alt="رحلة أديرة المنيا 2026" loading="lazy"><span class="cap">رحلة أديرة المنيا 2026</span></span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== خدمات أخرى في نفس المجموعة ===== -->
 <section class="sec deep" aria-labelledby="t-more">
   <div class="wrap">
     <div class="more-head">
       <div>
-        <span class="eyebrow" data-rise>المواسم والمناسبات</span>
-        <h2 class="title" id="t-more" data-split>من <b>الأخبار</b></h2>
+        <span class="eyebrow" data-rise>في نفس المجموعة</span>
+        <h2 class="title" id="t-more" data-split>اجتماعات <b>أخرى</b></h2>
       </div>
-      <a class="link" href="home.html#news" data-rise>كل الأخبار <svg class="icon"><use href="#i-nw"/></svg></a>
+      <a class="link" href="services.html" data-rise>كل الخدمات <svg class="icon"><use href="#i-nw"/></svg></a>
     </div>
-    <div class="cards">
-      <a class="news" href="home.html#news" data-rise><div class="im top"><img src="../media/worship/schedule-great-lent-2026.jpg" alt="جدول قداسات الصوم الكبير 2026" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>الصوم الكبير</span></div><h3>جدول قداسات الصوم الكبير 2026</h3><p>قداسات يومية صباحًا ومساءً طوال أيام الصوم.</p></div></a>
-      <a class="news" href="home.html#news" data-rise><div class="im top"><img src="../media/events/pope-kyrillos-revival.jpg" alt="إعلان نهضة البابا كيرلس السادس" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>6 – 9 مارس</span></div><h3>نهضة البابا كيرلس السادس</h3><p>زفة وتطييب وكلمة روحية، والقداس على مذبح البابا كيرلس.</p></div></a>
-      <a class="news" href="home.html#news" data-rise><div class="im top"><img src="../media/events/virgin-mary-revival-2026.jpg" alt="إعلان نهضة السيدة العذراء" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>7 – 22 أغسطس</span></div><h3>نهضة السيدة العذراء</h3><p>برنامج النهضة من 7 إلى 22 أغسطس.</p></div></a>
+    <div class="svc-grid" style="margin-top:0">
+      <a class="svc top" data-g="meet" href="service.html" data-rise><img src="../media/services/bible-study/prayer-bible-study-poster.jpg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><small>الاجتماعات · الجمعة 3–5 م</small><h3>صلاة ودراسة الكتاب المقدس</h3></a>
+      <a class="svc" data-g="meet" href="service.html" data-rise><img class="grade" src="../media/worship/deacons.jpeg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><small>الاجتماعات</small><h3>اجتماع الألحان</h3></a>
+      <a class="svc temp" data-g="meet" href="service.html" data-rise><img class="grade" src="../media/church/nave-real.jpeg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><em class="tmp">صورة مؤقتة</em><small>الاجتماعات</small><h3>اجتماع الشعب</h3></a>
+      <a class="svc temp" data-g="meet" href="service.html" data-rise><img class="grade" src="../media/worship/youth-night-liturgy-3.jpeg" alt="" loading="lazy"><span class="arrow"><svg class="icon"><use href="#i-nw"/></svg></span><em class="tmp">صورة مؤقتة</em><small>الاجتماعات</small><h3>اجتماع السيدات</h3></a>
     </div>
   </div>
 </section>
 
 </main>
-
 
 <!-- ===== التذييل ===== -->
 <footer class="footer">
@@ -249,15 +197,15 @@
   </div>
 </footer>
 
+<dialog class="lightbox" id="lightbox" aria-label="عارض الصور">
+  <button class="lb-close" id="lbClose" aria-label="إغلاق"><svg class="icon"><use href="#i-x"/></svg></button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="السابقة"><svg class="icon"><use href="#i-right"/></svg></button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="التالية"><svg class="icon"><use href="#i-left"/></svg></button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+</dialog>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="assets/site.js"></script>
-<script>
-// خاص بالعبادة: تاريخ اليوم على دائرة القراءات
-(() => {
-  const { $ } = window.Site;
-  $("#readDate").textContent = new Intl.DateTimeFormat("ar-EG-u-nu-latn", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
-})();
-</script>
 </body>
 </html>
