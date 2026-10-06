@@ -1,29 +1,18 @@
 // يبني نسخة المعاينة العامة في dist/ من design/home.html.
-// ينسخ فقط الصور التي تستخدمها الصفحة، ويستبدل صور الأطفال والملصقات التي عليها أرقام هواتف،
-// ويمنع فهرسة محركات البحث. يفشل البناء لو بقيت أي صورة حساسة.
+// ينسخ فقط الصور التي تستخدمها الصفحة، ويستبدل أي صورة مدرجة في SENSITIVE،
+// ويمنع فهرسة محركات البحث. يفشل البناء لو بقيت أي صورة من القائمة.
 const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
 const dist = path.join(root, 'dist');
 
-// صور لا تُنشر حتى توافق الكنيسة، وبديل كل واحدة
-const SENSITIVE = {
-  'services/sunday-school/primary-conference-2026-1.jpg': 'church/bg-light-beams.jpg',
-  'services/sunday-school/primary-conference-2026-2.jpg': 'church/bg-window-rays.jpg',
-  'services/sunday-school/primary-conference-2026-3.jpg': 'church/bg-stained-window.webp',
-  'services/sunday-school/primary-football-1.jpg': 'worship/youth-night-liturgy-1.jpeg',
-  'services/sunday-school/primary-football-2.jpg': 'church/bg-praying-light.jpg',
-  'services/sunday-school/secondary-meeting.jpg': 'church/nave-real.jpeg',
-  'services/counseling/counseling-course-poster.jpg': 'services/counseling/counseling-course-2026-1.jpeg',
-  'services/clinics/batool-clinics-convoy.jpg': 'services/clinics/batool-clinics-logo.jpg',
-};
+// صور لا تُنشر، وبديل كل واحدة. فارغة حاليًا: المستخدم وافق على نشر كل الصور (2026-10-06).
+// مثال: 'services/sunday-school/primary-football-1.jpg': 'church/bg-light-beams.jpg'
+const SENSITIVE = {};
 const NEUTRAL_CAP = 'من داخل الكنيسة';
 
 let html = fs.readFileSync(path.join(root, 'design', 'home.html'), 'utf8');
-
-// خبر مسابقة الكرة: صوره كلها لأطفال، فيُحذف من النسخة العامة
-html = html.replace(/\s*<a class="news"[^>]*>(?:(?!<\/a>)[\s\S])*primary-football-1\.jpg(?:(?!<\/a>)[\s\S])*<\/a>/g, '');
 
 // أي عنصر في المعرض يعرض صورة حساسة: تبديل الصورة وجعل الوصف محايدًا
 html = html.replace(/<button class="g[^"]*"[^>]*>[\s\S]*?<\/button>/g, el => {
