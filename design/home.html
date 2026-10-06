@@ -57,6 +57,9 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 @keyframes pulse{from{transform:scale(.9);opacity:.9}to{transform:scale(1.4);opacity:0}}
 .hc:hover .play{transform:scale(1.08)}
 .hc .lbl{display:inline-flex;align-items:center;gap:6px;font-size:.92rem}
+.hc .play.book .icon{fill:none;margin:0;width:22px;height:22px}
+.hc .play.book::after{animation:none;opacity:.5}
+.hc .lbl.read::before{display:none}
 .hc .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:#E5634F;box-shadow:0 0 0 4px rgba(229,99,79,.25)}
 @media (max-width:600px){
   .hero-cards{margin-top:var(--s-6)}
@@ -126,7 +129,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 <div class="float-nav" id="floatNav">
   <a class="brand" href="#top"><img src="../media/brand/logo.png" alt="" width="38" height="38"><span><b>كنيسة العذراء ومارمينا والبابا كيرلس</b>الجبل الأصفر</span></a>
   <nav aria-label="القائمة">
-    <ul><li><a href="#about">الكنيسة</a></li><li><a href="#schedule">العبادة</a></li><li><a href="#services">الخدمات</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li></ul>
+    <ul><li><a href="#about">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="#services">الخدمات</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li></ul>
   </nav>
   <button class="menu-btn" data-open-menu aria-label="فتح القائمة" aria-controls="drawer"><svg class="icon"><use href="#i-menu"/></svg></button>
 </div>
@@ -136,7 +139,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
     <a class="brand" href="#top"><img src="../media/brand/logo.png" alt=""><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
     <button class="menu-btn" id="menuClose" aria-label="إغلاق القائمة"><svg class="icon"><use href="#i-x"/></svg></button>
   </div>
-  <ul><li><a href="#top">الرئيسية</a></li><li><a href="#about">الكنيسة</a></li><li><a href="#schedule">العبادة</a></li><li><a href="#services">الخدمات</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li></ul>
+  <ul><li><a href="#top">الرئيسية</a></li><li><a href="#about">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="#services">الخدمات</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li></ul>
   <div class="socials">
     <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
     <a class="circle" href="#" aria-label="يوتيوب"><svg class="icon"><use href="#i-youtube"/></svg></a>
@@ -156,7 +159,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
     <div class="wrap">
       <a class="brand" href="#top" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
       <nav class="top-nav" aria-label="القائمة الرئيسية" data-intro>
-        <ul><li><a href="#top" aria-current="page">الرئيسية</a></li><li><a href="#about">الكنيسة</a></li><li><a href="#schedule">العبادة</a></li><li><a href="#services">الخدمات</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li></ul>
+        <ul><li><a href="#top" aria-current="page">الرئيسية</a></li><li><a href="#about">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="#services">الخدمات</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li></ul>
       </nav>
       <div class="socials" data-intro>
         <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
@@ -183,7 +186,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 <!-- ===== الدوائر الأربعة أسفل الواجهة ===== -->
 <section class="hero-cards" aria-label="وصول سريع">
   <div class="wrap hcirc">
-    <a class="hc next" href="#schedule" data-tile>
+    <a class="hc next" href="worship.html" data-tile>
       <span class="bi"><span class="hc-tx">
         <svg class="icon mark" aria-hidden="true"><use href="#i-cross"/></svg>
         <small>القداس القادم</small>
@@ -192,9 +195,9 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
         <span class="link">كل المواعيد <svg class="icon"><use href="#i-nw"/></svg></span>
       </span></span>
     </a>
-    <a class="hc photo live" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" data-tile aria-label="البث المباشر على صفحة الكنيسة">
-      <span class="bi"><img class="grade" src="../media/worship/youth-night-liturgy-3.jpeg" alt="">
-        <span class="hc-tx"><span class="play"><svg class="icon"><use href="#i-play"/></svg></span><span class="lbl">البث المباشر</span></span>
+    <a class="hc photo live" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener" data-tile aria-label="القراءات اليومية على موقع الأنبا تكلا هيمانوت">
+      <span class="bi"><img class="grade" src="../media/worship/youth-night-liturgy-2.jpeg" alt="">
+        <span class="hc-tx"><span class="play book"><svg class="icon"><use href="#i-book"/></svg></span><span class="lbl read">القراءات اليومية</span></span>
       </span>
     </a>
     <a class="hc photo fathers" href="#about" data-tile>
@@ -227,8 +230,8 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
       </div>
       <div class="sched-foot" data-rise>
         <p>تتغير المواعيد في الأصوام والأعياد، وتُعلن في الأخبار.</p>
-        <a class="pill" href="#">الجدول الكامل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
-        <a class="link" href="#" target="_blank" rel="noopener">القراءات اليومية <svg class="icon"><use href="#i-nw"/></svg></a>
+        <a class="pill" href="worship.html">الجدول الكامل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        <a class="link" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener">القراءات اليومية <svg class="icon"><use href="#i-nw"/></svg></a>
       </div>
     </div>
     <div class="sched-media" data-clip>
@@ -270,7 +273,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
       </div>
     </div>
     <div class="disc">
-      <a class="dcard" href="#schedule" data-rise><img class="grade" src="../media/worship/youth-night-liturgy-3.jpeg" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>جدول القداسات</h3><p>مواعيد القداسات والاجتماعات والاعتراف طوال الأسبوع.</p></a>
+      <a class="dcard" href="worship.html" data-rise><img class="grade" src="../media/worship/youth-night-liturgy-3.jpeg" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>جدول القداسات</h3><p>مواعيد القداسات والاجتماعات والاعتراف طوال الأسبوع.</p></a>
       <a class="dcard paper" href="#about" data-rise><img src="../media/priests/fathers-group.png" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>الآباء الكهنة</h3><p>القمص كيرلس روماني، والقس أرسانيوس عزت، والقس فام عبد المسيح.</p></a>
       <a class="dcard" href="#" data-rise><img class="grade" src="../media/church/history-founder.jpg" alt="" loading="lazy" style="object-position:center 20%"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>نشأة الكنيسة</h3><p>قصة كنيستنا منذ تأسيسها حتى اليوم.</p></a>
       <a class="dcard" href="#gallery" data-rise><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>صور الكنيسة</h3><p>صور من القداسات والخدمات والمؤتمرات والرحلات.</p></a>
@@ -485,7 +488,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
           <a class="circle" href="#" aria-label="واتساب"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
         </div>
       </div>
-      <div><h4>الموقع</h4><ul><li><a href="#about">الكنيسة</a></li><li><a href="#schedule">العبادة</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li><li><a href="#gallery">صور الكنيسة</a></li></ul></div>
+      <div><h4>الموقع</h4><ul><li><a href="#about">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="#sermons">المكتبة</a></li><li><a href="#news">الأخبار</a></li><li><a href="#gallery">صور الكنيسة</a></li></ul></div>
       <div><h4>الخدمات</h4><ul><li><a href="#services">مدارس الأحد</a></li><li><a href="#services">الاجتماعات</a></li><li><a href="#services">الخدام</a></li><li><a href="#services">الفرق والأنشطة</a></li><li><a href="#services">الأسرة والمجتمع</a></li></ul></div>
       <div><h4>تواصل معنا</h4><ul><li>عرب العيايدة، ناحية الجبل الأصفر</li><li>رقم هاتف الكنيسة</li><li><a href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener">صفحة الكنيسة على فيسبوك</a></li></ul></div>
     </div>

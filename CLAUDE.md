@@ -16,6 +16,9 @@
 
 ## البنية
 - `design/`: نماذج HTML. الصور بمسار `../media/...`.
+  - `design/assets/site.css` و`site.js`: المشترك لكل الصفحات. ما يخص صفحة واحدة يبقى داخلها.
+  - `design/_inner.html`: قالب الصفحات الداخلية (المعتمد). كل صفحة جديدة تبدأ بنسخه.
+  - البناء: `home.html` تصبح `index.html`، والشرطة السفلية تُحذف من أول الاسم (`_inner.html` تصبح `inner.html`)، والروابط `href="xxx.html"` تتحوّل لأسماء المعاينة.
 - `media/`: الصور مقسمة حسب القسم وبأسماء إنجليزية. `media/design-refs/` للمراجع فقط ولا تُنشر.
 - `tools/build-preview.js` + `vercel.json`: يبنيان `dist/` ويُنشر على https://church-st-mina.vercel.app (غير مفهرس).
 - المستودع الخاص: https://github.com/Abanoub-git-hup/church-st-mina
