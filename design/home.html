@@ -371,6 +371,13 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 body{background:var(--umber-700)}
 .footer{position:relative}
 
+/* ===== خلفيات خاصة لبعض الأقسام (فوق الغلاف العام) ===== */
+.has-bg{isolation:isolate}
+.sec-bg{position:absolute;inset:0;z-index:-1;clip-path:inset(0);pointer-events:none;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 86%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0%,#000 14%,#000 86%,transparent 100%)}
+.sec-bg img{position:fixed;inset:0;width:100%;height:100vh;object-fit:cover;filter:sepia(.35) saturate(1.05) brightness(.55) blur(1.5px);transform:scale(1.05);opacity:.9}
+.sec-bg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(23,15,9,.15),rgba(23,15,9,.6) 90%)}
+.anim .sec-bg img{opacity:0}
+
 /* ===== الدوائر (بابلز) ===== */
 @keyframes float{from{transform:translateY(-7px)}to{transform:translateY(7px)}}
 .bi{position:absolute;inset:0;border-radius:50%;overflow:hidden;display:grid;place-items:center;animation:float 7s ease-in-out infinite alternate;transition:box-shadow var(--t-base),background var(--t-base)}
@@ -479,6 +486,34 @@ body{background:var(--umber-700)}
   .sermon ul{display:none}
   .sermon .mi{width:40px;height:40px}
   .sermon .foot{font-size:.8rem}
+}
+
+/* ===== كروت الخدمات: شباك كنسي مقوّس ===== */
+.svc-grid{gap:var(--s-6) var(--s-5)}
+.svc{aspect-ratio:auto;display:flex;flex-direction:column;justify-content:flex-start;padding:var(--s-3) var(--s-3) var(--s-6);border-radius:50% 50% var(--r-lg) var(--r-lg) / 34% 34% var(--r-lg) var(--r-lg);background:linear-gradient(180deg,rgba(59,41,28,.92),rgba(30,20,13,.95));border:1px solid rgba(224,176,96,.28);box-shadow:0 26px 60px -30px rgba(0,0,0,.75);transition:transform var(--t-base) var(--ease),border-color var(--t-base),box-shadow var(--t-base)}
+.svc::before{content:"";position:absolute;inset:7px;z-index:2;pointer-events:none;border-radius:inherit;border:1px solid rgba(243,201,135,.22);transition:border-color var(--t-base)}
+.svc::after{display:none}
+.svc img{position:relative;inset:auto;z-index:0;width:100%;height:auto;aspect-ratio:1/1.08;object-fit:cover;border-radius:50% 50% var(--r-md) var(--r-md) / 46% 46% var(--r-md) var(--r-md);transition:filter var(--t-base)}
+.svc:hover{transform:translateY(-6px);border-color:rgba(243,201,135,.55);box-shadow:0 34px 70px -30px rgba(0,0,0,.8),0 0 40px -10px rgba(243,201,135,.25)}
+.svc:hover::before{border-color:rgba(243,201,135,.5)}
+.svc:hover img{transform:none;filter:brightness(1.08) saturate(1.05)}
+.svc.paper{background:linear-gradient(180deg,rgba(59,41,28,.92),rgba(30,20,13,.95))}
+.svc.paper img{object-fit:contain;padding:10%;background:#fff;mix-blend-mode:normal;filter:sepia(.28) brightness(.96)}
+.svc.paper:hover img{filter:sepia(.2) brightness(1)}
+.svc small,.svc .tmp{margin-top:var(--s-4);padding-inline:var(--s-3)}
+.svc .tmp + small{margin-top:var(--s-1)}
+.svc h3{padding-inline:var(--s-3);padding-inline-end:56px;font-size:1.15rem}
+.svc .arrow{top:auto;bottom:var(--s-5);inset-inline-start:auto;inset-inline-end:var(--s-5);z-index:3;background:rgba(243,201,135,.12);border-color:rgba(243,201,135,.4);color:var(--gold-soft)}
+.svc:hover .arrow{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.svc .new{top:var(--s-6);left:50%;inset-inline-end:auto;translate:-50% 0;z-index:3}
+@media (max-width:600px){
+  .svc-grid{gap:var(--s-4) var(--s-3)}
+  .svc{padding:var(--s-2) var(--s-2) var(--s-4);aspect-ratio:auto}
+  .svc::before{inset:5px}
+  .svc small,.svc .tmp{margin-top:var(--s-3);padding-inline:var(--s-2)}
+  .svc h3{padding-inline:var(--s-2);padding-inline-end:40px;font-size:.88rem}
+  .svc .arrow{bottom:var(--s-3);inset-inline-end:var(--s-3);width:30px;height:30px}
+  .svc .new{top:var(--s-4)}
 }
 
 /* ===== حالات البداية للحركة (تُلغى إن لم يُحمَّل GSAP) ===== */
@@ -680,7 +715,8 @@ body{background:var(--umber-700)}
 </section>
 
 <!-- ===== أقوال الآباء ===== -->
-<section class="sec deep pool" aria-labelledby="t-quotes">
+<section class="has-bg sec deep pool" aria-labelledby="t-quotes">
+  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt="" loading="lazy"></div>
   <div class="wrap">
     <div class="head-row">
       <div>
@@ -789,7 +825,8 @@ body{background:var(--umber-700)}
 </section>
 
 <!-- ===== آية اليوم: ضوء الشموع ===== -->
-<section class="candle-sec" aria-label="كلمة للتأمل">
+<section class="has-bg candle-sec" aria-label="كلمة للتأمل">
+  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt="" loading="lazy"></div>
   <span class="flame-glow" aria-hidden="true"></span>
   <div class="wrap">
     <div class="candle" aria-hidden="true" data-rise></div>
@@ -838,7 +875,8 @@ body{background:var(--umber-700)}
 </section>
 
 <!-- ===== الأخبار ===== -->
-<section class="sec pool-l" id="news" aria-labelledby="t-news">
+<section class="has-bg sec pool-l" id="news" aria-labelledby="t-news">
+  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-window-rays.jpg" alt="" loading="lazy"></div>
   <div class="wrap">
     <div class="head-row">
       <div>
@@ -1067,6 +1105,14 @@ body{background:var(--umber-700)}
   ScrollTrigger.batch('[data-rise]', {
     start: 'top 90%',
     onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, duration: 1, stagger: .08, ease: 'power3.out', overwrite: true })
+  });
+
+  // خلفيات الأقسام الخاصة: تظهر وتختفي بنعومة مع التمرير
+  $$('.sec-bg img').forEach(img => {
+    gsap.timeline({ scrollTrigger: { trigger: img.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true } })
+      .fromTo(img, { opacity: 0 }, { opacity: .9, duration: 1, ease: 'none' })
+      .to(img, { opacity: .9, duration: 2, ease: 'none' })
+      .to(img, { opacity: 0, duration: 1, ease: 'none' });
   });
 
   // الغلاف الثابت: واضح بعد الواجهة، ثم يهدأ ويتموه بالتدريج مع النزول
