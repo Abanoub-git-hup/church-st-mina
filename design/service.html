@@ -14,6 +14,13 @@
 <link rel="stylesheet" href="assets/site.css">
 <style>
 /* خاص بصفحة الخدمة: عنوان مخفي للقارئ الآلي */
+.contacts{display:grid;gap:var(--s-4);grid-template-columns:repeat(2,minmax(0,1fr));max-width:820px;margin:var(--s-20) auto 0}
+.contact{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4);padding:var(--s-5) var(--s-6);border-radius:var(--r-lg);background:linear-gradient(160deg,rgba(246,236,220,.06),rgba(246,236,220,.02));border:1px solid var(--line)}
+.contact small{display:block;color:var(--gold-soft);font-size:.82rem}
+.contact b{display:block;font-weight:400;font-size:1.1rem}
+.contact .tel{display:inline-block;margin-top:2px;color:var(--cream-2);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line-strong)}
+.contact .tel:hover{color:var(--gold-soft)}
+@media (max-width:700px){.contacts{grid-template-columns:1fr;margin-top:var(--s-16)}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -53,7 +60,7 @@
 <div class="float-nav" id="floatNav">
   <a class="brand" href="home.html"><img src="../media/brand/logo.png" alt="" width="38" height="38"><span><b>كنيسة العذراء ومارمينا والبابا كيرلس</b>الجبل الأصفر</span></a>
   <nav aria-label="القائمة">
-    <ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+    <ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li></ul>
   </nav>
   <button class="menu-btn" data-open-menu aria-label="فتح القائمة" aria-controls="drawer"><svg class="icon"><use href="#i-menu"/></svg></button>
 </div>
@@ -63,7 +70,7 @@
     <a class="brand" href="home.html"><img src="../media/brand/logo.png" alt=""><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
     <button class="menu-btn" id="menuClose" aria-label="إغلاق القائمة"><svg class="icon"><use href="#i-x"/></svg></button>
   </div>
-  <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+  <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li></ul>
   <div class="socials">
     <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
     <a class="circle" href="#" aria-label="يوتيوب"><svg class="icon"><use href="#i-youtube"/></svg></a>
@@ -83,7 +90,7 @@
     <div class="wrap">
       <a class="brand" href="home.html" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
       <nav class="top-nav" aria-label="القائمة الرئيسية" data-intro>
-        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html" aria-current="page">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html" aria-current="page">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li></ul>
       </nav>
       <div class="socials" data-intro>
         <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
@@ -109,10 +116,14 @@
   <div class="wrap">
     <h2 class="sr" id="t-infos">معلومات الخدمة</h2>
     <div class="infos">
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><small>الموعد</small><b>اليوم<br>والساعة</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><small>المكان</small><b>مكان الاجتماع<br>في الكنيسة</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><small>المسؤول</small><b>اسم الأب<br>أو الخادم</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg><small>التواصل</small><b><a href="#">راسل الخادم<br>على واتساب</a></b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-clock"/></svg><small>الموعد</small><b>كل جمعة<br>6:00 مساءً</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg><small>المكان</small><b>الكنيسة الكبيرة<br>الروف</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-church"/></svg><small>الأب الكاهن</small><b>أبونا أرسانيوس<br>عزت</b></span></span></div>
+      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><small>الخادم</small><b>أ. بيشوي<br>القس</b></span></span></div>
+    </div>
+    <div class="contacts">
+      <div class="contact" data-rise><div><small>الأب الكاهن</small><b>أبونا أرسانيوس عزت</b><a class="tel" href="tel:+201552921322" dir="ltr">0155 292 1322</a></div><a class="circle" href="https://wa.me/201552921322" target="_blank" rel="noopener" aria-label="راسل أبونا أرسانيوس على واتساب"><svg class="icon"><use href="#i-whatsapp"/></svg></a></div>
+      <div class="contact" data-rise><div><small>الخادم</small><b>أ. بيشوي القس</b><a class="tel" href="tel:+201273144313" dir="ltr">0127 314 4313</a></div><a class="circle" href="https://wa.me/201273144313" target="_blank" rel="noopener" aria-label="راسل أ. بيشوي القس على واتساب"><svg class="icon"><use href="#i-whatsapp"/></svg></a></div>
     </div>
   </div>
 </section>
@@ -186,7 +197,7 @@
           <a class="circle" href="#" aria-label="واتساب"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
         </div>
       </div>
-      <div><h4>الموقع</h4><ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="library.html">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li><li><a href="church-gallery.html">صور الكنيسة</a></li></ul></div>
+      <div><h4>الموقع</h4><ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li><li><a href="church-gallery.html">صور الكنيسة</a></li></ul></div>
       <div><h4>الخدمات</h4><ul><li><a href="services.html">مدارس الأحد</a></li><li><a href="services.html">الاجتماعات</a></li><li><a href="services.html">الخدام</a></li><li><a href="services.html">الفرق والأنشطة</a></li><li><a href="services.html">الأسرة والمجتمع</a></li></ul></div>
       <div><h4>تواصل معنا</h4><ul><li>عرب العيايدة، ناحية الجبل الأصفر</li><li>رقم هاتف الكنيسة</li><li><a href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener">صفحة الكنيسة على فيسبوك</a></li></ul></div>
     </div>
