@@ -39,6 +39,12 @@ const build = file => {
   // الروابط بين الصفحات بأسمائها في المعاينة
   for (const p of pages) html = html.split(`href="${p}`).join(`href="${p === 'home.html' ? './' : outName(p)}`);
 
+  // صفحة 404 تُعرض على أي مسار، فكل الروابط والملفات فيها تبدأ من جذر الموقع
+  if (file === '404.html') {
+    html = html.replace(/(src|href)="(media\/|assets\/)/g, '$1="/$2')
+      .replace(/href="(?!https?:|#|\/|tel:|mailto:)([^"]+)"/g, 'href="/$1"');
+  }
+
   // منع الفهرسة
   html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="robots" content="noindex, nofollow">');
 
