@@ -112,6 +112,28 @@
     lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') show(idx + 1); if (e.key === 'ArrowRight') show(idx - 1); });
   }
 
+  // ---------- مشغّل يوتيوب بأجزاء: صورة الفيديو أولًا، ويُحمَّل يوتيوب عند الضغط فقط ----------
+  $$('[data-yt]').forEach(box => {
+    const frame = $('.yt-frame', box), parts = $$('.yt-part', box);
+    let cur = parts.find(p => p.getAttribute('aria-pressed') === 'true') || parts[0];
+    const embed = () => {
+      const old = $('iframe', frame); if (old) old.remove();
+      const f = document.createElement('iframe');
+      f.src = `https://www.youtube-nocookie.com/embed/${cur.dataset.id}?autoplay=1&rel=0`;
+      f.title = cur.dataset.title; f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true;
+      frame.append(f);
+    };
+    const show = p => {
+      cur = p; parts.forEach(x => x.setAttribute('aria-pressed', x === p));
+      $('img', frame).src = p.dataset.thumb;
+      $('.yt-cap', frame).textContent = `${$('b', p).textContent} · ${$('small', p).textContent}`;
+      $('.yt-play', frame).setAttribute('aria-label', 'تشغيل ' + $('b', p).textContent);
+      if ($('iframe', frame)) embed();
+    };
+    $('.yt-play', frame).addEventListener('click', embed);
+    parts.forEach(p => p.addEventListener('click', () => show(p)));
+  });
+
   // ---------- العد التنازلي ----------
   const cd = $('#countdown');
   if (cd) {
