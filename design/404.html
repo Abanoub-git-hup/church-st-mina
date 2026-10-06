@@ -15,9 +15,15 @@
 <style>
 /* خاص بصفحة 404: شاشة واحدة بالشمعة */
 .nf{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
+.nf::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 70% 75% at 50% 55%,transparent,var(--umber-700) 85%),linear-gradient(180deg,rgba(23,15,9,.55),transparent 22%)}
+.nf .sec-bg{-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent);mask-image:linear-gradient(180deg,#000 82%,transparent)}
+.nf .flame-glow{top:34%}
+.nf .candle-sec{isolation:auto;overflow:visible}
+.nf .candle-sec::after{display:none}
 .nf .candle-sec{flex:1;display:grid;place-items:center;padding-block:var(--s-12) var(--s-20)}
 .nf-code{display:block;font-size:clamp(4.5rem,14vw,9rem);font-weight:200;line-height:1;color:var(--gold-soft);opacity:.9;letter-spacing:.04em;font-variant-numeric:tabular-nums;margin-bottom:var(--s-4)}
-.nf h1{font-size:clamp(1.6rem,3.6vw,2.4rem);font-weight:300;margin-bottom:var(--s-8)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.nf-code{margin-bottom:var(--s-8) !important}
 .nf blockquote{font-size:clamp(1.4rem,3.2vw,2.3rem)}
 .nf-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-3);margin-top:var(--s-10)}
 .nf-links{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-2);margin-top:var(--s-8)}
@@ -81,7 +87,9 @@
 
 <main id="main">
 
-<section class="nf" aria-labelledby="t-nf">
+<section class="nf has-bg" aria-labelledby="t-nf">
+  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt=""></div>
+  <span class="flame-glow" aria-hidden="true"></span>
   <header class="hero-top">
     <div class="wrap">
       <a class="brand" href="home.html" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
@@ -97,13 +105,11 @@
     </div>
   </header>
 
-  <div class="has-bg candle-sec">
-    <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt=""></div>
-    <span class="flame-glow" aria-hidden="true"></span>
+  <div class="candle-sec">
     <div class="wrap">
       <div class="candle" aria-hidden="true" data-rise></div>
       <span class="nf-code" data-rise>404</span>
-      <h1 id="t-nf" data-rise>الصفحة دي مش موجودة</h1>
+      <h1 id="t-nf" class="sr">الصفحة غير موجودة</h1>
       <blockquote data-split>لأَنَّ ابْنِي هذَا كَانَ مَيِّتًا فَعَاشَ، وَكَانَ ضَالاًّ فَوُجِدَ</blockquote>
       <cite data-rise>(لوقا 15: 24)</cite>
       <div class="nf-actions" data-rise>
