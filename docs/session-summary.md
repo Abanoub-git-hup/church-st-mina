@@ -4,7 +4,9 @@
 
 ```
 مشروع: منصة كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس (عرب العيايدة، الجبل الأصفر، مطرانية شبين القناطر).
-ووردبريس بقالب مخصص عربي RTL + بلجن حضور بالـ QR. اقرأ أولًا: church-platform-handoff.md و .scratch/church-platform/issues/00-index.md (26 مهمة) و docs/media-inventory.md.
+ووردبريس بقالب مخصص عربي RTL + بلجن حضور بالـ QR.
+المستودع (خاص): https://github.com/Abanoub-git-hup/church-st-mina — اعمل commit بعد موافقتي، وأنا أرفع من GitHub Desktop (Push origin).
+اقرأ أولًا: church-platform-handoff.md و .scratch/church-platform/issues/00-index.md (26 مهمة) و docs/media-inventory.md.
 
 طريقة العمل (إلزامية): ردود بالعربية. اسألني دائمًا لفهم التفاصيل قبل أي تنفيذ (AskUserQuestion مع خيار مقترح)، ولا تنشئ ملفات أو تنتقل لخطوة جديدة بدون موافقتي.
 
@@ -44,7 +46,8 @@ docs/design.md و docs/stitch_prompt.md: مسودة قديمة غير معتمد
 - الإنهاء التلقائي للجلسة.
 - هل نقسم المهمة 16 (صفحة "حضوري").
 
-## ربط GitHub
-- Git مثبت على الجهاز، والمجلد ليس مستودعًا بعد، وأداة GitHub (`gh`) غير مثبتة.
-- الخطوات: إنشاء حساب على github.com، ثم `winget install --id GitHub.cli`، ثم إعادة فتح الطرفية، ثم `gh auth login`.
-- بعد ذلك: `git init` و`.gitignore` وأول commit، وإنشاء مستودع **خاص** لأن الميديا فيها أرقام هواتف وصور أشخاص.
+## GitHub (تم الربط)
+- المستودع الخاص: https://github.com/Abanoub-git-hup/church-st-mina (الفرع `main`).
+- أول commit: `535bb83` بتاريخ 2026-10-06.
+- طريقة العمل: Claude يعمل commit على الجهاز بعد الموافقة، والمستخدم يرفع من GitHub Desktop بزر **Push origin**.
+- أداة `gh` غير مثبتة، والربط تم عن طريق GitHub Desktop.

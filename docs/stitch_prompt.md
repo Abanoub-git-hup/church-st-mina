@@ -1,122 +1,186 @@
 # Google Stitch Prompt
 
-> Paste everything below into Google Stitch. It can be run in two passes if needed: **Pass A = Public website**, **Pass B = Attendance app (mobile)**. Both passes must use the same Design System section.
+> Paste everything below into Google Stitch to generate the **remaining pages**. The home page is already built as `design/home.html` and is the visual reference. Generate in two passes if needed: **Pass A = public website inner pages**, **Pass B = attendance app (mobile)**. Both passes must use the Design System section exactly.
 
 ---
 
 ## Project Context
 
-Design the UI for the website of a Coptic Orthodox church in Egypt: **"كنيسة السيدة العذراء ومارمينا والبابا كيرلس"** (Church of the Virgin Mary, St. Mina and Pope Kyrillos). The product has two parts:
-1. **A public church website** (no login) for parishioners and visitors: mass schedule, services/ministries, sermons library, news, church history and priests.
-2. **A QR-based attendance app, mobile-first**, for one ministry ("إعداد الخدام" / Servants Preparation). **Servants** (staff) log in, open a session, scan members' QR cards with the phone camera, mark manual/excused attendance, end the session, and follow up on absent members. **Members** open a read-only "My Attendance" page from their QR card link, with no password.
+UI for the website of a Coptic Orthodox church in Egypt: **"كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس"** (Church of the Virgin Mary, St. Mina and Pope Kyrillos VI), Arab El-Ayayda, El-Gabal El-Asfar, Diocese of Shebin El-Qanater. The fathers: **القمص كيرلس روماني، القس أرسانيوس عزت، القس فام عبد المسيح**.
 
-The entire UI is **Arabic only, right-to-left (RTL)**. Audience: Egyptian Coptic families, youth and church servants, mostly on phones (minimum width 360px).
+Two parts:
+1. **Public church website** (no login): worship schedule, services, sermons, news, church history and priests.
+2. **QR attendance app, mobile-first**, for the "إعداد الخدام" ministry. Servants log in, open sessions, scan QR cards, and follow up. Members open a read-only "حضوري" page from their card link.
 
-**Mood: "Candlelight".** Calm, warm, dark and reverent, like the inside of a wooden church lit by candles. **Dark warm backgrounds (never white)**, with **gold** as the light that falls only on what matters, and **warm wood** tones for depth. Elegant and modern, not flashy: no marquees, no counters, no busy animation.
+**Arabic only, right-to-left (RTL)**. Mostly used on phones (from 360px wide).
 
-## Design System
+**Mood: "morning light and candlelight inside a wooden church".** Warm amber-brown surfaces (never white, never black). Golden light enters as if through a window. Soft incense haze. Circles are the signature shape: photo circles and soft golden light orbs that float slowly. Thin, airy headlines. Calm, slow, reverent motion.
 
-### Colors (use exactly)
-- Page background: `#14100C` (warm espresso near-black)
-- Surface 1 (alternate sections, footer, bottom nav): `#1D1712`
-- Surface 2 (cards, inputs): `#271F17`
-- Surface 3 (hover/selected): `#33281E`
-- Gold primary (primary buttons, links, icons, eyebrows): `#C9A15B`
-- Gold light (hover, highlighted word in a heading): `#E4C68A`
-- Gold dark (pressed, quiet gold borders): `#9A7738`
-- Wood dark (feature tiles, banners): `#7A5133`
-- Wood mid (secondary badges, ornaments): `#A87A52`
-- Wood light (text on wood): `#D9BFA0`
-- Text primary (parchment): `#F3E9D8`
-- Text secondary: `#C9B9A1`
-- Text muted (dates, captions): `#94836D`
-- Text on gold buttons: `#1A130C`
-- Card border: 1px `rgba(228,198,138,0.10)`; input border: `rgba(228,198,138,0.28)`
-- Inverted light surface "parchment" `#F3E9D8` with ink `#1A130C`: use ONLY for the member QR card and the "Next Mass" bento tile.
-- Status colors (always paired with an icon + text label): Present `#7FB069` (check), Absent/Error `#D9604F` (×), Excused `#7FA6BF` (clock), Warning/Offline/Unsynced `#E0A043` (!), Live `#D9604F` (pulsing dot). Badges use the same color at 15% opacity as background.
-- Liturgical red `#8E2A22`: ornament only (seasonal Holy Week banner), never for text.
-- Rules: gold covers at most ~10% of any screen; one primary gold button per area; no pure white, no pure black; no drop shadows. Show elevation with a lighter surface plus a hairline gold border.
+## Design System (use exactly)
 
-### Typography
-- UI and headings: **IBM Plex Sans Arabic** (weights 300/400/500/600). Large headings use the **light 300 weight** for an elegant, airy look.
-- Bible verses and quotes only: **Amiri** (Naskh), with the reference in small muted text.
-- Scale (mobile → desktop): Display 40→72px/300; Verse 26→40px Amiri; H1 32→48px/300; H2 26→36px/400; H3 20→24px/500; Body 16px/400 with line-height 1.85; Label 14px/500; Eyebrow 13px/600 gold; Caption 12px; Stat numbers 40→56px/300.
-- Use Western digits (0-9) for times, dates and percentages.
+**Colors**
+- Page background `#2F2016`; deeper surfaces `#271A11`, `#1E140D`, `#170F09` (footer, dark quote circle); raised cards `#3B291C`.
+- Gold `#E0B060` (eyebrows, icons, gold buttons, "today" marker); soft gold `#F3C987` (highlighted word in titles, gold text over photos); deep gold `#B8873F` (gold on light surfaces).
+- Text cream `#F6ECDC`; secondary `#DCCAB1`; muted `#A8927A` (dates, hints); ink `#1E140D` (text on light surfaces).
+- Lines `rgba(246,236,220,.09)`; strong lines `rgba(246,236,220,.2)`; section light pools `rgba(243,201,135,.16)`.
+- Light orbs (circles without photos): radial gradient from pale cream to soft gold to transparent amber, opacity about 0.7.
+- Status colors (always with an icon and a text label): present `#7FB069`, absent/error `#D9604F`, excused `#7FA6BF`, warning/unsynced `#E0A043`, live `#E5634F`.
+- All photos get a warm grade (sepia 0.4, brightness 0.82). Photos with white backgrounds sit on a cream radial surface with multiply blending.
+- A very subtle film grain over the whole page. Each section has a soft golden light pool in one corner.
 
-### Spacing, grid, shape
-- 4px base unit: 4, 8, 12, 16, 24, 32, 48, 64, 96, 128.
-- Grid: mobile 4 columns, 16px gutters and 16px side margins; tablet 8 columns, 24px gutters and 32px margins; desktop 12 columns, 24px gutters, max content width 1280px.
-- Radius: 8 (badges), 14 (inputs, list rows), 22 (cards, images), 32 (bento container, bottom sheets), pill (buttons, chips, round social icons).
-- Section spacing: 64px on mobile, 96–128px on desktop. Touch targets at least 44px; attendance primary actions 56px tall.
+**Typography**
+- UI and headlines: **Alexandria**. Section titles are very light (weight 200), size clamp(2rem, 4.4vw, 3.7rem), and one highlighted word in weight 400 soft gold. Body text weight 300, line-height 1.9.
+- Verses and quotes: **Amiri**.
+- Eyebrow above each title: a 28px gold line, then a small gold label (0.85rem, weight 500).
+- Western digits (0–9) for times and dates.
 
-### Icons, imagery, motion
-- Thin line icons (1.5px stroke, rounded) in gold.
-- **Signature mark:** a small simplified **Coptic cross** glyph, used before every eyebrow label, as a section divider, and in the corner of the "Next Mass" tile.
-- Photos: warm amber-lit church photography. Any text over a photo sits on a gradient from `#14100C` at 85% (text side) to transparent.
-- Motion: subtle fade-up on scroll (16px, 400ms, once). Hover transitions 200ms.
+**Spacing and shape**
+- 4px base: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64, 80, 96, 128. Sections are 96px apart on mobile and 128px on desktop.
+- Radius: 10, 16, 24, 32, full. Max content width 1280px; side gutter 16px on mobile, 32px from 768px.
+
+**Buttons and links**
+- Primary: cream pill, 52px tall, with a dark inner circle holding an arrow that rotates 45° on hover.
+- Gold pill variant.
+- Glass pill: translucent cream with a blurred backdrop.
+- Text link: underlined, with a ↖ arrow.
+- Ring button: a 150px circle with a thin gold border and a centered label.
+
+**Motion**
+- Easing cubic-bezier(.16,1,.3,1).
+- Titles reveal word by word. Never split Arabic letters.
+- Elements rise 40px and fade in, in staggered batches.
+- Circles scale in from 0.6 with a slight overshoot, then float up and down 7px over 7–10s, each on a different timing.
+- Big images reveal from bottom to top.
+- Some sections have a fixed background photo that fades in and out as the section scrolls over it.
+- Respect reduced motion.
 
 ## Pages to Generate
 
-### PASS A — Public Website (generate desktop 1440px AND mobile 390px for each)
+### PASS A — Public website inner pages (desktop 1440px AND mobile 390px)
 
-**A1. Home (الرئيسية)**
-1. **Header**, transparent over the hero. Right side: circular logo + church name "كنيسة السيدة العذراء ومارمينا والبابا كيرلس". Center: nav "الرئيسية · الكنيسة ▾ · العبادة ▾ · الخدمات · المكتبة ▾ · الأخبار". Left side: round icon buttons for Facebook, YouTube, Instagram, WhatsApp, Phone. On mobile: logo + hamburger.
-2. **Hero**, full-bleed warm photo of a young man praying in a candle-lit church. Text aligned right, placed in the lower third on mobile. Verse in Amiri: "فِي الْعَالَمِ سَيَكُونُ لَكُمْ ضِيقٌ، وَلكِنْ ثِقُوا: أَنَا قَدْ غَلَبْتُ الْعَالَمَ" with the reference "(يو 16: 33)". Two buttons: primary gold pill "مواعيد القداسات ←" and outline "تعرّف على الكنيسة".
-3. **Bento strip**: 4 tiles joined edge to edge inside one rounded (32px) container, overlapping the bottom of the hero. (1) A church photo. (2) A dark tile with a gold quote mark and a short line: "كنيسة تجمعنا عائلةً واحدة في المسيح". (3) A photo tile with a round play button labeled "البث المباشر". (4) A **parchment** tile: "القداس القادم", "الأحد · 7:00 – 9:30 ص", the link "كل المواعيد ←", and a Coptic cross in the corner. On mobile the strip scrolls horizontally, with the "القداس القادم" tile first.
-4. **Quick access**: eyebrow "اكتشف" + H2 "كنيستنا", then 4 cards with a gold line icon, title, one-line description and arrow: "جدول القداسات", "الآباء الكهنة", "نشأة الكنيسة", "صور الكنيسة".
-5. **This week's schedule**: eyebrow "العبادة" + H2 "مواعيد هذا الأسبوع". Rows grouped by day (gold day name), each with time, type badge (قداس / اجتماع / اعتراف) and place. Link "الجدول الكامل ←".
-6. **Our services**: eyebrow "الخدمات" + H2 "خدماتنا". Group chips "الكل · مدارس الأحد · الاجتماعات · الخدام · الفرق والأنشطة · الحضانة", then service cards (4:3 photo, name, group badge, clock + time). Sample services: مدارس الأحد – ابتدائي، فريق الكشافة، كورال ترينتي، فريق المسرح، اجتماع الشباب، الحضانة.
-7. **Latest sermons**: eyebrow "المكتبة" + H2 "أحدث العظات". Three cards, each with a round gold media-type icon (audio/video/PDF), title, speaker "أبونا …", topic badge, date and duration.
-8. **Verse band**: full-width wood-dark (`#7A5133`) band with a large centered Amiri verse.
-9. **Latest news**: eyebrow "الأخبار" + H2 "آخر الأخبار". Three cards with photo, badge (خبر / إعلان), title, date and excerpt.
-10. **Footer** on Surface 1: logo + short description; quick links; contact (phone, address); round social icons. A bottom bar with copyright and a small muted link "دخول الخدام".
+Every inner page starts with a **short hero** (55–60% of viewport height):
+- A warm-graded photo with soft window light rays and no smoke.
+- A breadcrumb.
+- A light Alexandria title with one gold word.
+- Then the same footer as the home page: a dark rounded block with the big invitation "عندك مكان معنا في **بيت الله**", links, social circles, and a small "دخول الخدام" link.
 
-**A2. Church – History (النشأة والتاريخ):** page title over a photo, a comfortable reading column (max 720px) with inline photos, and an optional simple timeline.
-**A3. Church – Priests (الآباء الكهنة):** a grid of priest cards (1:1 photo with thin gold frame, name, title): 2 columns on mobile, 4 on desktop.
-**A4. Church – Gallery (صور الكنيسة):** masonry gallery, plus a full-screen dark lightbox state.
-**A5. Church – Location (الموقع):** a large dark-styled map card, the address, and a button "افتح في الخرائط".
-**A6. Worship (العبادة):** a live-stream banner (pulsing "مباشر" badge, title, "شاهد الآن", or an embedded 16:9 video), the full schedule grouped by day (on mobile, one card per day) covering قداسات, اجتماعات and اعتراف, and an external-link card "القراءات اليومية" with a "يفتح في نافذة جديدة" icon.
-**A7. Services (الخدمات):** group chips, then for each of the 5 groups a section header plus a grid of service cards. Services without a photo show a Surface-2 tile with a large gold line icon.
-**A8. Service detail (صفحة الخدمة):** wide photo with the service name and group badge; an info block of 4 icon rows: الوصف, المواعيد, المسؤول, التواصل (with round Call and WhatsApp buttons); a longer description; "خدمات أخرى في المجموعة".
-**A9. Sermons archive (العظات):** filter bar (المتحدث / الموضوع / التاريخ + "مسح التصفية"; on mobile a "تصفية" button opens a bottom sheet with an active-filter count), a results count, a sermon card list and pagination.
-**A10. Sermon detail:** title, speaker and date; an audio player (big gold play button, progress bar, time, speed, download) OR a 16:9 video OR a PDF file card; description; "عظات أخرى لنفس المتحدث".
-**A11. Media (الميديا)** with chips صور / فيديو / ترانيم; **A12. Bulletins (النشرات)** as a list of PDF file cards (icon, title, date, size, "تحميل").
-**A13. News (الأخبار):** a seasonal feature banner (e.g. "أسبوع الآلام" with a thin liturgical-red ornament), chips الكل / أخبار / إعلانات, a news card grid and pagination. **A14. News detail.**
-**A15. 404 page:** a short verse and the button "العودة للرئيسية".
+**A1. العبادة (Worship)**
+- Full schedule as clean rows with thin dividers: day name, then time slots. Today's row has a gold side line and "اليوم".
+- Tabs: "الجدول المعتاد" / "جدول الصوم الكبير".
+- Regular schedule:
+  - الأحد: 7:00–10:00 ص، 9:00–11:00 ص.
+  - الثلاثاء: 8:00–9:30 ص.
+  - الأربعاء: 8:00–10:00 ص.
+  - الجمعة: 7:00–9:00 ص (التربية الكنسية)، 7:00–9:30 ص (الشعب)، 10:00–12:00 ظ، and in gold 3:00–5:00 م (صلاة ودراسة الكتاب).
+  - السبت: 8:00–10:00 ص.
+- Live stream: a large photo circle with a gold play button and a pulsing ring, labeled "البث المباشر على صفحة الكنيسة".
+- Daily readings external link: "القراءات اليومية ↖".
+- Confession times block.
 
-### PASS B — Attendance App (mobile 390px first; same dark design system)
+**A2. الخدمات (Services)**
+- Big floating circles for the 6 groups (a text circle with the group name and count, next to a photo circle, with golden light orbs between them). Clicking a group filters the grid below.
+- Groups: مدارس الأحد (3 مراحل)، الاجتماعات (5)، الخدام (2)، الفرق والأنشطة (4)، الحضانة، الأسرة والمجتمع (جديد).
+- Then a grid of 4:5 photo cards: group label, service name, round arrow button. Some cards carry a dashed "صورة مؤقتة" tag; new ones carry a cream "جديد" tag.
 
-Common to all servant screens: a top app bar (back button, title, sync indicator on the left: green dot "متزامن" / amber dot with count "3 لم تُزامَن" / grey "بدون إنترنت"), and a bottom navigation with 5 items: "الجلسات", "المخدومون", a prominent raised round gold **"مسح"** button in the center, "الافتقاد", "المزيد".
+**A3. صفحة الخدمة (Service detail)**
+- Hero with the service photo and group label.
+- Four info circles with icons: الوصف، المواعيد، المسؤول، التواصل (round call and WhatsApp buttons).
+- A cluster of photo circles from the service.
+- "خدمات أخرى في المجموعة".
 
-**B1. Servant login (دخول الخدام):** logo at the top, title "دخول الخدام", fields "البريد أو الموبايل" and "كلمة السر" (with a show toggle), primary button "دخول". Also show an error state, and a rate-limit state with the message "محاولات كثيرة، حاول بعد 15 دقيقة".
-**B2. Sessions (الجلسات):** primary button "فتح جلسة", open-session cards (service "إعداد الخدام", activity badge, date, a pulsing gold dot "مفتوحة", "حضر 23"), and a list of finished sessions (grey "منتهية").
-**B3. Open session (فتح جلسة):** a service select (pre-selected "إعداد الخدام"), an activity-type segmented control "قداس · اجتماع · نشاط · خدمة", a date field (today), the link "نسخ من آخر جلسة", and primary button "فتح الجلسة".
-**B4. Scanner (المسح):** full-screen camera with a centered square frame with gold corners; the session name on top; a live counter "حضر 23 من 41" with a gold progress bar; bottom buttons "تسجيل يدوي" and a flashlight icon. Show **5 result states** as a bottom card: ✓ green "تم تسجيل: مينا عادل"; ! amber "سُجل سابقًا: مينا عادل"; × red "هذا الكارت ملغي"; × red "كارت غير معروف"; ! amber "لا توجد جلسة مفتوحة" with the button "افتح جلسة". Also show an offline variant with an amber top banner: "أنت بدون إنترنت، العمليات تُحفظ على جهازك (3)".
-**B5. Manual registration (تسجيل يدوي):** an auto-focused search field, a result list (initial avatar, name, a check if already recorded), and a bottom sheet with 3 large buttons "حضر" / "غاب" / "غاب بعذر".
-**B6. Session detail:** header with service, activity, date and status; 3 stat chips (حضر / بعذر / لم يُسجَّل); tabs "المسجَّلون / لم يُسجَّلوا"; record rows (name, status badge, a small "يدوي" badge, time, recorder name); a sticky bottom button "إنهاء الجلسة"; a small red link "حذف الجلسة". Show the end-session confirmation dialog: "سيُسجَّل 18 مخدومًا غائبًا. لا يمكن التراجع." with a red "إنهاء الجلسة" button and "إلغاء". Also show the disabled state: "لا يمكن الإنهاء قبل مزامنة 3 عمليات".
-**B7. Members (المخدومون):** a search field, chips "نشط / متوقف", member rows (avatar initial, name, attendance %), and a floating "+" button with the options "إضافة مخدوم" and "استيراد من Excel".
-**B8. Add member:** fields "الاسم الكامل", "رقم الموبايل", and "ملاحظات الخدام" (with a lock icon and the hint "تظهر للخدام فقط"); a "حفظ" button; then a success sheet asking "أرسل الكارت الآن؟" with a WhatsApp-icon button.
-**B9. Member profile:** name, status badge and join date; round action buttons (أرسل الكارت / اتصال / واتساب); per-activity percentages; a monthly bar chart; "تسجيلات يدوية: 2"; recent sessions; servant notes; a danger zone with "إعادة إصدار الكارت" and "إيقاف".
-**B10. Excel import:** a dashed gold dropzone "اختر ملف Excel (عمودان: الاسم، الموبايل)" with the link "حمّل نموذجًا", then a report: "أُضيف 40 · رُفض 3" and a table of rejected rows with reasons.
-**B11. Dashboard (اللوحة):** an activity segmented control with "الكل", 3 stat cards (متوسط الحضور 78%، النشطون 41، جلسات الشهر 8), a monthly gold bar chart, and a sortable member table with percentages.
-**B12. Follow-up (الافتقاد):** the subtitle "من غاب 3 جلسات متتالية أو أكثر" with the link "تغيير", and rows showing name, red badge "غاب 4 مرات متتالية", "آخر حضور: 12 سبتمبر", and round Call and WhatsApp buttons. Include an empty state: "لا أحد يحتاج افتقادًا الآن".
-**B13. More (المزيد):** "رسالة الخدام" textarea with a live preview; the follow-up threshold stepper (− 3 +); servants management (list, "إضافة خادم", "سحب الصلاحية"); "تسجيل الخروج".
+**A4. الكنيسة: النشأة (History)**
+- Reading column (max 720px) with arch-topped photos between paragraphs.
+- A vertical timeline with gold dots.
 
-**Member screens (no login, read-only, NO edit controls anywhere):**
-**B14. My Attendance (حضوري):** logo and member name; a wood-toned servant message banner ("رسالة من الخدام: …"); a large gold progress ring "85%" with the segmented control "الكل · قداس · اجتماع · نشاط · خدمة"; a streak counter with a candle icon "6 جلسات متتالية"; a monthly bar chart; the last 10 sessions (date, type, status badge, no "يدوي" badge); a "كارتي" button; and an install card "ثبّت صفحتك على الشاشة الرئيسية" with "تثبيت" / "لاحقًا".
-**B15. My Card (كارتي):** a 9:16 **parchment** card (designed to be saved as a phone image): church logo, church name, member name, a large dark QR code on a light background with a quiet zone, and "إعداد الخدام". Below the card, the button "احفظ الكارت كصورة".
-**B16. Invalid link:** "هذا الرابط لم يعد صالحًا. اطلب كارتًا جديدًا من الخادم." Show no personal data.
+**A5. الكنيسة: الآباء (Fathers)**
+- One large photo circle per father, with name and title (كاهن الكنيسة).
+- A small quotes slider for each: the center poster is large and its neighbors are smaller and dimmed.
 
-## Reusable Components
-Buttons (primary gold pill / outline gold / ghost / danger red; states: default, hover, pressed, focus with gold ring, disabled, loading); pill button with a round arrow circle on its left end; round icon buttons (40/48px); arrow text link "اعرف المزيد ←"; eyebrow (Coptic cross + gold label); section header (eyebrow + H2 + "عرض الكل ←"); badges (neutral, gold, wood, present, absent, excused, live, manual); filter chips; segmented control; text, phone, password and search inputs (default, focus, filled, error with message, disabled); select/date fields opening as bottom sheets on mobile; base card (Surface 2, 22px radius, hairline gold border, lighter on hover); dialog / bottom sheet; toast (success, error, warning, info); empty state; skeleton loader; pagination (RTL order); breadcrumb; stat card with progress ring; monthly bar chart; scan result card; sync indicator; offline banner; member row; record row; follow-up row; stepper; dropzone; QR member card.
+**A6. الكنيسة: الصور (Gallery)**
+- Photo-circle clusters grouped by event: مؤتمرات، رحلات، قداسات، أنشطة.
+- Each cluster is one big center circle with smaller circles around it, with no overlaps.
+- Full-screen dark lightbox.
+
+**A7. الكنيسة: الموقع (Location)**
+- A dark-styled map inside an arch-topped frame.
+- Address: "عرب العيايدة، ناحية الجبل الأصفر".
+- Button "افتح في الخرائط".
+
+**A8. المكتبة: العظات (Sermons archive)**
+- Filters: المتحدث / الموضوع / التاريخ. On mobile, a "تصفية" button opens a bottom sheet with an active-filter count.
+- Sermon cards: a gold circle with the media type (audio, video, PDF), title, speaker, date. Pagination.
+
+**A9. صفحة العظة (Sermon detail)**
+- Audio player with a big gold play button, progress bar, speed and download, OR a 16:9 video, OR a PDF card.
+- Description, then more sermons by the same speaker.
+
+**A10. الأخبار (News)**
+- Seasonal banner.
+- Tabs: الكل / أخبار / إعلانات.
+- The three top items as large photo circles with the title and date inside; the rest as 16:11 cards.
+- Pagination.
+
+**A11. صفحة الخبر (News detail)**
+- The full poster or photo, the text, then related news.
+
+**A12. 404**
+- A short Amiri verse with a candle (CSS flame with a soft flickering glow) and the button "العودة للرئيسية".
+
+### PASS B — Attendance app (mobile 390px first)
+
+Same colors and fonts, but **no decorative motion**. Background `#271A11` with no photos. Primary actions are 56px tall in the thumb zone.
+
+**Servant screens** share:
+- A top bar: back button, title, and a sync indicator (green "متزامن" / amber "3 لم تُزامَن" / grey "بدون إنترنت").
+- A bottom navigation: الجلسات، المخدومون، a raised gold circular **مسح** button in the middle، الافتقاد، المزيد.
+
+- **B1. دخول الخدام:** logo, "البريد أو الموبايل", "كلمة السر" with a show toggle, cream "دخول" pill. Error state; rate-limit state "محاولات كثيرة، حاول بعد 15 دقيقة".
+- **B2. الجلسات:** "فتح جلسة" pill; open-session cards (service, activity tag, date, pulsing gold dot "مفتوحة", "حضر 23"); finished sessions list.
+- **B3. فتح جلسة:** service select (إعداد الخدام), segmented control قداس · اجتماع · نشاط · خدمة, date (today), link "نسخ من آخر جلسة", button "فتح الجلسة".
+- **B4. المسح:** full-screen camera with a square frame with gold corners, counter "حضر 23 من 41" with a gold progress bar, buttons "تسجيل يدوي" and flashlight.
+  - Five result sheets: ✓ green "تم تسجيل: مينا عادل"؛ ! amber "سُجل سابقًا"؛ × red "هذا الكارت ملغي"؛ × red "كارت غير معروف"؛ ! amber "لا توجد جلسة مفتوحة" with "افتح جلسة".
+  - Offline amber banner.
+- **B5. تسجيل يدوي:** auto-focused search, results with an initial avatar, and a bottom sheet with three big buttons حضر / غاب / غاب بعذر.
+- **B6. تفاصيل الجلسة:** stat chips (حضر / بعذر / لم يُسجَّل), tabs, record rows (status badge, small "يدوي" badge, time, recorder), sticky "إنهاء الجلسة" button.
+  - Confirmation dialog: "سيُسجَّل 18 مخدومًا غائبًا. لا يمكن التراجع."
+  - Disabled state: "لا يمكن الإنهاء قبل مزامنة 3 عمليات".
+- **B7. المخدومون:** search, chips نشط / متوقف, member rows with attendance %, floating "+" with "إضافة مخدوم" / "استيراد من Excel".
+- **B8. إضافة مخدوم:** الاسم الكامل، رقم الموبايل، ملاحظات الخدام (lock icon, "تظهر للخدام فقط"); after saving, "أرسل الكارت الآن؟" with a WhatsApp button.
+- **B9. ملف المخدوم:** status, join date, round actions (أرسل الكارت / اتصال / واتساب), percentages per activity, monthly gold bar chart, manual count, recent sessions, notes, and a danger zone (إعادة إصدار الكارت / إيقاف).
+- **B10. استيراد Excel:** dashed gold dropzone, then a report "أُضيف 40 · رُفض 3" with the rejected rows and reasons.
+- **B11. لوحة الخادم:** activity segmented control with "الكل", three stat tiles, a monthly chart, and a sortable member table.
+- **B12. الافتقاد:** "من غاب 3 جلسات متتالية أو أكثر" with a change link; rows with name, red badge "غاب 4 مرات متتالية", "آخر حضور", and round call and WhatsApp buttons; empty state "لا أحد يحتاج افتقادًا الآن".
+- **B13. المزيد:** servant message with a live preview, threshold stepper, servants management, logout.
+
+**Member screens** (read-only, no edit controls anywhere):
+- **B14. حضوري:**
+  - Logo, name, and a warm servant-message banner.
+  - A large gold ring "85%" with the segmented control الكل · قداس · اجتماع · نشاط · خدمة.
+  - A candle icon with "6 جلسات متتالية".
+  - A monthly chart and the last 10 sessions (no "يدوي" badge).
+  - A "كارتي" button and the install card "ثبّت صفحتك على الشاشة الرئيسية".
+- **B15. كارتي:** a 9:16 cream card (church logo, church name, member name, a large dark QR on cream with a quiet zone, "إعداد الخدام") and the button "احفظ الكارت كصورة".
+- **B16. رابط غير صالح:** "هذا الرابط لم يعد صالحًا. اطلب كارتًا جديدًا من الخادم." Show no personal data.
 
 ## Responsive Requirements
-- **Mobile (360–767px), the priority:** hamburger menu opening a full-height panel from the right; hero at 78% of the viewport height with the verse in the lower third and stacked full-width buttons; bento as a horizontal scroll strip; single-column cards (2 columns for priests and gallery); home services and sermons scroll horizontally; schedule shown as day cards; filters in a bottom sheet; attendance primary actions sticky in the thumb zone; **no horizontal page scroll at 360px**.
-- **Tablet (768–1199px):** bento 2×2; 2–3 column grids.
-- **Desktop (1200px and up):** full horizontal nav with dropdowns; hero at 88% of the viewport height; bento as one row of 4 overlapping the hero by 64px; 3–4 column grids. The attendance app uses a centered 560px column for scan and register screens, a full-width table for the dashboard and members, and the bottom nav becomes a right sidebar.
+- **Mobile (360–600px), the priority:**
+  - Cards in two columns, with long descriptions hidden in small cards.
+  - Photo-circle clusters keep their composition at a smaller scale; the smallest circles get slightly larger.
+  - Filters open in bottom sheets.
+  - No horizontal scroll at 360px.
+- **Tablet (600–1000px):** two or three columns, and the menu button instead of the full navigation.
+- **Desktop (1000px and up):** full horizontal navigation; a floating glass pill navigation appears after the hero; two-column sections (text on the right, visual on the left).
 
 ## Style References
-- **Layout and mood:** a premium church landing page with a large light-weight headline over a golden, sun-lit church interior; a 4-tile bento row under the hero (photo / dark quote tile / photo with play button / light event tile with "Learn more ↗" and a star mark → **we replace the star with a Coptic cross**); round social icons in the top corner. Recreate this feeling, mirrored for RTL.
-- **Section structure:** a modern church theme style: a small colored eyebrow line with an icon above each heading, pill buttons with a round arrow, generously rounded image corners, alternating sections. **Do not** copy its bright orange color, its scrolling text marquees or its animated counters.
-- **Content origin:** the church's own previous homepage: a verse over a warm photo, then 4 white cards (نشأة الكنيسة، صور الكنيسة، الآباء الكهنة، جدول القداسات). Keep the idea; restyle it in the dark candlelight system.
-- Overall: dark, warm, quiet, golden light. It should feel like evening prayer, not a marketing site.
+- **The home page `design/home.html`:**
+  - Hero with window light rays, incense smoke and slow zoom.
+  - Four floating circles of different sizes under the hero.
+  - A services circle cloud.
+  - A gallery cluster (one big circle with 15 around it, text on the right).
+  - A candle verse section.
+  - Fixed background photos that fade with scroll.
+- **Layout feeling:** a premium church landing page with a light, thin headline over golden window light (mirrored for RTL), and soft floating circles of photos and light orbs.
+- **Avoid:**
+  - Outlined numbers, icons inside squares, scrolling text marquees, flat white cards.
+  - Pure white or pure black, cold blue tones.
+  - Splitting Arabic words into letters.
