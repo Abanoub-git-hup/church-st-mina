@@ -14,8 +14,18 @@
 <link rel="stylesheet" href="assets/site.css">
 <style>
 /* خاص بالنشأة: 3 دوائر للشفعاء */
-.infos.saints{grid-template-columns:repeat(3,minmax(0,1fr));max-width:760px}
-@media (max-width:760px){.infos.saints{grid-template-columns:repeat(3,minmax(0,1fr));max-width:none;gap:var(--s-3)}.infos.saints .info:nth-child(even){top:var(--s-6)}.infos.saints .info-tx{padding:10%}.infos.saints .info-tx .icon{width:22px;height:22px}.infos.saints .info-tx small{font-size:.7rem}.infos.saints .info-tx b{font-size:.8rem}}
+.saints{display:grid;gap:var(--s-6);grid-template-columns:repeat(3,minmax(0,1fr))}
+.saint{position:relative;display:flex;flex-direction:column;align-items:flex-start;padding:var(--s-8) var(--s-6) var(--s-6);border-radius:var(--r-xl);background:radial-gradient(circle at 50% 0%,rgba(243,201,135,.12),transparent 60%),rgba(39,26,17,.85);border:1px solid rgba(243,201,135,.22)}
+.saint-ic{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,var(--umber-600),var(--umber-900) 78%);box-shadow:0 0 0 1px rgba(243,201,135,.4),0 0 0 8px rgba(224,176,96,.08);color:var(--gold);margin-bottom:var(--s-5)}
+.saint-ic .icon{width:32px;height:32px}
+.saint .eyebrow{margin-bottom:var(--s-2)}
+.saint h3{font-size:1.5rem;font-weight:300;line-height:1.35}
+.saint p{color:var(--cream-2);margin-top:var(--s-3);font-size:.98rem}
+.saint-facts{display:grid;gap:var(--s-1);margin:var(--s-4) 0 var(--s-5);padding-top:var(--s-4);border-top:1px solid var(--line);width:100%;color:var(--gold-soft);font-size:.9rem}
+.saint .link{margin-top:auto}
+.src-note{margin-top:var(--s-8);text-align:center;color:var(--muted);font-size:.85rem}
+.src-note a{color:var(--gold-soft);border-bottom:1px solid rgba(243,201,135,.4)}
+@media (max-width:900px){.saints{grid-template-columns:1fr;max-width:620px;margin-inline:auto}}
 </style>
 </head>
 <body>
@@ -124,18 +134,41 @@
   </div>
 </section>
 
-<!-- ===== شفعاء الكنيسة ===== -->
+<!-- ===== شفعاء الكنيسة (المعلومات من موقع الأنبا تكلا هيمانوت) ===== -->
 <section class="sec deep" aria-labelledby="t-saints">
   <div class="wrap">
     <div style="text-align:center;margin-bottom:var(--s-12)">
       <span class="eyebrow" data-rise>شفعاء الكنيسة</span>
       <h2 class="title" id="t-saints" data-split>بشفاعة <b>القديسين</b></h2>
+      <p class="lead" data-rise style="margin-inline:auto">ثلاثة شفعاء تجمعهم قصة واحدة: مارمينا وُلد بعد صلاة أمه في عيد للسيدة العذراء، والبابا كيرلس السادس ترهّب باسم مينا، وفي عهده بُني دير مارمينا بمريوط من جديد.</p>
     </div>
-    <div class="infos saints">
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg><small>والدة الإله</small><b>السيدة العذراء مريم</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg><small>الشهيد العظيم</small><b>مارمينا العجايبي</b></span></span></div>
-      <div class="info" data-bub><span class="bi"><span class="info-tx"><svg class="icon" aria-hidden="true"><use href="#i-candle"/></svg><small>البطريرك 116</small><b>البابا كيرلس السادس</b></span></span></div>
+    <div class="saints">
+      <article class="saint" data-rise>
+        <span class="saint-ic" data-bub><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg></span>
+        <span class="eyebrow">والدة الإله</span>
+        <h3>السيدة العذراء مريم</h3>
+        <p>أم ربنا يسوع المسيح، من سبط يهوذا. باركت أرض مصر مع العائلة المقدسة، وتكرّمها الكنيسة القبطية فوق جميع القديسين وتطلب شفاعتها في كل صلاة.</p>
+        <ul class="saint-facts"><li>أعيادها كثيرة على مدار السنة</li><li>صوم العذراء: من 1 إلى 16 مسرى</li></ul>
+        <a class="link" href="https://st-takla.org/Full-Free-Coptic-Books/FreeCopticBooks-002-Holy-Arabic-Bible-Dictionary/24_M/M_128.html" target="_blank" rel="noopener">اقرأ عنها في قاموس الكتاب المقدس <svg class="icon"><use href="#i-nw"/></svg></a>
+      </article>
+      <article class="saint" data-rise>
+        <span class="saint-ic" data-bub><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg></span>
+        <span class="eyebrow">الشهيد العظيم</span>
+        <h3>مارمينا العجايبي</h3>
+        <p>أشهر الشهداء المصريين، واسمه يعني «آمين». كان ضابطًا في الجيش، فتركه سنة 303 م ليتعبد في البرية، ثم نال إكليل الشهادة وهو في الرابعة والعشرين. لُقّب بالعجايبي لكثرة العجائب التي يصنعها الرب بصلواته.</p>
+        <ul class="saint-facts"><li>عيد استشهاده: 15 هاتور</li><li>تذكار كنيسته بمريوط: 15 بؤونة</li><li>تدشين أول كنيسة باسمه: 1 أبيب</li></ul>
+        <a class="link" href="https://st-takla.org/Saints/Coptic-Orthodox-Saints-Biography/Coptic-Saints-Story_1773.html" target="_blank" rel="noopener">اقرأ سيرته <svg class="icon"><use href="#i-nw"/></svg></a>
+      </article>
+      <article class="saint" data-rise>
+        <span class="saint-ic" data-bub><svg class="icon" aria-hidden="true"><use href="#i-candle"/></svg></span>
+        <span class="eyebrow">البطريرك 116</span>
+        <h3>البابا كيرلس السادس</h3>
+        <p>وُلد باسم عازر يوسف عطا في طوخ النصارى بدمنهور، وترهّب في دير البراموس باسم «الراهب مينا». اختارته القرعة الهيكلية بطريركًا، وفي عهده بُني دير مارمينا الحالي بمريوط وعاد إليه جزء من رفات الشهيد.</p>
+        <ul class="saint-facts"><li>وُلد: 2 أغسطس 1902</li><li>رُسم راهبًا: 25 فبراير 1928</li><li>القرعة الهيكلية: 19 أبريل 1959</li></ul>
+        <a class="link" href="https://st-takla.org/Pope-Kyrellos-1_.html" target="_blank" rel="noopener">اقرأ سيرته <svg class="icon"><use href="#i-nw"/></svg></a>
+      </article>
     </div>
+    <p class="src-note" data-rise>المعلومات من <a href="https://st-takla.org/" target="_blank" rel="noopener">موقع الأنبا تكلا هيمانوت</a>.</p>
   </div>
 </section>
 
@@ -150,6 +183,7 @@
       <div class="tl" data-rise><span class="yr">0000</span><h3>بداية الصلاة في المكان</h3><p>تُكتب السنة والتفاصيل بعد التأكد منها.</p></div>
       <div class="tl" data-rise><span class="yr">0000</span><h3>بناء الكنيسة</h3><p>تُكتب السنة والتفاصيل بعد التأكد منها.</p></div>
       <div class="tl" data-rise><span class="yr">0000</span><h3>تدشين المذابح</h3><p>تُكتب السنة والتفاصيل بعد التأكد منها.</p></div>
+      <div class="tl" data-rise><span class="yr">1998</span><h3>رسامة القس كيرلس روماني</h3><p>رُسم قسًا على الكنيسة في 16 نوفمبر 1998.</p></div>
       <div class="tl" data-rise><span class="yr">0000</span><h3>الكنيسة اليوم</h3><p>تُكتب التفاصيل بعد التأكد منها.</p></div>
     </div>
   </div>
