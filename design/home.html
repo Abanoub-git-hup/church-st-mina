@@ -34,11 +34,7 @@
 html{scroll-behavior:smooth;overflow-x:clip}
 body{
   margin:0;color:var(--cream);font-family:var(--f-ui);font-weight:300;font-size:1rem;line-height:1.9;-webkit-font-smoothing:antialiased;overflow-x:hidden;
-  background:
-    radial-gradient(1100px 700px at 12% -5%, rgba(243,201,135,.16), transparent 60%),
-    radial-gradient(900px 700px at 105% 35%, rgba(255,158,69,.07), transparent 60%),
-    var(--umber-700);
-  background-attachment:fixed;
+  background:var(--umber-700);
 }
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:300;opacity:.07;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
@@ -238,7 +234,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .dcard{position:relative;aspect-ratio:3/4;border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--s-6);isolation:isolate}
 .dcard img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
 .dcard.paper{background:radial-gradient(ellipse at 50% 15%, #FFF5E4, #E3CBA4 75%)}
-.dcard.paper img{object-fit:contain;object-position:center 30%;mix-blend-mode:multiply;padding:var(--s-8) var(--s-4) 40%}
+.dcard.paper img{object-fit:contain;object-position:center 34%;mix-blend-mode:multiply;padding:0 var(--s-2)}
 .dcard::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,transparent 40%,rgba(23,15,9,.88))}
 .dcard:hover img{transform:scale(1.07)}
 .dcard h3{font-size:1.45rem;font-weight:300;line-height:1.35}
@@ -250,14 +246,18 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 
 /* ===== أقوال الآباء ===== */
 .qslider{position:relative;height:520px;overflow:hidden;padding-top:10px}
-.qs{position:absolute;top:0;left:50%;height:450px;padding:0;border:0;border-radius:var(--r-md);overflow:hidden;background:var(--umber-800);box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 1px var(--line);transition:transform .9s var(--ease),opacity .9s var(--ease),filter .9s var(--ease);opacity:0;pointer-events:none;cursor:pointer}
-.qs img{height:100%;width:auto;max-width:none;display:block}
+.qs{position:absolute;top:0;left:50%;width:min(540px,84vw);height:460px;padding:var(--s-8) var(--s-8) var(--s-6);border:1px solid var(--line);border-radius:var(--r-xl);background:radial-gradient(circle at 50% 0%,rgba(243,201,135,.16),transparent 60%),rgba(39,26,17,.92);box-shadow:0 30px 70px -25px rgba(0,0,0,.75);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:var(--s-5);text-align:center;color:var(--cream);transition:transform .9s var(--ease),opacity .9s var(--ease),filter .9s var(--ease);opacity:0;pointer-events:none;cursor:pointer}
+.qs-src{display:none}
+.qs-face{flex:none;width:150px;height:150px;border-radius:50%;background-color:var(--cream);background-repeat:no-repeat;box-shadow:0 0 0 2px var(--gold),0 0 0 8px rgba(224,176,96,.14),0 20px 50px -15px rgba(0,0,0,.6)}
+.qs-q{font-family:var(--f-verse);font-size:clamp(1.05rem,1.6vw,1.3rem);line-height:1.95;color:var(--cream-2);max-width:42ch}
+.qs-q.long{font-size:clamp(.95rem,1.3vw,1.08rem);line-height:1.85}
+.qs-by{margin-top:auto;color:var(--gold);font-size:.88rem;font-weight:500}
 .qs.is-vis{pointer-events:auto}
 .qs.is-active{cursor:zoom-in}
 .qs-dots{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:center;gap:8px}
 .qs-dots button{width:8px;height:8px;border-radius:var(--r-full);border:0;padding:0;background:var(--line-strong);cursor:pointer;transition:width .4s var(--ease),background .4s}
 .qs-dots button[aria-selected=true]{width:28px;background:var(--gold)}
-@media (max-width:600px){.qslider{height:420px}.qs{height:360px}}
+@media (max-width:600px){.qslider{height:500px}.qs{height:440px;padding:var(--s-6) var(--s-5) var(--s-5);gap:var(--s-4)}.qs-face{width:120px;height:120px}.qs-q{font-size:1rem}.qs-q.long{font-size:.9rem}}
 .rail-ctl{display:flex;gap:var(--s-2)}
 .rail-ctl button{width:48px;height:48px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;display:grid;place-items:center;cursor:pointer;transition:all var(--t-fast)}
 .rail-ctl button:hover{background:var(--cream);color:var(--ink)}
@@ -363,12 +363,13 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .f-bar a:hover{color:var(--gold-soft)}
 .f-bar .icon{width:14px;height:14px}
 
-/* ===== خلفيات ثابتة للأقسام ===== */
-.has-bg{isolation:isolate}
-.sec-bg{position:absolute;inset:0;z-index:-1;clip-path:inset(0);pointer-events:none}
-.sec-bg img{position:fixed;inset:0;width:100%;height:100vh;object-fit:cover;filter:sepia(.35) saturate(1.05) brightness(.6) blur(1.5px);transform:scale(1.05);opacity:.6}
-.sec-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--umber-700) 0%,rgba(47,32,22,.5) 16%,rgba(47,32,22,.55) 84%,var(--umber-700) 100%)}
-.anim .sec-bg img{opacity:0}
+/* ===== غلاف ثابت واحد خلف الموقع (بعد الواجهة) ===== */
+.site-cover{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.site-cover img{width:100%;height:100%;object-fit:cover;object-position:center 30%;transform:scale(1.1);filter:sepia(.25) saturate(1.05) brightness(.9)}
+.site-cover::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(23,15,9,.35),rgba(23,15,9,.75) 85%),rgba(36,24,16,.42);opacity:var(--cover-dim,1);transition:opacity .2s linear}
+.site-cover .veil{position:absolute;inset:0;background:rgba(36,24,16,.55);opacity:0;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+body{background:var(--umber-700)}
+.footer{position:relative}
 
 /* ===== الدوائر (بابلز) ===== */
 @keyframes float{from{transform:translateY(-7px)}to{transform:translateY(7px)}}
@@ -518,6 +519,8 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
   <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
 </svg>
 
+<div class="site-cover" aria-hidden="true"><img src="../media/church/bg-light-beams.jpg" alt=""><span class="veil"></span></div>
+
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>
 
 <!-- شريط عائم يظهر بعد الواجهة -->
@@ -567,10 +570,9 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 
   <div class="hero-center">
     <div>
-      <span class="hello" data-intro><svg class="icon"><use href="#i-cross"/></svg>أهلًا بكم في بيت الله</span>
+      <span class="hello" data-intro><svg class="icon"><use href="#i-cross"/></svg>آية اليوم</span>
       <h1 data-split>فِي ٱلْعَالَمِ سَيَكُونُ لَكُمْ ضِيقٌ، وَلكِنْ ثِقُوا: <em>أَنَا قَدْ غَلَبْتُ ٱلْعَالَمَ</em></h1>
       <span class="ref" data-intro>(يوحنا 16: 33)</span>
-      <p class="sub" data-intro>كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس، عرب العيايدة، ناحية الجبل الأصفر. مطرانية شبين القناطر وتوابعها.</p>
       <div class="hero-ctas" data-intro>
         <a class="pill" href="#schedule">مواعيد القداسات <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
         <a class="pill ghost" href="#about">تعرّف على الكنيسة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
@@ -612,8 +614,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 </section>
 
 <!-- ===== مواعيد القداسات ===== -->
-<section class="has-bg sec pool" id="schedule" aria-labelledby="t-sched">
-  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-light-beams.jpg" alt="" loading="lazy"></div>
+<section class="sec pool" id="schedule" aria-labelledby="t-sched">
   <div class="wrap sched">
     <div>
       <span class="eyebrow" data-rise>صلِّ معنا</span>
@@ -639,8 +640,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 </section>
 
 <!-- ===== عن الكنيسة ===== -->
-<section class="has-bg sec deep pool-l" id="about" aria-labelledby="t-about">
-  <div class="sec-bg" aria-hidden="true"><img src="../media/church/nave-real.jpeg" alt="" loading="lazy"></div>
+<section class="sec deep pool-l" id="about" aria-labelledby="t-about">
   <div class="wrap about">
     <div class="arch" data-clip><img src="../media/priests/fathers-group.png" alt="آباء الكنيسة الثلاثة"></div>
     <div>
@@ -693,20 +693,19 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
       </div>
     </div>
     <div class="qslider" id="qslider" aria-roledescription="carousel" aria-label="أقوال الآباء" data-rise>
-      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-3.jpg" alt="صلاة للقمص كيرلس روماني" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><img src="../media/priests/quote-arsanios-1.jpg" alt="قول للقس أرسانيوس عزت" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القس فام عبد المسيح"><img src="../media/priests/quote-fam.jpg" alt="قول للقس فام عبد المسيح" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-1.jpg" alt="قول للقمص كيرلس روماني عن القيامة" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><img src="../media/priests/quote-arsanios-2.jpg" alt="قول للقس أرسانيوس عزت" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-2.jpg" alt="قول للقمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('../media/priests/quote-kyrillos-3.jpg');background-size:336.7% auto;background-position:13.1% 77.6%" aria-hidden="true"></span><span class="qs-q long">«قف أمام الله وصلِّ قائلًا: اضبطني يا ضابط الكل، ولا تتركني لذاتي لئلا أهلك. يا رب إن كنت أنا عاجزًا عن ضبط نفسي فلا تتركني، وإن لزم الأمر أن تقودني بالعصا أو التأديب فلا تسمح أن أحيد عن طريقك. خلّصني بكل وسيلة.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="../media/priests/quote-kyrillos-3.jpg" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><span class="qs-face" style="background-image:url('../media/priests/quote-arsanios-1.jpg');background-size:341.3% auto;background-position:24.9% 25.9%" aria-hidden="true"></span><span class="qs-q">«خادم مش مصلي.. غصنه ناشف. خادم مش صايم ولا بيقدّم ذبيحة حب.. غصنه ناشف. خادم مش بيقرأ في الكتاب المقدس بروح الشبع.. غصنه ناشف.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="../media/priests/quote-arsanios-1.jpg" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس فام عبد المسيح"><span class="qs-face" style="background-image:url('../media/priests/quote-fam.jpg');background-size:408.7% auto;background-position:0.4% 63.6%" aria-hidden="true"></span><span class="qs-q">«الوصية مش قيد.. الوصية أمان لينا. ربنا ما بيمنعشي الفرح، ربنا بيحمي الفرح من إنه يتحول إلى وجع.»</span><span class="qs-by">القس فام عبد المسيح</span><img class="qs-src" src="../media/priests/quote-fam.jpg" alt="ملصق قول القس فام عبد المسيح" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('../media/priests/quote-kyrillos-1.jpg');background-size:348.1% auto;background-position:93.6% 55.0%" aria-hidden="true"></span><span class="qs-q">«كل مؤمن في المسيح يستطيع أن يغادر القبر وبستان الأشواك، ويقول: مكاني ليس في القبور، بل في المسيح.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="../media/priests/quote-kyrillos-1.jpg" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><span class="qs-face" style="background-image:url('../media/priests/quote-arsanios-2.jpg');background-size:447.6% auto;background-position:8.9% 37.5%" aria-hidden="true"></span><span class="qs-q">«المخدوع من سلطان هذا العالم يجري ولا يأخذ.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="../media/priests/quote-arsanios-2.jpg" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('../media/priests/quote-kyrillos-2.jpg');background-size:408.7% auto;background-position:88.3% 68.6%" aria-hidden="true"></span><span class="qs-q">«احترس من الشفقة التي تضيّع أبديتك، فحتى المشاعر النبيلة إن لم توزن بميزان الإرادة الإلهية قد تقودنا إلى الخطأ والهلاك.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="../media/priests/quote-kyrillos-2.jpg" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
       <div class="qs-dots" role="tablist" aria-label="اختر القول"></div>
     </div>
   </div>
 </section>
 
 <!-- ===== الخدمات ===== -->
-<section class="has-bg sec pool-l" id="services" aria-labelledby="t-svc">
-  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-stained-window.webp" alt="" loading="lazy"></div>
+<section class="sec pool-l" id="services" aria-labelledby="t-svc">
   <div class="wrap">
     <div class="head-row">
       <div>
@@ -790,12 +789,11 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 </section>
 
 <!-- ===== آية اليوم: ضوء الشموع ===== -->
-<section class="has-bg candle-sec" aria-label="آية اليوم">
-  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt="" loading="lazy"></div>
+<section class="candle-sec" aria-label="كلمة للتأمل">
   <span class="flame-glow" aria-hidden="true"></span>
   <div class="wrap">
     <div class="candle" aria-hidden="true" data-rise></div>
-    <span class="eyebrow" data-rise>آية اليوم</span>
+    <span class="eyebrow" data-rise>كلمة للتأمل</span>
     <blockquote data-split>تَعَالَوْا إِلَيَّ يَا جَمِيعَ الْمُتْعَبِينَ وَالثَّقِيلِي الأَحْمَالِ، وَأَنَا أُرِيحُكُمْ</blockquote>
     <cite data-rise>(متى 11: 28)</cite>
   </div>
@@ -840,8 +838,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 </section>
 
 <!-- ===== الأخبار ===== -->
-<section class="has-bg sec pool-l" id="news" aria-labelledby="t-news">
-  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-window-rays.jpg" alt="" loading="lazy"></div>
+<section class="sec pool-l" id="news" aria-labelledby="t-news">
   <div class="wrap">
     <div class="head-row">
       <div>
@@ -1072,13 +1069,8 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
     onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, duration: 1, stagger: .08, ease: 'power3.out', overwrite: true })
   });
 
-  // خلفيات الأقسام: تظهر وتختفي بنعومة مع التمرير
-  $$('.sec-bg img').forEach(img => {
-    gsap.timeline({ scrollTrigger: { trigger: img.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true } })
-      .fromTo(img, { opacity: 0 }, { opacity: .6, duration: 1, ease: 'none' })
-      .to(img, { opacity: .6, duration: 2, ease: 'none' })
-      .to(img, { opacity: 0, duration: 1, ease: 'none' });
-  });
+  // الغلاف الثابت: واضح بعد الواجهة، ثم يهدأ ويتموه بالتدريج مع النزول
+  gsap.fromTo('.site-cover .veil', { opacity: 0 }, { opacity: 1, ease: 'none', scrollTrigger: { trigger: '#schedule', start: 'top 80%', end: 'top -60%', scrub: true } });
 
   // الدوائر: تظهر بتكبير هادئ متدرج
   ScrollTrigger.batch('[data-bub]', {
