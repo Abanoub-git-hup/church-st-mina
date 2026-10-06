@@ -15,10 +15,13 @@
 <style>
 /* خاص بالنشأة: 3 دوائر للشفعاء */
 .saints{display:grid;gap:var(--s-6);grid-template-columns:repeat(3,minmax(0,1fr))}
-.saint{position:relative;display:flex;flex-direction:column;align-items:flex-start;padding:var(--s-8) var(--s-6) var(--s-6);border-radius:var(--r-xl);background:radial-gradient(circle at 50% 0%,rgba(243,201,135,.12),transparent 60%),rgba(39,26,17,.85);border:1px solid rgba(243,201,135,.22)}
-.saint-ic{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 25%,var(--umber-600),var(--umber-900) 78%);box-shadow:0 0 0 1px rgba(243,201,135,.4),0 0 0 8px rgba(224,176,96,.08);color:var(--gold);margin-bottom:var(--s-5)}
-.saint-ic .icon{width:32px;height:32px}
+.saint{position:relative;display:flex;flex-direction:column;align-items:flex-start;padding:var(--s-4) var(--s-4) var(--s-6);border-radius:var(--r-xl);background:radial-gradient(circle at 50% 0%,rgba(243,201,135,.12),transparent 60%),rgba(39,26,17,.85);border:1px solid rgba(243,201,135,.22)}
+.saint-im{width:100%;aspect-ratio:4/4.4;margin:0 0 var(--s-6);border-radius:50% 50% var(--r-lg) var(--r-lg)/34% 34% var(--r-lg) var(--r-lg);overflow:hidden;border:1px solid rgba(243,201,135,.35);box-shadow:0 26px 60px -28px rgba(0,0,0,.75)}
+.saint-im img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:saturate(.95) brightness(.95);transition:transform 1.4s var(--ease)}
+.saint:hover .saint-im img{transform:scale(1.05)}
 .saint .eyebrow{margin-bottom:var(--s-2)}
+.saint .eyebrow,.saint h3,.saint p,.saint-facts,.saint .link{margin-inline:var(--s-2)}
+.saint-facts{width:calc(100% - var(--s-4)) !important}
 .saint h3{font-size:1.5rem;font-weight:300;line-height:1.35}
 .saint p{color:var(--cream-2);margin-top:var(--s-3);font-size:.98rem}
 .saint-facts{display:grid;gap:var(--s-1);margin:var(--s-4) 0 var(--s-5);padding-top:var(--s-4);border-top:1px solid var(--line);width:100%;color:var(--gold-soft);font-size:.9rem}
@@ -144,7 +147,7 @@
     </div>
     <div class="saints">
       <article class="saint" data-rise>
-        <span class="saint-ic" data-bub><svg class="icon" aria-hidden="true"><use href="#i-heart"/></svg></span>
+        <figure class="saint-im" data-clip><img src="../media/patrons/virgin-mary.jpg" alt="أيقونة السيدة العذراء مريم" loading="lazy"></figure>
         <span class="eyebrow">والدة الإله</span>
         <h3>السيدة العذراء مريم</h3>
         <p>أم ربنا يسوع المسيح، من سبط يهوذا. باركت أرض مصر مع العائلة المقدسة، وتكرّمها الكنيسة القبطية فوق جميع القديسين وتطلب شفاعتها في كل صلاة.</p>
@@ -152,7 +155,7 @@
         <a class="link" href="https://st-takla.org/Full-Free-Coptic-Books/FreeCopticBooks-002-Holy-Arabic-Bible-Dictionary/24_M/M_128.html" target="_blank" rel="noopener">اقرأ عنها في قاموس الكتاب المقدس <svg class="icon"><use href="#i-nw"/></svg></a>
       </article>
       <article class="saint" data-rise>
-        <span class="saint-ic" data-bub><svg class="icon" aria-hidden="true"><use href="#i-cross"/></svg></span>
+        <figure class="saint-im" data-clip><img src="../media/patrons/saint-mina.jpg" alt="أيقونة الشهيد مارمينا العجايبي" loading="lazy"></figure>
         <span class="eyebrow">الشهيد العظيم</span>
         <h3>مارمينا العجايبي</h3>
         <p>أشهر الشهداء المصريين، واسمه يعني «آمين». كان ضابطًا في الجيش، فتركه سنة 303 م ليتعبد في البرية، ثم نال إكليل الشهادة وهو في الرابعة والعشرين. لُقّب بالعجايبي لكثرة العجائب التي يصنعها الرب بصلواته.</p>
@@ -160,7 +163,7 @@
         <a class="link" href="https://st-takla.org/Saints/Coptic-Orthodox-Saints-Biography/Coptic-Saints-Story_1773.html" target="_blank" rel="noopener">اقرأ سيرته <svg class="icon"><use href="#i-nw"/></svg></a>
       </article>
       <article class="saint" data-rise>
-        <span class="saint-ic" data-bub><svg class="icon" aria-hidden="true"><use href="#i-candle"/></svg></span>
+        <figure class="saint-im" data-clip><img src="../media/patrons/pope-kyrillos-vi.jpg" alt="أيقونة البابا كيرلس السادس" loading="lazy"></figure>
         <span class="eyebrow">البطريرك 116</span>
         <h3>البابا كيرلس السادس</h3>
         <p>وُلد باسم عازر يوسف عطا في طوخ النصارى بدمنهور، وترهّب في دير البراموس باسم «الراهب مينا». اختارته القرعة الهيكلية بطريركًا، وفي عهده بُني دير مارمينا الحالي بمريوط وعاد إليه جزء من رفات الشهيد.</p>
@@ -168,7 +171,7 @@
         <a class="link" href="https://st-takla.org/Pope-Kyrellos-1_.html" target="_blank" rel="noopener">اقرأ سيرته <svg class="icon"><use href="#i-nw"/></svg></a>
       </article>
     </div>
-    <p class="src-note" data-rise>المعلومات من <a href="https://st-takla.org/" target="_blank" rel="noopener">موقع الأنبا تكلا هيمانوت</a>.</p>
+    <p class="src-note" data-rise>المعلومات والأيقونات من <a href="https://st-takla.org/" target="_blank" rel="noopener">موقع الأنبا تكلا هيمانوت</a>.</p>
   </div>
 </section>
 
