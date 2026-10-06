@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>آباء الكنيسة | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
-<meta name="description" content="آباء كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر: القمص كيرلس روماني، والقس أرسانيوس عزت، والقس فام عبد المسيح.">
+<title>عنوان العظة | كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس</title>
+<meta name="description" content="عظة من مكتبة كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر.">
 <script>
   document.documentElement.classList.add('anim');
 </script>
@@ -13,18 +13,32 @@
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/site.css">
 <style>
-/* خاص بالآباء: دائرة صورة كبيرة، وملصقات الأقوال */
-.face-wrap{position:relative;width:360px;max-width:100%;aspect-ratio:1;justify-self:center}
-.face{--k:5.625;position:absolute;inset:0;border-radius:50%;background-color:var(--cream);background-repeat:no-repeat;background-size:calc(var(--w) * var(--k) * 1px) auto;background-position:calc(var(--x) * var(--k) * 1px) calc(var(--y) * var(--k) * 1px);box-shadow:0 0 0 2px var(--gold),0 0 0 12px rgba(224,176,96,.12),0 40px 90px -30px rgba(0,0,0,.75);animation:float 8s ease-in-out infinite alternate}
-@media (max-width:600px){.face-wrap{width:280px}.face{--k:4.375}}
-.sub-h{font-size:1.2rem;font-weight:400;color:var(--gold-soft);margin-top:var(--s-10)}
-.posters{display:flex;flex-wrap:wrap;gap:var(--s-4);margin-top:var(--s-5)}
-.poster{position:relative;width:132px;aspect-ratio:4/5;padding:0;border:1px solid rgba(243,201,135,.3);border-radius:var(--r-md);overflow:hidden;background:var(--umber-800);cursor:zoom-in;transition:transform var(--t-base) var(--ease),border-color var(--t-base)}
-.poster img{width:100%;height:100%;object-fit:cover;object-position:top}
-.poster .zoom{position:absolute;bottom:var(--s-2);inset-inline-end:var(--s-2);width:32px;height:32px;border-radius:50%;background:rgba(23,15,9,.7);color:var(--gold-soft);display:grid;place-items:center}
-.poster .zoom .icon{width:14px;height:14px}
-.poster:hover{transform:translateY(-4px);border-color:var(--gold-soft)}
-@media (max-width:600px){.poster{width:calc(33.33% - 11px)}}
+/* خاص بصفحة العظة: إطار الفيديو، والحالات البديلة (صوت وPDF) */
+.player{position:relative;max-width:980px;margin-inline:auto;aspect-ratio:16/9;border-radius:var(--r-xl);overflow:hidden;background:var(--umber-900);border:1px solid rgba(243,201,135,.3);box-shadow:0 40px 90px -30px rgba(0,0,0,.75)}
+.player img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.player .ph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:var(--s-3);text-align:center;padding:var(--s-6);background:radial-gradient(circle,rgba(23,15,9,.35),rgba(23,15,9,.75))}
+.player .big{width:84px;height:84px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center;position:relative}
+.player .big .icon{width:30px;height:30px;fill:currentColor;margin-inline-end:-4px}
+.player .big::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid var(--gold);opacity:.5}
+.player small{color:var(--cream-2)}
+.s-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-2) var(--s-8);margin-top:var(--s-6);color:var(--cream-2);font-size:.95rem}
+.s-meta span{display:inline-flex;align-items:center;gap:var(--s-2)}
+.s-meta .icon{color:var(--gold);width:18px;height:18px}
+.alts{display:grid;gap:var(--s-5);max-width:980px;margin-inline:auto;grid-template-columns:1fr 1fr}
+.alt-label{grid-column:1/-1;text-align:center;color:var(--muted);font-size:.85rem}
+.audio-p,.pdf-c{display:flex;align-items:center;gap:var(--s-4);padding:var(--s-5);border-radius:var(--r-lg);background:var(--umber-800);border:1px solid var(--line)}
+.audio-p .big{flex:none;width:60px;height:60px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center}
+.audio-p .big .icon{fill:currentColor;margin-inline-end:-3px}
+.audio-p .tr{flex:1}
+.audio-p .bar{height:4px;border-radius:4px;background:var(--line-strong);margin-top:var(--s-2);position:relative}
+.audio-p .bar span{position:absolute;inset-block:0;inset-inline-start:0;width:35%;border-radius:4px;background:var(--gold)}
+.audio-p .t{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem;margin-top:var(--s-1);font-variant-numeric:tabular-nums}
+.pdf-c .ic{flex:none;width:60px;height:72px;border-radius:var(--r-sm);background:var(--cream);color:var(--gold-deep);display:grid;place-items:center}
+.pdf-c .ic .icon{width:28px;height:28px}
+.pdf-c b{display:block;font-weight:400}
+.pdf-c small{color:var(--muted)}
+.pdf-c .link{margin-inline-start:auto}
+@media (max-width:760px){.alts{grid-template-columns:1fr}.pdf-c{flex-wrap:wrap}.pdf-c .link{margin-inline-start:0}}
 </style>
 </head>
 <body>
@@ -84,7 +98,7 @@
 <main id="main">
 
 <section class="page-hero" aria-labelledby="t-page">
-  <div class="hero-bg"><img src="../media/worship/deacons.jpeg" alt=""></div>
+  <div class="hero-bg"><img src="../media/worship/youth-night-liturgy-1.jpeg" alt=""></div>
   <div class="rays" aria-hidden="true"><span class="window"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span><span class="ray"></span></div>
   <canvas id="dust" aria-hidden="true"></canvas>
 
@@ -92,7 +106,7 @@
     <div class="wrap">
       <a class="brand" href="home.html" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b>والبابا كيرلس السادس · الجبل الأصفر</span></a>
       <nav class="top-nav" aria-label="القائمة الرئيسية" data-intro>
-        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html" aria-current="page">الكنيسة</a></li><li><a href="home.html#schedule">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
+        <ul><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="home.html#schedule">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html" aria-current="page">المكتبة</a></li><li><a href="home.html#news">الأخبار</a></li></ul>
       </nav>
       <div class="socials" data-intro>
         <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
@@ -105,65 +119,65 @@
 
   <div class="wrap page-head">
     <nav class="crumbs" aria-label="مسار التنقل" data-intro>
-      <ol><li><a href="home.html">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><span aria-current="page">الآباء</span></li></ol>
+      <ol><li><a href="home.html">الرئيسية</a></li><li><a href="library.html">المكتبة</a></li><li><span aria-current="page">عنوان العظة</span></li></ol>
     </nav>
-    <span class="eyebrow" data-intro>الآباء الكهنة</span>
-    <h1 class="title" id="t-page" data-split>آباء <b>الكنيسة</b></h1>
-    <p class="lead" data-intro>القمص كيرلس روماني، والقس أرسانيوس عزت، والقس فام عبد المسيح.</p>
+    <span class="eyebrow" data-intro>القمص كيرلس روماني</span>
+    <h1 class="title" id="t-page" data-split>عنوان <b>العظة</b></h1>
+    <p class="lead" data-intro>سطر قصير يلخّص موضوع العظة، يكتبه محرر المحتوى.</p>
   </div>
 </section>
 
-<nav class="subnav" aria-label="صفحات الكنيسة"><div class="wrap"><ul><li><a href="church-history.html">النشأة</a></li><li><a href="church-fathers.html" aria-current="page">الآباء</a></li><li><a href="church-gallery.html">الصور</a></li><li><a href="church-location.html">الموقع</a></li></ul></div></nav>
-
-<!-- ===== الآباء معًا ===== -->
-<section class="sec pool-l" aria-label="الآباء معًا">
-  <div class="wrap"><div class="arch" data-clip style="margin-inline:auto"><img src="../media/priests/fathers-group.png" alt="آباء الكنيسة الثلاثة"></div></div>
-</section>
-
-<section class="sec pool" data-cover-start aria-labelledby="t-f0">
-  <div class="wrap split">
-    <div class="face-wrap" data-bub><span class="face" style="background-image:url('../media/priests/quote-kyrillos-3.jpg');--w:265;--x:-32;--y:-233" role="img" aria-label="القمص كيرلس روماني"></span></div>
-    <div>
-      <span class="eyebrow" data-rise>كاهن الكنيسة</span>
-      <h2 class="title" id="t-f0" data-split>القمص <b>كيرلس روماني</b></h2>
-      <p class="lead" data-rise>رُسم قسًا على الكنيسة في 16 نوفمبر 1998. باقي النبذة يكتبها محرر المحتوى.</p>
-      <h3 class="sub-h" data-rise>من أقواله</h3>
-      <div class="posters" data-rise>
-        <button class="poster" data-lb data-cap="قول للقمص كيرلس روماني عن القيامة · القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-1.jpg" alt="قول للقمص كيرلس روماني عن القيامة" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
-        <button class="poster" data-lb data-cap="قول للقمص كيرلس روماني · القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-2.jpg" alt="قول للقمص كيرلس روماني" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
-        <button class="poster" data-lb data-cap="صلاة للقمص كيرلس روماني · القمص كيرلس روماني"><img src="../media/priests/quote-kyrillos-3.jpg" alt="صلاة للقمص كيرلس روماني" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
-      </div>
+<!-- ===== الفيديو ===== -->
+<section class="sec pool" data-cover-start aria-labelledby="t-video">
+  <div class="wrap">
+    <h2 class="title" id="t-video" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">فيديو العظة</h2>
+    <div class="player" data-clip>
+      <img class="grade" src="../media/worship/youth-night-liturgy-1.jpeg" alt="">
+      <div class="ph"><span class="big"><svg class="icon"><use href="#i-play"/></svg></span><b>الفيديو يظهر هنا</b><small>من يوتيوب أو فيسبوك، حسب الرابط الذي يضعه محرر المحتوى</small></div>
+    </div>
+    <div class="s-meta" data-rise>
+      <span><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>القمص كيرلس روماني</span>
+      <span><svg class="icon" aria-hidden="true"><use href="#i-book"/></svg>الموضوع</span>
+      <span><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>التاريخ</span>
     </div>
   </div>
 </section>
 
-<section class="sec deep" aria-labelledby="t-f1">
-  <div class="wrap split rev">
-    <div class="face-wrap" data-bub><span class="face" style="background-image:url('../media/priests/quote-arsanios-1.jpg');--w:252;--x:-49;--y:-84" role="img" aria-label="القس أرسانيوس عزت"></span></div>
-    <div>
-      <span class="eyebrow" data-rise>كاهن الكنيسة</span>
-      <h2 class="title" id="t-f1" data-split>القس <b>أرسانيوس عزت</b></h2>
-      <p class="lead" data-rise>نبذة قصيرة عن أبينا: سنة الرسامة، والخدمات التي يرعاها. يكتبها محرر المحتوى.</p>
-      <h3 class="sub-h" data-rise>من أقواله</h3>
-      <div class="posters" data-rise>
-        <button class="poster" data-lb data-cap="خادم مش مصلي.. غصنه ناشف · القس أرسانيوس عزت"><img src="../media/priests/quote-arsanios-1.jpg" alt="خادم مش مصلي.. غصنه ناشف" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
-        <button class="poster" data-lb data-cap="قول للقس أرسانيوس عزت · القس أرسانيوس عزت"><img src="../media/priests/quote-arsanios-2.jpg" alt="قول للقس أرسانيوس عزت" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
-      </div>
+<!-- ===== عن العظة ===== -->
+<section class="sec deep" aria-labelledby="t-about">
+  <div class="wrap">
+    <article class="prose">
+      <span class="eyebrow" data-rise>عن العظة</span>
+      <h2 class="title" id="t-about" data-split style="margin-top:0">نقاط <b>العظة</b></h2>
+      <p data-rise>وصف قصير للعظة يكتبه محرر المحتوى، ويمكن أن يحتوي على النقاط الرئيسية:</p>
+      <ul data-rise><li>النقطة الأولى.</li><li>النقطة الثانية.</li><li>النقطة الثالثة.</li></ul>
+      <blockquote data-rise>آية العظة تظهر هنا<cite>(الشاهد)</cite></blockquote>
+    </article>
+  </div>
+</section>
+
+<!-- ===== الحالات البديلة ===== -->
+<section class="sec pool-l" aria-label="شكل العظة الصوتية وملف PDF">
+  <div class="wrap">
+    <div class="alts">
+      <p class="alt-label" data-rise>لو العظة صوتية أو ملف، يظهر مكان الفيديو واحد من الشكلين دول:</p>
+      <div class="audio-p" data-rise><span class="big"><svg class="icon"><use href="#i-play"/></svg></span><div class="tr"><b>عظة صوتية</b><div class="bar"><span></span></div><div class="t"><span>12:40</span><span>36:15</span></div></div></div>
+      <div class="pdf-c" data-rise><span class="ic"><svg class="icon"><use href="#i-file"/></svg></span><div><b>ملف العظة</b><small>PDF · 2.4 MB</small></div><a class="link" href="#" download>تحميل <svg class="icon"><use href="#i-nw"/></svg></a></div>
     </div>
   </div>
 </section>
 
-<section class="sec pool" aria-labelledby="t-f2">
-  <div class="wrap split">
-    <div class="face-wrap" data-bub><span class="face" style="background-image:url('../media/priests/quote-fam.jpg');--w:301;--x:-5;--y:-115" role="img" aria-label="القس فام عبد المسيح"></span></div>
-    <div>
-      <span class="eyebrow" data-rise>كاهن الكنيسة</span>
-      <h2 class="title" id="t-f2" data-split>القس <b>فام عبد المسيح</b></h2>
-      <p class="lead" data-rise>نبذة قصيرة عن أبينا: سنة الرسامة، والخدمات التي يرعاها. يكتبها محرر المحتوى.</p>
-      <h3 class="sub-h" data-rise>من أقواله</h3>
-      <div class="posters" data-rise>
-        <button class="poster" data-lb data-cap="قول للقس فام عبد المسيح · القس فام عبد المسيح"><img src="../media/priests/quote-fam.jpg" alt="قول للقس فام عبد المسيح" loading="lazy"><span class="zoom"><svg class="icon"><use href="#i-nw"/></svg></span></button>
-      </div>
+<!-- ===== عظات أخرى ===== -->
+<section class="sec deep" aria-labelledby="t-more">
+  <div class="wrap">
+    <div class="more-head">
+      <div><span class="eyebrow" data-rise>للمتحدث نفسه</span><h2 class="title" id="t-more" data-split>عظات <b>أخرى</b></h2></div>
+      <a class="link" href="library.html" data-rise>كل العظات <svg class="icon"><use href="#i-nw"/></svg></a>
+    </div>
+    <div class="cards">
+      <a class="sermon" data-sp="kyrillos" data-k="audio" href="sermon.html" data-rise><div class="top"><span class="mi"><svg class="icon"><use href="#i-headphones"/></svg></span><span class="kind">عظة صوتية</span></div><h3>عنوان العظة 2</h3><ul><li>القمص كيرلس روماني</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>استمع الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
+      <a class="sermon" data-sp="kyrillos" data-k="pdf" href="sermon.html" data-rise><div class="top"><span class="mi"><svg class="icon"><use href="#i-file"/></svg></span><span class="kind">ملف PDF</span></div><h3>عنوان العظة 3</h3><ul><li>القمص كيرلس روماني</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>اقرأ الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
+      <a class="sermon" data-sp="kyrillos" data-k="video" href="sermon.html" data-rise><div class="top"><span class="mi"><svg class="icon" style="fill:currentColor"><use href="#i-play"/></svg></span><span class="kind">فيديو</span></div><h3>عنوان العظة 4</h3><ul><li>القمص كيرلس روماني</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>شاهد الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
     </div>
   </div>
 </section>
@@ -197,13 +211,6 @@
     </div>
   </div>
 </footer>
-
-<dialog class="lightbox" id="lightbox" aria-label="عارض الصور">
-  <button class="lb-close" id="lbClose" aria-label="إغلاق"><svg class="icon"><use href="#i-x"/></svg></button>
-  <button class="lb-btn lb-prev" id="lbPrev" aria-label="السابقة"><svg class="icon"><use href="#i-right"/></svg></button>
-  <button class="lb-btn lb-next" id="lbNext" aria-label="التالية"><svg class="icon"><use href="#i-left"/></svg></button>
-  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
-</dialog>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>

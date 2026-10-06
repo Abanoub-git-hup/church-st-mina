@@ -52,6 +52,9 @@
       const panel = $('#' + t.getAttribute('aria-controls'));
       if (animate) { gsap.fromTo(panel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .6, ease: 'power3.out' }); ScrollTrigger.refresh(); }
     };
+    // فتح التبويب من الرابط: #اسم-اللوحة
+    const fromHash = tabs.find(t => location.hash && '#' + t.getAttribute('aria-controls') === location.hash);
+    if (fromHash) select(fromHash);
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(t));
       t.addEventListener('keydown', e => {
