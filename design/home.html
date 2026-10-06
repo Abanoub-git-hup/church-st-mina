@@ -6,7 +6,7 @@
 <title>كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس | الجبل الأصفر</title>
 <meta name="description" content="كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس، عرب العيايدة، ناحية الجبل الأصفر، مطرانية شبين القناطر وتوابعها.">
 <script>
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('anim');
+  document.documentElement.classList.add('anim');
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,12 +88,12 @@ button{font:inherit;color:inherit}
 /* ===== الواجهة ===== */
 .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;isolation:isolate;overflow:hidden}
 .hero-bg{position:absolute;inset:0;z-index:-3;overflow:hidden}
-.hero-bg img{width:100%;height:110%;object-fit:cover;object-position:center 30%;transform-origin:50% 30%}
-.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(23,15,9,.72) 0%,rgba(23,15,9,.3) 32%,rgba(23,15,9,.5) 70%,rgba(23,15,9,.35) 100%);-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
+.hero-bg img{width:100%;height:110%;object-fit:cover;object-position:center 30%;transform-origin:50% 30%;filter:brightness(.7) saturate(1.05) contrast(1.08)}
+.hero::before{content:"";position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(23,15,9,.82) 0%,rgba(23,15,9,.48) 32%,rgba(23,15,9,.66) 70%,rgba(23,15,9,.5) 100%);-webkit-mask-image:linear-gradient(180deg,#000 72%,transparent);mask-image:linear-gradient(180deg,#000 72%,transparent)}
 .hero-bg,.rays,#dust{-webkit-mask-image:linear-gradient(180deg,#000 66%,transparent 98%);mask-image:linear-gradient(180deg,#000 66%,transparent 98%)}
-.rays{position:absolute;inset:0;z-index:-1;pointer-events:none;mix-blend-mode:screen;overflow:hidden;opacity:.75}
-.rays .window{position:absolute;top:-20%;left:4%;width:55%;height:65%;background:radial-gradient(ellipse at 40% 20%, rgba(255,222,165,.55), rgba(255,190,110,.18) 35%, transparent 70%);filter:blur(10px)}
-.ray{position:absolute;top:-25%;height:150%;transform-origin:top center;filter:blur(20px);background:linear-gradient(180deg, rgba(255,222,165,.45), rgba(255,196,120,.12) 55%, transparent 85%);animation:ray 9s ease-in-out infinite alternate}
+.rays{position:absolute;inset:0;z-index:-1;pointer-events:none;mix-blend-mode:screen;overflow:hidden}
+.rays .window{position:absolute;top:-20%;left:4%;width:55%;height:65%;background:radial-gradient(ellipse at 40% 20%, rgba(255,222,165,.7), rgba(255,190,110,.22) 35%, transparent 70%);filter:blur(10px)}
+.ray{position:absolute;top:-25%;height:150%;transform-origin:top center;filter:blur(13px);background:linear-gradient(180deg, rgba(255,226,170,.62), rgba(255,200,125,.18) 55%, transparent 85%);animation:ray 9s ease-in-out infinite alternate}
 .ray:nth-child(2){left:10%;width:80px;transform:rotate(-24deg);animation-delay:-2s}
 .ray:nth-child(3){left:20%;width:130px;transform:rotate(-26deg);animation-delay:-5s}
 .ray:nth-child(4){left:31%;width:60px;transform:rotate(-23deg);animation-delay:-1s}
@@ -117,22 +117,22 @@ button{font:inherit;color:inherit}
 .hero-top .socials{display:none}
 @media (min-width:1100px){.top-nav{display:block}.hero-top .socials{display:flex}.hero-top .menu-btn{display:none}}
 
-.hero-center{flex:1;display:grid;place-items:center;text-align:center;padding:var(--s-12) var(--gut) 220px}
+.hero-center{flex:1;display:grid;place-items:center;text-align:center;padding:var(--s-16) var(--gut) var(--s-24)}
 .hero-center > div{max-width:980px}
-.hello{display:inline-flex;align-items:center;gap:var(--s-2);padding:6px 18px;border-radius:var(--r-full);border:1px solid rgba(243,201,135,.35);background:rgba(23,15,9,.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--gold-soft);font-size:.9rem;font-weight:400;margin-bottom:var(--s-6)}
+.hello{display:inline-flex;align-items:center;gap:var(--s-2);padding:6px 18px;border-radius:var(--r-full);border:1px solid rgba(243,201,135,.35);background:rgba(23,15,9,.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--gold-soft);font-size:.9rem;font-weight:400;margin-bottom:var(--s-8)}
 .hello .icon{width:16px;height:16px}
 .hero h1{font-family:var(--f-verse);font-weight:700;font-size:clamp(2rem,5.4vw,4.3rem);line-height:1.6;color:#FFF3E0;text-shadow:0 4px 30px rgba(0,0,0,.55)}
 .hero h1 em{font-style:normal;color:var(--gold-soft)}
-.hero .ref{display:block;margin-top:var(--s-3);color:var(--gold);font-size:.95rem}
-.hero .sub{margin:var(--s-5) auto 0;max-width:620px;color:var(--cream-2);font-size:1.02rem}
-.hero-ctas{display:flex;align-items:center;justify-content:center;gap:var(--s-4);flex-wrap:wrap;margin-top:var(--s-10)}
+.hero .ref{display:block;margin-top:var(--s-4);color:var(--gold);font-size:.95rem}
+.hero .sub{margin:var(--s-8) auto 0;max-width:620px;color:var(--cream-2);font-size:1.02rem;line-height:2}
+.hero-ctas{display:flex;align-items:center;justify-content:center;gap:var(--s-4);flex-wrap:wrap;margin-top:var(--s-12)}
 .pill.ghost{background:rgba(246,236,220,.1);color:var(--cream);border:1px solid var(--line-strong);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .pill.ghost .dot{background:var(--cream);color:var(--ink)}
 .pill.ghost:hover{background:rgba(246,236,220,.18)}
-@media (max-width:600px){.hero-ctas .pill{width:100%;justify-content:space-between}.hero-center{padding-bottom:var(--s-24)}}
+@media (max-width:600px){.hero-ctas .pill{width:100%;justify-content:space-between}.hero-center{padding:var(--s-12) var(--gut) var(--s-20)}.hero .sub{margin-top:var(--s-6)}.hero-ctas{margin-top:var(--s-10);gap:var(--s-3)}}
 
 /* الدوائر الأربعة أسفل الواجهة */
-.hero-cards{position:relative;z-index:2;margin-top:-150px}
+.hero-cards{position:relative;z-index:2;margin-top:var(--s-8)}
 .hcirc{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:var(--s-6)}
 .hc{position:relative;flex:none;width:var(--w);aspect-ratio:1;display:block;color:inherit}
 .hc.next{--w:clamp(200px,20vw,270px)}
@@ -166,7 +166,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .hc .lbl{display:inline-flex;align-items:center;gap:6px;font-size:.92rem}
 .hc .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:#E5634F;box-shadow:0 0 0 4px rgba(229,99,79,.25)}
 @media (max-width:600px){
-  .hero-cards{margin-top:-24px}
+  .hero-cards{margin-top:var(--s-6)}
   .hcirc{gap:var(--s-3)}
   .hc.next{--w:52vw;margin-top:0}
   .hc.live{--w:36vw;margin-top:44px}
@@ -488,7 +488,6 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .anim [data-bub]{opacity:0;transform:scale(.6)}
 .anim .hero-bg img{transform:scale(1.15)}
 .anim .rays,.anim #dust,.anim .hero [data-intro],.anim [data-tile]{opacity:0}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
@@ -911,7 +910,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 (() => {
   const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const root = document.documentElement;
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = false; // الحركة تعمل للكل بقرار المستخدم
   const animate = root.classList.contains('anim') && window.gsap && window.ScrollTrigger;
   if (!animate) root.classList.remove('anim');
 
