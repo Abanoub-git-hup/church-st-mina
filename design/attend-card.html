@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a1c12">
+<meta name="robots" content="noindex, nofollow">
+<title>حضوري | إعداد الخدام</title>
+<meta name="description" content="صفحة حضورك في خدمة إعداد الخدام وكارتك.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/attend.css">
+<style>
+/* صفحة المخدوم: "حضوري" و"كارتي". قراءة بس، ومفيهاش أي حاجة تخص مخدوم تاني */
+.wrap-c{flex:1;width:100%;max-width:480px;margin-inline:auto;padding:var(--s-6) var(--gut) 0;display:grid;gap:var(--s-4);align-content:start}
+.hello{display:flex;align-items:center;gap:var(--s-3);text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.hello img{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 1px rgba(255,244,228,.4)}
+.hello small{display:block;font-size:.8rem;font-weight:500;color:var(--gold-soft)}
+.hello h1{font-size:1.6rem;font-weight:300;line-height:1.3}
+[hidden]{display:none !important}
+
+/* رسالة الخدام */
+.msg-strip{display:flex;gap:var(--s-3);align-items:flex-start;padding:var(--s-3) var(--s-4);border-radius:18px;background:linear-gradient(135deg,rgba(243,201,135,.28),rgba(243,201,135,.1));border:1px solid rgba(243,201,135,.35);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);font-size:.94rem;line-height:1.8;color:#FFF3DE}
+.msg-strip .icon{width:20px;height:20px;flex:none;margin-top:4px;color:var(--gold-soft)}
+.msg-strip small{display:block;font-size:.76rem;color:rgba(255,243,222,.7)}
+
+.card{padding:var(--s-5)}
+.c-h{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s-3);margin-bottom:var(--s-4)}
+.c-h h2{font-size:1.05rem;font-weight:500}
+.c-h small{font-size:.78rem;color:var(--on-glass-2)}
+
+/* النسبة + فلتر نوع النشاط */
+.types{display:flex;gap:var(--s-2);overflow-x:auto;padding-bottom:4px;margin-bottom:var(--s-5);scrollbar-width:none}
+.types::-webkit-scrollbar{display:none}
+.types button{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--glass-line-soft);background:var(--glass-2);color:var(--on-glass-2);font:inherit;font-size:.86rem;cursor:pointer}
+.types button[aria-pressed=true]{background:var(--btn-light);color:var(--ink);border-color:transparent}
+.pct-row{display:grid;grid-template-columns:132px 1fr;gap:var(--s-5);align-items:center}
+.ring{--p:0;position:relative;width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--gold-soft) calc(var(--p) * 1%),rgba(255,248,238,.14) 0);transition:--p .6s}
+.ring::before{content:"";position:absolute;inset:6px;border-radius:50%;background:rgba(40,27,18,.7)}
+.ring div{position:relative;text-align:center;line-height:1.05}
+.ring strong{display:block;font-size:2.6rem;font-weight:200;font-variant-numeric:tabular-nums}
+.ring span{font-size:.78rem;color:var(--on-glass-2)}
+.pct-facts{display:grid;gap:var(--s-2);font-size:.88rem;line-height:1.6;color:var(--on-glass-2)}
+.pct-facts b{color:var(--on-glass);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* الشموع: شمعة مولّعة لكل جلسة حضرها ورا بعض، وشمعة مطفية مستنياه */
+.candles{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;min-height:76px;padding:var(--s-2) var(--s-1) 0}
+.cd{position:relative;width:10px;height:38px;border-radius:3px 3px 2px 2px;background:linear-gradient(90deg,#E9D9BE,#FFF6E6 45%,#D8C4A2)}
+.cd::before{content:"";position:absolute;left:50%;bottom:100%;translate:-50% -3px;width:10px;height:18px;border-radius:50%/60% 60% 40% 40%;background:radial-gradient(ellipse at 50% 70%,#fff 0%,#FFE2A0 30%,#FF9E45 70%,transparent 72%);transform-origin:50% 90%;animation:flame 1.8s ease-in-out infinite}
+.cd::after{content:"";position:absolute;left:50%;bottom:100%;translate:-50% -1px;width:2px;height:4px;background:#5a4636;border-radius:1px}
+.cd:nth-child(2n)::before{animation-delay:-.6s}
+.cd:nth-child(3n)::before{animation-delay:-1.1s}
+.cd.lit{box-shadow:0 -14px 22px -8px rgba(255,170,80,.45)}
+.cd.off{opacity:.45}
+.cd.off::before{display:none}
+.more-c{align-self:center;font-size:.86rem;color:var(--gold-soft)}
+.streak-t{margin-top:var(--s-4);font-size:.95rem;line-height:1.7}
+.streak-t b{font-size:1.3rem;font-weight:400;color:var(--gold-soft)}
+.streak-t small{display:block;font-size:.8rem;color:var(--on-glass-2)}
+
+/* الرسم الشهري */
+.bars{display:grid;grid-template-columns:repeat(6,1fr);gap:var(--s-3);align-items:end;height:150px;padding-top:var(--s-5)}
+.bar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
+.bar i{display:block;width:100%;max-width:34px;border-radius:8px 8px 4px 4px;background:rgba(255,248,238,.55);min-height:4px}
+.bar.now i{background:var(--gold-soft)}
+.bar em{font-style:normal;font-size:.76rem;font-variant-numeric:tabular-nums;color:var(--on-glass-2)}
+.bar.now em{color:var(--gold-soft)}
+.bar span{font-size:.75rem;color:var(--on-glass-2);white-space:nowrap}
+.bar.none i{background:rgba(255,248,238,.1)}
+
+/* آخر 10 جلسات */
+.last{display:grid;gap:2px}
+.ls{display:grid;grid-template-columns:1fr auto;gap:var(--s-3);align-items:center;min-height:52px;padding:6px var(--s-2);border-radius:12px}
+.ls:nth-child(odd){background:rgba(255,244,228,.04)}
+.ls b{display:block;font-size:.92rem;font-weight:400}
+.ls small{font-size:.78rem;color:var(--on-glass-2)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:.76rem;font-weight:500;white-space:nowrap}
+.badge .icon{width:13px;height:13px;stroke-width:2.2}
+.badge.h{background:rgba(155,208,127,.2);color:#C9EDB6}
+.badge.e{background:rgba(127,166,191,.25);color:#CFE3F0}
+.badge.a{background:rgba(217,96,79,.25);color:var(--bad-text)}
+
+/* تثبيت الصفحة على الموبايل */
+.install{display:grid;grid-template-columns:44px 1fr;gap:var(--s-3);align-items:start;padding:var(--s-4)}
+.install .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--glass-3)}
+.install b{display:block;font-size:.95rem;font-weight:500}
+.install p{font-size:.84rem;line-height:1.75;color:var(--on-glass-2);margin-top:2px}
+.install .row{grid-column:1/-1;display:flex;gap:var(--s-2);align-items:center}
+.install .row .btn{flex:1;height:46px}
+
+/* كارتي: لوحة كريمي 9:16 */
+.my-card{position:relative;width:min(100%,340px);aspect-ratio:9/16;margin:0 auto;padding:28px 24px;border-radius:28px;background:#F6ECDC;color:#1E140D;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 30px 60px rgba(10,6,3,.45)}
+.my-card img{width:64px;height:64px;border-radius:50%}
+.my-card .ch{margin-top:10px;font-size:.78rem;line-height:1.5;color:#6B5845}
+.my-card .svc{margin-top:auto;font-size:.82rem;font-weight:500;color:#8A6A3E}
+.my-card .nm{font-size:1.5rem;font-weight:500;line-height:1.35;margin:4px 0 16px}
+.my-card .qr{width:72%;aspect-ratio:1;padding:5%;background:#fff;border-radius:16px}
+.my-card .qr svg{width:100%;height:100%;display:block}
+.my-card .tip{margin-top:auto;font-size:.76rem;line-height:1.6;color:#6B5845}
+.card-acts{display:grid;gap:var(--s-2);width:min(100%,340px);margin:var(--s-4) auto 0}
+.card-help{text-align:center;font-size:.82rem;line-height:1.75;color:var(--on-glass-2);text-shadow:0 1px 8px rgba(0,0,0,.5)}
+
+/* رابط غير صالح */
+.bad-link{padding:var(--s-8) var(--s-5);text-align:center}
+.bad-link .ic{width:64px;height:64px;margin:0 auto var(--s-4);border-radius:50%;display:grid;place-items:center;background:var(--glass-3)}
+.bad-link .ic .icon{width:28px;height:28px}
+.bad-link h1{font-size:1.3rem;font-weight:400;margin-bottom:var(--s-2)}
+.bad-link p{font-size:.9rem;line-height:1.85;color:var(--on-glass-2)}
+
+/* التبويبين تحت */
+.g-nav.two ul{grid-template-columns:repeat(2,1fr)}
+.g-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:100%;border:0;border-radius:16px;background:none;color:var(--on-glass-2);font:inherit;font-size:.8rem;cursor:pointer}
+.g-nav button[aria-selected=true]{background:var(--glass-3);color:var(--on-glass)}
+.g-nav button .icon{width:22px;height:22px}
+</style>
+</head>
+<body class="has-nav">
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-heart-s" viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/></symbol>
+  <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4M20 17v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></symbol>
+  <symbol id="i-phone-add" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 8v6M9 11h6"/></symbol>
+  <symbol id="i-link-off" viewBox="0 0 24 24"><path d="M9 15l6-6M10 6l1-1a4.2 4.2 0 0 1 6 6l-1 1M14 18l-1 1a4.2 4.2 0 0 1-6-6l1-1M3 3l18 18"/></symbol>
+</svg>
+
+<!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس. البيانات وهمية -->
+<div class="review" role="group" aria-label="حالات الشاشة للمراجعة">
+  <span>نموذج للمراجعة (بيانات وهمية)، اختر مخدوم:</span>
+  <button class="chip" type="button" data-id="0" aria-pressed="false">منتظم</button>
+  <button class="chip" type="button" data-id="26" aria-pressed="false">غايب بقاله فترة</button>
+  <button class="chip" type="button" data-id="bad" aria-pressed="false">رابط غير صالح</button>
+</div>
+
+<main class="wrap-c" id="main">
+  <!-- رابط غير صالح -->
+  <section class="glass bad-link" id="badLink" hidden>
+    <div class="ic"><svg class="icon"><use href="#i-link-off"/></svg></div>
+    <h1>الرابط ده مش شغال</h1>
+    <p>ممكن يكون اتعملك كارت جديد والقديم اتلغى. اطلب من خادم إعداد الخدام يبعتلك الرابط الجديد على واتساب.</p>
+  </section>
+
+  <div id="page" hidden>
+    <header class="hello">
+      <img src="../media/brand/logo.png" alt="" width="44" height="44" id="logo">
+      <div><small>إعداد الخدام</small><h1 id="hi"></h1></div>
+    </header>
+
+    <!-- حضوري -->
+    <div id="tab-me" role="tabpanel" aria-labelledby="t-me" style="display:grid;gap:var(--s-4);margin-top:var(--s-4)">
+      <div class="msg-strip" id="msg"><svg class="icon"><use href="#i-heart-s"/></svg><div><span id="msgTxt"></span><small>من خدام إعداد الخدام</small></div></div>
+
+      <section class="glass card" aria-labelledby="pctH">
+        <div class="c-h"><h2 id="pctH">نسبة حضورك</h2><small id="since"></small></div>
+        <div class="types" role="group" aria-label="نوع النشاط" id="types"></div>
+        <div class="pct-row">
+          <div class="ring" id="ring" role="img"><div><strong id="pct"></strong><span>حضور</span></div></div>
+          <div class="pct-facts" id="facts"></div>
+        </div>
+      </section>
+
+      <section class="glass card" aria-labelledby="stH">
+        <div class="c-h"><h2 id="stH">ورا بعض</h2><small>الغياب بعذر مابيقطعش العدّ</small></div>
+        <div class="candles" id="candles" aria-hidden="true"></div>
+        <p class="streak-t" id="streakT"></p>
+      </section>
+
+      <section class="glass card" aria-labelledby="moH">
+        <div class="c-h"><h2 id="moH">آخر 6 شهور</h2><small>نسبة كل شهر</small></div>
+        <div class="bars" id="bars" role="img"></div>
+      </section>
+
+      <section class="glass card" aria-labelledby="lsH">
+        <div class="c-h"><h2 id="lsH">آخر 10 جلسات</h2></div>
+        <div class="last" id="last"></div>
+      </section>
+
+      <section class="glass install" id="install" aria-labelledby="inH">
+        <span class="ic"><svg class="icon"><use href="#i-phone-add"/></svg></span>
+        <div><b id="inH">حط الصفحة على شاشة موبايلك</b><p id="inSteps"></p></div>
+        <div class="row">
+          <button class="btn btn-light" type="button" id="inBtn" hidden>ثبّتها</button>
+          <button class="textlink" type="button" id="inHide">مش دلوقتي</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- كارتي -->
+    <div id="tab-card" role="tabpanel" aria-labelledby="t-card" hidden style="margin-top:var(--s-4)">
+      <div class="my-card" id="myCard">
+        <img src="../media/brand/logo.png" alt="">
+        <p class="ch">كنيسة السيدة العذراء ومارمينا<br>والبابا كيرلس السادس · الجبل الأصفر</p>
+        <p class="svc">إعداد الخدام</p>
+        <p class="nm" id="cardName"></p>
+        <div class="qr" id="qr" role="img" aria-label="كود الحضور"></div>
+        <p class="tip">ورّي الكارت ده للخادم في كل جلسة</p>
+      </div>
+      <div class="card-acts">
+        <button class="btn btn-light" type="button" id="save"><svg class="icon"><use href="#i-down"/></svg>احفظ الكارت كصورة</button>
+        <p class="card-help">الصورة بتتحفظ في الموبايل. لو الكاميرا مش قارياه، علّي سطوع الشاشة.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="glass g-nav two" id="tabs" aria-label="صفحتك" hidden>
+  <ul role="tablist">
+    <li><button type="button" role="tab" id="t-me" aria-controls="tab-me" aria-selected="true"><svg class="icon"><use href="#i-chart"/></svg>حضوري</button></li>
+    <li><button type="button" role="tab" id="t-card" aria-controls="tab-card" aria-selected="false"><svg class="icon"><use href="#i-qr"/></svg>كارتي</button></li>
+  </ul>
+</nav>
+
+<script src="assets/attend-demo.js"></script>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const D = window.AttendDemo;
+  const icon = id => `<svg class="icon"><use href="#${id}"/></svg>`;
+  const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
+  const fMonth = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { month: 'short' });
+  const fDate = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' });
+  // رسالة الخدام (في الموقع الحقيقي جاية من شاشة "المزيد")
+  const MSG = 'الاجتماع الجمعة الجاية بعد القداس على طول. مستنيينكم، وهاتوا صاحب معاكم.';
+
+  let m, type = 'all';
+  const ST = { h: ['حضر', 'i-check'], e: ['غاب بعذر', 'i-note'], a: ['غاب', 'i-x'] };
+
+  // النسبة = حضر ÷ (الجلسات المنتهية − الغياب بعذر)، لنوع نشاط معيّن أو الكل
+  function stats(t) {
+    const idx = m.log.map((x, k) => k).filter(k => t === 'all' || D.sessionTypes[k] === t);
+    const h = idx.filter(k => m.log[k] === 'h').length, e = idx.filter(k => m.log[k] === 'e').length;
+    const base = idx.length - e;
+    return { h, e, total: idx.length, base, pct: base ? Math.round(h / base * 100) : 0 };
+  }
+  // التتابع: حضور ورا بعض من الأحدث، والعذر بيتعدّى
+  const streak = () => { let n = 0; for (const x of m.log) { if (x === 'a') break; if (x === 'h') n++; } return n; };
+
+  function renderPct() {
+    const s = stats(type);
+    $('#types').innerHTML = [['all', 'الكل'], ...Object.entries(D.TYPES)].map(([k, t]) => `<button type="button" data-t="${k}" aria-pressed="${k === type}">${t}</button>`).join('');
+    const ring = $('#ring'); ring.style.setProperty('--p', s.pct);
+    ring.setAttribute('aria-label', `نسبة حضورك ${s.pct}%`);
+    $('#pct').textContent = s.total ? s.pct + '%' : '–';
+    const tn = type === 'all' ? 'جلسة' : `جلسة ${D.TYPES[type]}`;
+    $('#facts').innerHTML = s.total
+      ? `<span>حضرت <b>${s.h}</b> من <b>${s.base}</b> ${tn}</span>${s.e ? `<span>وغبت بعذر <b>${s.e}</b> ${s.e === 1 ? 'مرة' : 'مرات'}، ودول مابيتحسبوش</span>` : ''}`
+      : `<span>لسه مفيش ${tn} من ساعة ما اتسجّلت.</span>`;
+  }
+
+  function renderStreak() {
+    const n = streak(), show = Math.min(n, 12);
+    $('#candles').innerHTML = Array.from({ length: show }, () => '<i class="cd lit"></i>').join('') + (n > 12 ? `<span class="more-c">+${n - 12}</span>` : '') + '<i class="cd off"></i>';
+    $('#streakT').innerHTML = n
+      ? `<b>${n}</b> ${n === 1 ? 'جلسة' : n === 2 ? 'جلستين' : 'جلسات'} ورا بعض<small>الشمعة اللي جاية مستنياك الجلسة الجاية.</small>`
+      : `لسه مفيش شموع مولّعة<small>احضر الجلسة الجاية وولّع أول شمعة.</small>`;
+  }
+
+  function renderBars() {
+    // نسبة كل شهر من آخر 6 شهور (الحالي على اليمين)
+    const now = new Date(), months = [];
+    for (let k = 0; k < 6; k++) { const d = new Date(now.getFullYear(), now.getMonth() - k, 1); months.push(d); }
+    const data = months.map(d => {
+      const idx = D.sessionDates.map((x, k) => k).filter(k => D.sessionDates[k].getMonth() === d.getMonth() && D.sessionDates[k].getFullYear() === d.getFullYear());
+      const h = idx.filter(k => m.log[k] === 'h').length, base = idx.filter(k => m.log[k] !== 'e').length;
+      return { d, pct: base ? Math.round(h / base * 100) : null };
+    });
+    $('#bars').innerHTML = data.map((x, k) => `<div class="bar${k === 0 ? ' now' : ''}${x.pct === null ? ' none' : ''}"><em>${x.pct === null ? '–' : x.pct + '%'}</em><i style="height:${x.pct === null ? 4 : Math.max(6, x.pct)}%"></i><span>${fMonth.format(x.d)}</span></div>`).join('');
+    $('#bars').setAttribute('aria-label', 'نسبة كل شهر: ' + data.map(x => `${fMonth.format(x.d)} ${x.pct === null ? 'مفيش جلسات' : x.pct + '%'}`).join('، '));
+  }
+
+  function renderLast() {
+    $('#last').innerHTML = m.log.slice(0, 10).map((s, k) => `<div class="ls"><div><b>${D.TYPES[D.sessionTypes[k]]}</b><small>${fDay.format(D.sessionDates[k])}</small></div><span class="badge ${s}">${icon(ST[s][1])}${ST[s][0]}</span></div>`).join('');
+  }
+
+  // الكارت: نفس الـ QR الوهمي اللي في ملف المخدوم
+  const cells = () => D.qrCells(m.id * 31 + 1);
+  function renderCard() {
+    $('#cardName').textContent = m.name;
+    const g = cells(), N = g.length;
+    let r = ''; g.forEach((row, y) => row.forEach((on, x) => { if (on) r += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }));
+    $('#qr').innerHTML = `<svg viewBox="0 0 ${N} ${N}" shape-rendering="crispEdges"><g fill="#1E140D">${r}</g></svg>`;
+  }
+
+  // احفظ الكارت: بنرسمه على canvas بمقاس 1080×1920 وننزّله PNG
+  $('#save').addEventListener('click', async () => {
+    await document.fonts.ready;
+    const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
+    const x = c.getContext('2d');
+    x.fillStyle = '#F6ECDC'; x.fillRect(0, 0, W, H);
+    const logo = $('#logo');
+    if (logo.complete && logo.naturalWidth) { x.save(); x.beginPath(); x.arc(W / 2, 230, 110, 0, Math.PI * 2); x.clip(); x.drawImage(logo, W / 2 - 110, 120, 220, 220); x.restore(); }
+    x.direction = 'rtl'; x.textAlign = 'center';
+    x.fillStyle = '#6B5845'; x.font = '300 40px Alexandria';
+    x.fillText('كنيسة السيدة العذراء ومارمينا', W / 2, 420); x.fillText('والبابا كيرلس السادس · الجبل الأصفر', W / 2, 480);
+    x.fillStyle = '#8A6A3E'; x.font = '500 46px Alexandria'; x.fillText('إعداد الخدام', W / 2, 700);
+    x.fillStyle = '#1E140D'; x.font = '500 84px Alexandria'; x.fillText(m.name, W / 2, 810);
+    const q = 720, qx = (W - q) / 2, qy = 900;
+    x.fillStyle = '#fff'; x.beginPath(); x.roundRect(qx, qy, q, q, 48); x.fill();
+    const g = cells(), N = g.length, pad = 56, cs = (q - pad * 2) / N;
+    x.fillStyle = '#1E140D'; g.forEach((row, yy) => row.forEach((on, xx) => { if (on) x.fillRect(qx + pad + xx * cs, qy + pad + yy * cs, Math.ceil(cs), Math.ceil(cs)); }));
+    x.fillStyle = '#6B5845'; x.font = '300 40px Alexandria'; x.fillText('ورّي الكارت ده للخادم في كل جلسة', W / 2, 1780);
+    const a = document.createElement('a'); a.download = `كارت-${m.name}.png`; a.href = c.toDataURL('image/png'); a.click();
+  });
+
+  // ---------- التبويبين ----------
+  const tabs = $$('#tabs [role=tab]');
+  function showTab(id) {
+    tabs.forEach(t => t.setAttribute('aria-selected', t.id === id));
+    $('#tab-me').hidden = id !== 't-me'; $('#tab-card').hidden = id !== 't-card';
+    history.replaceState(null, '', id === 't-card' ? '#card' : location.pathname + location.search);
+    scrollTo(0, 0);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => showTab(t.id)));
+  $('#types').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { type = b.dataset.t; renderPct(); } });
+
+  // ---------- التثبيت على الموبايل ----------
+  let deferred = null;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  $('#inSteps').textContent = isIOS
+    ? 'من سفاري: دوس زرار المشاركة تحت، وبعدين "Add to Home Screen". هتفتحها بعد كده بضغطة زي أي تطبيق.'
+    : 'من كروم: دوس ⋮ فوق، وبعدين "Add to Home screen" أو "تثبيت التطبيق". هتفتحها بعد كده بضغطة زي أي تطبيق.';
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; $('#inBtn').hidden = false; });
+  $('#inBtn').addEventListener('click', async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; $('#install').hidden = true; });
+  $('#inHide').addEventListener('click', () => { $('#install').hidden = true; try { localStorage.setItem('install-hidden', '1'); } catch {} });
+  try { if (localStorage.getItem('install-hidden') || matchMedia('(display-mode: standalone)').matches) $('#install').hidden = true; } catch {}
+
+  // ---------- تحميل المخدوم من الرابط ----------
+  function load(mem) {
+    $$('.review .chip').forEach(c => c.setAttribute('aria-pressed', mem ? +c.dataset.id === mem.id : c.dataset.id === 'bad'));
+    $('#badLink').hidden = !!mem; $('#page').hidden = !mem; $('#tabs').hidden = !mem;
+    document.body.classList.toggle('has-nav', !!mem);
+    if (!mem) { document.title = 'الرابط مش شغال | إعداد الخدام'; return; }
+    m = mem; type = 'all';
+    document.title = `حضوري · ${m.name}`;
+    $('#hi').textContent = `أهلًا يا ${m.name.split(' ')[0]}`;
+    $('#msgTxt').textContent = MSG;
+    $('#since').textContent = `من ${fDate.format(m.joined)}`;
+    renderPct(); renderStreak(); renderBars(); renderLast(); renderCard();
+  }
+  $$('.review .chip').forEach(c => c.addEventListener('click', () => {
+    const mem = c.dataset.id === 'bad' ? null : D.members[+c.dataset.id];
+    history.replaceState(null, '', mem ? `?c=${D.cardCode(mem)}` : '?c=xxxx');
+    load(mem); if (mem) showTab('t-me');
+  }));
+
+  const code = new URLSearchParams(location.search).get('c');
+  const mem = code ? D.fromCode(code) : D.members[0];
+  load(mem && !mem.suspended ? mem : null);
+  if (mem && location.hash === '#card') showTab('t-card');
+})();
+</script>
+</body>
+</html>
