@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a1c12">
+<title>تفاصيل الجلسة | إعداد الخدام</title>
+<meta name="description" content="حضور جلسة في خدمة إعداد الخدام: مين حضر ومين لسه، وتصحيح السجلات، وإنهاء الجلسة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/attend.css">
+<style>
+/* خاص بتفاصيل الجلسة */
+.wrap-d{flex:1;width:100%;max-width:520px;margin-inline:auto;padding:var(--s-3) var(--gut) calc(170px + env(safe-area-inset-bottom))}
+.d-top{position:sticky;top:var(--s-3);z-index:20;display:flex;align-items:center;gap:var(--s-2);padding:var(--s-2);border-radius:20px;margin-bottom:var(--s-4)}
+.d-title{flex:1;min-width:0;line-height:1.35}
+.d-title b{display:block;font-size:1rem;font-weight:500}
+.d-title span{font-size:.8rem;color:var(--on-glass-2)}
+.ibtn{width:44px;height:44px;flex:none;display:grid;place-items:center;border:0;border-radius:14px;background:var(--glass-2);color:var(--on-glass);cursor:pointer}
+.ibtn:hover{background:var(--glass-3)}
+.ibtn .icon{width:20px;height:20px}
+.state{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:999px;background:var(--glass-2);font-size:.75rem;font-weight:500;vertical-align:middle;margin-inline-start:6px}
+.state::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gold-soft)}
+[data-state=ended] .state::before{background:rgba(255,248,238,.5)}
+
+/* الملخص: 3 أرقام وعلامات عدّ ملوّنة بالحالة */
+.sum{padding:var(--s-5)}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-2);margin-bottom:var(--s-4)}
+.num{text-align:center}
+.num strong{display:block;font-size:2.4rem;font-weight:200;line-height:1.05;font-variant-numeric:tabular-nums}
+.num span{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;color:var(--on-glass-2)}
+.num span::before{content:"";width:8px;height:8px;border-radius:50%}
+.num.here span::before{background:var(--on-glass)}
+.num.excuse span::before{background:var(--excuse)}
+.num.rest span::before{background:rgba(255,248,238,.3)}
+[data-state=ended] .num.rest span::before{background:var(--bad)}
+.tally i.ex{background:var(--excuse);height:16px}
+.tally.big i.ex{height:28px}
+[data-state=ended] .tally i.no{background:rgba(217,96,79,.55)}
+.sum-note{margin-top:var(--s-3);font-size:.82rem;color:var(--on-glass-2);line-height:1.7}
+
+/* الفلتر والبحث */
+.tools{margin:var(--s-5) 0 var(--s-3)}
+.filters{display:flex;gap:var(--s-2);overflow-x:auto;padding-bottom:4px;margin-bottom:var(--s-3);scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--glass-line-soft);background:var(--glass-2);color:var(--on-glass-2);font:inherit;font-size:.86rem;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.filters button b{font-weight:500;font-variant-numeric:tabular-nums}
+.filters button[aria-pressed=true]{background:var(--btn-light);color:var(--ink);border-color:transparent}
+.g-input .end .icon{width:20px;height:20px}
+
+/* القائمة */
+.list{padding:var(--s-2)}
+.p-row{border-radius:16px}
+.p-row + .p-row{margin-top:2px}
+.p-row.open{background:var(--glass-2)}
+.p-pick{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:var(--s-3);width:100%;min-height:56px;padding:8px var(--s-2);border:0;border-radius:16px;background:none;color:var(--on-glass);font:inherit;text-align:start;cursor:pointer}
+.p-pick:hover{background:var(--glass-2)}
+.av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--glass-3);font-size:.8rem;font-weight:500}
+.p-name{display:block;font-size:.95rem;line-height:1.4}
+.p-meta{display:block;font-size:.76rem;color:var(--on-glass-2)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:.76rem;font-weight:500;white-space:nowrap}
+.badge .icon{width:13px;height:13px;stroke-width:2.2}
+.badge.here{background:rgba(155,208,127,.2);color:#C9EDB6}
+.badge.excuse{background:rgba(127,166,191,.25);color:#CFE3F0}
+.badge.absent{background:rgba(217,96,79,.25);color:var(--bad-text)}
+.badge.none{background:rgba(255,248,238,.08);color:var(--on-glass-2)}
+.tag{display:inline-block;margin-inline-start:6px;padding:0 8px;border-radius:999px;background:var(--glass-3);font-size:.75rem;line-height:1.7;vertical-align:middle}
+.p-edit{display:none;padding:0 var(--s-2) var(--s-3)}
+.p-row.open .p-edit{display:block}
+.p-log{font-size:.8rem;line-height:1.8;color:var(--on-glass-2);padding:0 var(--s-1) var(--s-2)}
+.p-log b{color:var(--on-glass);font-weight:500}
+.p-set{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-2)}
+.p-set button{min-height:46px;border-radius:12px;border:1px solid var(--glass-line-soft);background:var(--glass-2);color:var(--on-glass);font:inherit;font-size:.86rem;cursor:pointer}
+.p-set button[aria-pressed=true]{background:var(--btn-light);color:var(--ink);border-color:transparent}
+.empty{padding:var(--s-6) var(--s-3);text-align:center;font-size:.9rem;color:var(--on-glass-2)}
+
+/* شريط الإنهاء تحت */
+.end-bar{position:fixed;inset-inline:var(--s-3);bottom:calc(var(--s-3) + env(safe-area-inset-bottom));z-index:30;max-width:520px;margin-inline:auto;padding:var(--s-3);border-radius:22px}
+.end-info{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);padding:0 var(--s-2) var(--s-3);font-size:.84rem;color:var(--on-glass-2)}
+.end-info b{color:var(--on-glass);font-weight:500}
+.btn-end{background:rgba(180,68,58,.85);color:#fff}
+.btn-end:hover{background:#B4443A}
+.confirm{display:none;padding:var(--s-2) var(--s-2) 0}
+.end-bar.confirming .confirm{display:block}
+.end-bar.confirming .end-open{display:none}
+.confirm p{font-size:.92rem;line-height:1.85;color:var(--on-glass-2);margin-bottom:var(--s-4)}
+.confirm p b{color:var(--on-glass);font-weight:500}
+.hold-row{display:flex;align-items:center;gap:var(--s-4)}
+/* زر الضغط المطوّل: الدايرة بتكمل في ثانية ونص */
+.hold{position:relative;flex:none;width:76px;height:76px;border:0;border-radius:50%;background:rgba(180,68,58,.85);color:#fff;font:inherit;font-size:.8rem;font-weight:500;line-height:1.3;cursor:pointer;touch-action:none;-webkit-user-select:none;user-select:none}
+.hold svg{position:absolute;inset:-6px;width:88px;height:88px;rotate:-90deg;pointer-events:none}
+.hold circle{fill:none;stroke-width:3}
+.hold .track{stroke:rgba(255,248,238,.18)}
+.hold .ring{stroke:#fff;stroke-linecap:round;stroke-dasharray:264;stroke-dashoffset:264}
+.hold.pressing .ring{stroke-dashoffset:0;transition:stroke-dashoffset 1.5s linear}
+.hold:disabled{background:rgba(255,248,238,.12);color:var(--on-glass-3);cursor:not-allowed}
+.hold-help{font-size:.84rem;line-height:1.7;color:var(--on-glass-2)}
+.hold-help .textlink{display:flex;margin-top:var(--s-1);min-height:44px;justify-content:flex-start}
+.blocked{display:none;gap:var(--s-2);align-items:flex-start;margin-bottom:var(--s-4);padding:var(--s-3);border-radius:14px;background:rgba(242,179,90,.16);border:1px solid rgba(242,179,90,.4);font-size:.86rem;line-height:1.75;color:#FFE2B8}
+.blocked .icon{width:18px;height:18px;flex:none;margin-top:3px}
+[data-state=unsynced] .blocked{display:flex}
+.done{display:none;align-items:center;gap:var(--s-3);padding:var(--s-2);font-size:.88rem;line-height:1.6;color:var(--on-glass-2)}
+.done .icon{width:22px;height:22px;flex:none;color:var(--ok)}
+.done b{color:var(--on-glass);font-weight:500}
+[data-state=ended] .done{display:flex}
+[data-state=ended] .end-open,[data-state=ended] .confirm{display:none !important}
+[data-state=ended] .scan-link{display:none}
+</style>
+</head>
+<body data-state="open">
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="13" width="4" height="4" rx=".5"/><path d="M13 7h4v4M7 13v4h4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-dash" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
+  <symbol id="i-note" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+</svg>
+
+<!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس. الأسماء وهمية للتجربة -->
+<div class="review" role="group" aria-label="حالات الشاشة للمراجعة">
+  <span>نموذج للمراجعة (أسماء وهمية)، اختر الحالة:</span>
+  <button class="chip" type="button" data-show="open" aria-pressed="true">مفتوحة</button>
+  <button class="chip" type="button" data-show="unsynced" aria-pressed="false">فيه عمليات ماتزامنتش</button>
+  <button class="chip" type="button" data-show="ended" aria-pressed="false">منتهية</button>
+</div>
+
+<main class="wrap-d" id="main">
+  <header class="glass d-top">
+    <a class="ibtn" href="attend-sessions.html" aria-label="رجوع للجلسات"><svg class="icon"><use href="#i-right"/></svg></a>
+    <div class="d-title">
+      <b>اجتماع <span class="state" id="stateTxt">مفتوحة</span></b>
+      <span id="dateTxt">النهاردة</span>
+    </div>
+    <a class="ibtn scan-link" href="attend-scan.html" aria-label="كمّل المسح"><svg class="icon"><use href="#i-scan"/></svg></a>
+  </header>
+
+  <section class="glass sum" aria-label="ملخص الحضور">
+    <div class="nums">
+      <div class="num here"><strong id="nHere">0</strong><span>حضر</span></div>
+      <div class="num excuse"><strong id="nEx">0</strong><span>بعذر</span></div>
+      <div class="num rest"><strong id="nRest">0</strong><span id="restLbl">لسه</span></div>
+    </div>
+    <div id="tally"></div>
+    <p class="sum-note" id="sumNote"></p>
+  </section>
+
+  <div class="tools">
+    <div class="filters" role="group" aria-label="اعرض" id="filters"></div>
+    <div class="g-input has-end">
+      <input type="search" id="q" placeholder="دوّر باسم المخدوم" aria-label="دوّر باسم المخدوم" autocomplete="off">
+      <span class="end" aria-hidden="true"><svg class="icon"><use href="#i-search"/></svg></span>
+    </div>
+  </div>
+
+  <section class="glass list" id="list" aria-label="المخدومون في الجلسة" aria-live="polite"></section>
+</main>
+
+<!-- إنهاء الجلسة -->
+<section class="glass end-bar" id="endBar" aria-label="إنهاء الجلسة">
+  <div class="end-open">
+    <p class="end-info" id="endInfo"></p>
+    <button class="btn btn-end" type="button" id="askEnd"><svg class="icon"><use href="#i-lock"/></svg>إنهاء الجلسة</button>
+  </div>
+  <div class="confirm" id="confirm">
+    <p class="blocked" role="alert"><svg class="icon"><use href="#i-upload"/></svg><span>فيه <b>3 عمليات مسح</b> على موبايلك لسه ماتزامنتش. شغّل النت واستنى لحد ما تتزامن، وبعدها تقدر تنهي الجلسة.</span></p>
+    <p id="confirmTxt"></p>
+    <div class="hold-row">
+      <button class="hold" type="button" id="hold" aria-describedby="holdHelp">
+        <svg viewBox="0 0 88 88" aria-hidden="true"><circle class="track" cx="44" cy="44" r="42"/><circle class="ring" cx="44" cy="44" r="42"/></svg>
+        اضغط<br>مطوّل
+      </button>
+      <div class="hold-help" id="holdHelp">
+        اضغط على الزرار وسيبه بعد ما الدايرة تكمل (ثانية ونص). مفيش تراجع بعدها.
+        <button class="textlink" type="button" id="cancelEnd">رجوع من غير ما أنهي</button>
+      </div>
+    </div>
+  </div>
+  <p class="done" role="status"><svg class="icon"><use href="#i-check"/></svg><span id="doneTxt"></span></p>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const body = document.body;
+  const icon = id => `<svg class="icon"><use href="#${id}"/></svg>`;
+  const now = () => new Intl.DateTimeFormat('ar-EG-u-nu-latn', { hour: 'numeric', minute: '2-digit' }).format(new Date());
+  const fFull = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
+  $('#dateTxt').textContent = 'النهاردة · ' + fFull.format(new Date());
+
+  // ---------- بيانات مثال: نفس الـ 41 اسم الوهمي في شاشة المسح ----------
+  const NAMES = ['مينا عادل','مريم سمير','بيشوي فادي','مارينا جرجس','كيرلس ناجي','دميانة عماد','أبانوب رأفت','فيرينا مجدي','يوسف صبحي','ماريا نبيل','بولا شريف','إيريني ماهر','جورج رامي','كاترين وجيه','أندرو هاني','مارتينا صفوت','ديفيد إيهاب','نانسي رمسيس','بيتر عاطف','ساندرا موريس','مايكل سامح','جوليا فايز','رامي ميلاد','سارة نصحي','فادي لطفي','هايدي ثروت','شنودة كمال','مونيكا عزيز','باسم وديع','ريتا منير','كريم أنور','نيفين بشرى','مارك زكريا','تريزا حليم','جون سليمان','لوسي يونان','إسحق فوزي','ميرنا رشدي','توماس عياد','إيفون حنا','ماثيو وليم'];
+  const TOTAL = NAMES.length;
+  // 23 حضر (منهم 3 يدوي)، و1 بعذر، والباقي لسه. "إنت" هو الخادم اللي فاتح الشاشة، و"أ. ماركو" خادم وهمي تاني
+  const people = NAMES.map((name, i) => i < 23
+    ? { id: i, name, st: 'here', how: [4, 11, 19].includes(i) ? 'manual' : 'scan', at: `6:${String(2 + i).padStart(2, '0')} م`, by: i % 3 ? 'إنت' : 'أ. ماركو' }
+    : i === 23 ? { id: i, name, st: 'excuse', how: 'manual', at: '6:30 م', by: 'إنت' }
+    : { id: i, name, st: null });
+  const ST = { here: ['حضر', 'here', 'i-check'], excuse: ['غاب بعذر', 'excuse', 'i-note'], absent: ['غاب', 'absent', 'i-x'], null: ['لسه', 'none', 'i-dash'] };
+  let filter = 'all', openId = null, endedAt = '';
+
+  const ended = () => body.dataset.state === 'ended';
+  const count = st => people.filter(p => p.st === st).length;
+
+  // ---------- العرض ----------
+  function renderSum() {
+    const here = count('here'), ex = count('excuse'), rest = ended() ? count('absent') : count(null);
+    $('#nHere').textContent = here; $('#nEx').textContent = ex; $('#nRest').textContent = rest;
+    $('#restLbl').textContent = ended() ? 'غاب' : 'لسه';
+    // علامات العدّ: حضر، ثم بعذر، ثم الباقي (لسه أو غاب)
+    const order = [...people].sort((a, b) => rank(a) - rank(b));
+    let h = '';
+    for (let g = 0; g < Math.ceil(TOTAL / 5); g++) {
+      h += '<span class="grp">' + order.slice(g * 5, g * 5 + 5).map(p => p.st === 'here' ? '<i></i>' : p.st === 'excuse' ? '<i class="ex"></i>' : '<i class="no"></i>').join('') + '</span>';
+    }
+    $('#tally').innerHTML = `<div class="tally big" aria-hidden="true">${h}</div>`;
+    $('#sumNote').textContent = ended()
+      ? `الجلسة انتهت الساعة ${endedAt}، وكل اللي ماتسجلوش اتسجلوا غياب. تقدر تصحّح أي سجل.`
+      : `${rest} من ${TOTAL} لسه ماتسجلوش. لو الجلسة انتهت دلوقتي هيتسجلوا غياب.`;
+  }
+  const rank = p => ({ here: 0, excuse: 1 })[p.st] ?? 2;
+
+  function renderFilters() {
+    const F = ended()
+      ? [['all', 'الكل', TOTAL], ['here', 'حضر', count('here')], ['absent', 'غاب', count('absent')], ['excuse', 'بعذر', count('excuse')]]
+      : [['all', 'الكل', TOTAL], ['none', 'لسه', count(null)], ['here', 'حضر', count('here')], ['excuse', 'بعذر', count('excuse')]];
+    if (!F.some(f => f[0] === filter)) filter = 'all';
+    $('#filters').innerHTML = F.map(([k, t, n]) => `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${t} <b>${n}</b></button>`).join('');
+  }
+
+  const meta = p => !p.st ? 'لسه ماتسجلش' : `${p.how === 'manual' ? 'يدوي' : p.how === 'auto' ? 'بالإنهاء' : p.how === 'edit' ? 'اتعدّل' : 'مسح'} · ${p.at}`;
+  function renderList() {
+    const term = $('#q').value.trim();
+    const list = people.filter(p => (filter === 'all' || (filter === 'none' ? !p.st : p.st === filter)) && (!term || p.name.includes(term)))
+      .sort((a, b) => ended() ? a.name.localeCompare(b.name, 'ar') : (!!b.st === !!a.st ? a.name.localeCompare(b.name, 'ar') : (a.st ? 1 : -1)));
+    $('#list').innerHTML = list.length ? list.map(p => {
+      const [label, cls, ic] = ST[p.st];
+      const open = p.id === openId;
+      const log = !p.st ? 'لسه محدش سجّله في الجلسة دي.'
+        : p.how === 'auto' ? `اتسجّل <b>غاب</b> تلقائي لما الجلسة انتهت الساعة ${p.at}.`
+        : `سجّله <b>${p.by}</b> ${p.how === 'manual' ? 'يدوي' : p.how === 'edit' ? 'بتعديل' : 'بالمسح'} الساعة ${p.at}.`;
+      return `<div class="p-row${open ? ' open' : ''}" data-id="${p.id}">
+        <button class="p-pick" type="button" aria-expanded="${open}">
+          <span class="av" aria-hidden="true">${p.name.slice(0, 2)}</span>
+          <span><span class="p-name">${p.name}${p.how === 'manual' ? '<span class="tag">يدوي</span>' : ''}</span><span class="p-meta">${meta(p)}</span></span>
+          <span class="badge ${cls}">${icon(ic)}${label}</span>
+        </button>
+        <div class="p-edit">
+          <p class="p-log">${log}</p>
+          <div class="p-set" role="group" aria-label="غيّر حالة ${p.name}">
+            ${['here', 'excuse', 'absent'].map(s => `<button type="button" data-set="${s}" aria-pressed="${p.st === s}">${ST[s][0]}</button>`).join('')}
+          </div>
+        </div>
+      </div>`;
+    }).join('') : `<p class="empty">${term ? 'مفيش مخدوم بالاسم ده في الجلسة.' : filter === 'none' ? 'كله اتسجّل. تقدر تنهي الجلسة.' : 'مفيش حد هنا.'}</p>`;
+  }
+
+  function renderEnd() {
+    const rest = count(null);
+    $('#endInfo').innerHTML = rest ? `<span><b>${rest}</b> لسه ماتسجلوش</span><span>هيتسجلوا غياب لما تنهي</span>` : '<span>كله اتسجّل</span>';
+    $('#confirmTxt').innerHTML = rest
+      ? `هيتسجّل <b>${rest} مخدوم غياب</b>، والجلسة هتقفل للمسح. مفيش تراجع بعدها، بس تقدر تصحّح أي سجل بعدين.`
+      : 'كل المخدومين اتسجلوا. الجلسة هتقفل للمسح، ومفيش تراجع بعدها.';
+    $('#hold').disabled = body.dataset.state === 'unsynced';
+    $('#doneTxt').innerHTML = `<b>الجلسة انتهت ${endedAt}.</b> المسح اتقفل، والتصحيح لسه متاح.`;
+  }
+
+  function render() { renderSum(); renderFilters(); renderList(); renderEnd(); }
+
+  // ---------- التفاعل ----------
+  $('#filters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; openId = null; renderFilters(); renderList(); });
+  $('#q').addEventListener('input', renderList);
+  $('#list').addEventListener('click', e => {
+    const row = e.target.closest('.p-row'); if (!row) return;
+    const id = +row.dataset.id;
+    if (e.target.closest('.p-pick')) { openId = openId === id ? null : id; renderList(); $(`.p-row[data-id="${id}"] .p-pick`)?.focus(); return; }
+    const set = e.target.closest('[data-set]'); if (!set) return;
+    const p = people[id];
+    if (p.st === set.dataset.set) return;
+    Object.assign(p, { st: set.dataset.set, how: 'edit', at: now(), by: 'إنت' });
+    openId = null; render(); toast(`${p.name}: ${ST[p.st][0]}`);
+  });
+
+  const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400); };
+
+  // الإنهاء: تأكيد في نفس الشريط، ثم ضغط مطوّل ثانية ونص
+  const bar = $('#endBar'), hold = $('#hold');
+  $('#askEnd').addEventListener('click', () => { bar.classList.add('confirming'); renderEnd(); hold.disabled ? $('#cancelEnd').focus() : hold.focus(); });
+  $('#cancelEnd').addEventListener('click', () => { bar.classList.remove('confirming'); $('#askEnd').focus(); });
+  let holdT = 0;
+  const startHold = e => {
+    if (hold.disabled || hold.classList.contains('pressing')) return;
+    if (e.type === 'keydown' && e.key !== ' ' && e.key !== 'Enter') return;
+    e.preventDefault(); hold.classList.add('pressing');
+    holdT = setTimeout(endSession, 1500);
+  };
+  const stopHold = () => { clearTimeout(holdT); hold.classList.remove('pressing'); };
+  hold.addEventListener('pointerdown', startHold);
+  hold.addEventListener('keydown', startHold);
+  ['pointerup', 'pointerleave', 'pointercancel', 'keyup', 'blur'].forEach(t => hold.addEventListener(t, stopHold));
+  hold.addEventListener('click', e => e.preventDefault());
+
+  function endSession() {
+    stopHold(); endedAt = now();
+    people.forEach(p => { if (!p.st) Object.assign(p, { st: 'absent', how: 'auto', at: endedAt, by: 'النظام' }); });
+    setState('ended'); bar.classList.remove('confirming');
+    try { navigator.vibrate?.(80); } catch {}
+    toast('الجلسة انتهت.');
+  }
+
+  // ---------- حالات المراجعة ----------
+  const chips = $$('.review .chip');
+  function setState(st) {
+    if (st !== 'ended' && ended()) people.forEach(p => { if (p.how === 'auto') Object.assign(p, { st: null, how: null }); }); // رجوع للمراجعة بس
+    if (st === 'ended' && !endedAt) { endedAt = now(); people.forEach(p => { if (!p.st) Object.assign(p, { st: 'absent', how: 'auto', at: endedAt, by: 'النظام' }); }); }
+    if (st !== 'ended') endedAt = '';
+    body.dataset.state = st;
+    chips.forEach(c => c.setAttribute('aria-pressed', c.dataset.show === st));
+    $('#stateTxt').textContent = st === 'ended' ? 'منتهية' : 'مفتوحة';
+    if (st === 'unsynced') bar.classList.add('confirming');
+    render();
+  }
+  chips.forEach(c => c.addEventListener('click', () => setState(c.dataset.show)));
+
+  render();
+})();
+</script>
+</body>
+</html>

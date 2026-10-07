@@ -244,7 +244,7 @@
         <div class="cur-actions">
           <a class="btn btn-light" href="attend-scan.html">${icon('i-scan')}كمّل المسح</a>
           <div class="cur-foot">
-            <a class="textlink" href="#">تفاصيل الجلسة</a>
+            <a class="textlink" href="attend-session.html">تفاصيل الجلسة</a>
             <button class="textlink" type="button" data-ask-del>حذف الجلسة</button>
           </div>
         </div>
@@ -268,7 +268,7 @@
     $('#history').innerHTML = [...months].map(([m, list]) => `
       <h2 class="month">${m}</h2>
       <div class="glass list">${list.map(s => `
-        <a class="row" href="#" aria-label="${TYPES[s.type][0]}، ${fFull.format(s.date)}، حضر ${s.present} من ${TOTAL}">
+        <a class="row" href="attend-session.html" aria-label="${TYPES[s.type][0]}، ${fFull.format(s.date)}، حضر ${s.present} من ${TOTAL}">
           <span class="dtile"><b>${s.date.getDate()}</b><small>${rel(s.date) || fWd.format(s.date)}</small></span>
           <span>
             <span class="row-head"><span>${TYPES[s.type][0]}</span><em dir="ltr">${s.present} / ${TOTAL}</em></span>
