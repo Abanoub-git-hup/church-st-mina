@@ -6,7 +6,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.2.0' );
+define( 'STMINA_THEME_VERSION', '0.3.0' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
 
@@ -36,7 +36,45 @@ add_action( 'wp_enqueue_scripts', function () {
 		wp_enqueue_style( 'stmina-home', $uri . 'home.css', array( 'stmina-site' ), $ver );
 		wp_enqueue_script( 'stmina-home', $uri . 'home.js', array( 'stmina-site' ), $ver, true );
 	}
+	if ( is_post_type_archive( 'stmina_service' ) ) {
+		wp_enqueue_style( 'stmina-services', $uri . 'services.css', array( 'stmina-site' ), $ver );
+	}
+	if ( is_singular( 'stmina_service' ) ) {
+		wp_enqueue_style( 'stmina-service', $uri . 'service.css', array( 'stmina-site' ), $ver );
+	}
 } );
+
+/**
+ * عنوان بجزء دهبي في آخره، زي "خدمة <b>لكل عمر</b>". النص كله متأمّن.
+ *
+ * @param string $title     العنوان كامل.
+ * @param string $highlight الجزء الدهبي، ولازم يكون آخر العنوان.
+ */
+function stmina_title( $title, $highlight = '' ) {
+	$highlight = trim( (string) $highlight );
+	if ( $highlight && str_ends_with( $title, $highlight ) && $highlight !== $title ) {
+		$start = trim( substr( $title, 0, -strlen( $highlight ) ) );
+		echo esc_html( $start ) . ' <b>' . esc_html( $highlight ) . '</b>';
+		return;
+	}
+	echo esc_html( $title );
+}
+
+/**
+ * رقم موبايل مصري بالشكل الدولي: 01552921322 ← +201552921322
+ */
+function stmina_phone_intl( $phone ) {
+	$digits = preg_replace( '/\D/', '', (string) $phone );
+	return '+2' . ltrim( $digits, '2' );
+}
+
+/**
+ * رقم موبايل للعرض: 01552921322 ← 0155 292 1322
+ */
+function stmina_phone_display( $phone ) {
+	$d = preg_replace( '/\D/', '', (string) $phone );
+	return 11 === strlen( $d ) ? substr( $d, 0, 4 ) . ' ' . substr( $d, 4, 3 ) . ' ' . substr( $d, 7 ) : $phone;
+}
 
 /**
  * رابط صورة من assets/media جوه القالب، جاهز للطباعة.

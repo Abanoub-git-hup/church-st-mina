@@ -12,7 +12,7 @@ defined( 'ABSPATH' ) || exit;
   <div class="wrap">
     <div class="f-cta">
       <h2 data-split>عندك مكان معنا في <b>بيت الله</b></h2>
-      <div data-rise><a class="pill gold" href="#services">اختر خدمتك <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a></div>
+      <div data-rise><a class="pill gold" href="<?php stmina_link( 'services' ); ?>">اختر خدمتك <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a></div>
     </div>
     <div class="f-grid">
       <div>

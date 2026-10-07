@@ -4,7 +4,7 @@
 >
 > الملف بيتحدّث مع كل خطوة في بناء `theme` و`plugin`. كل باب فيه: عملنا إيه وليه، والمفهوم في `WordPress`، والكود الحقيقي مشروح، والبدائل، والأمان، والأخطاء اللي قابلتنا.
 >
-> آخر تحديث: يوم 7 أكتوبر 2026، في المهمة التانية (الرئيسية والقايمة).
+> آخر تحديث: يوم 7 أكتوبر 2026، في المهمة التالتة (الخدمات).
 
 ## الفهرس
 
@@ -14,11 +14,13 @@
 - الباب 4: ملف `functions.php` ونقاط `hooks` وتحميل الملفات
 - الباب 5: `plugin` وأول مسار في `REST API`
 - الباب 6: الرفع على `server` و `cache`
-- الباب 7: ربط Claude ب`dashboard` بتاعة `WordPress`
+- الباب 7: ربط Claude مع `dashboard` بتاعة `WordPress`
 - الباب 8: أخطاء قابلتنا وحلّها
 - الباب 9: تحويل تصميم HTML لـ `theme`
 - الباب 10: صفحة إعدادات بـ `Settings API`
-- الباب 11: الأبواب الجاية
+- الباب 11: أنواع محتوى مخصّصة وتصنيفات
+- الباب 12: الخانات بـ `ACF`
+- الباب 13: الأبواب الجاية
 
 ---
 
@@ -485,7 +487,7 @@ hosting_cache_clear-website
 
 ---
 
-## الباب 7: ربط Claude ب`dashboard` بتاعة `WordPress`
+## الباب 7: ربط Claude مع `dashboard` بتاعة `WordPress`
 
 استخدمنا `plugin` `royal-mcp`، وهو بيعرض أدوات `WordPress` (قراية وتعديل المحتوى والإعدادات) بطريقة اسمها `MCP`، ودي الطريقة اللي Claude بيتكلّم بيها مع الأدوات.
 
@@ -781,12 +783,241 @@ function stmina_home( $key ) {
 
 ---
 
-## الباب 11: الأبواب الجاية
+## الباب 11: أنواع محتوى مخصّصة وتصنيفات
+
+### المشكلة
+
+الخدمات ليها شكل ثابت: اسم، وصورة، ومجموعة، وموعد، ومكان، ومسؤولين. لو حطيناها كمقالات عادية في `Posts`، هتتلخبط مع الأخبار، ومش هيبقى ليها صفحة خاصة بيها ولا خانات خاصة بيها. والحل في `WordPress` اسمه نوع محتوى مخصّص، أو `Custom Post Type`.
+
+### ليه في `plugin` مش في الـ `theme`؟
+
+عملنا `plugin` جديد اسمه `st-mina-content`، وفيه كل أنواع المحتوى. والسبب القاعدة اللي في الباب الأول: البيانات مكانها `plugin`. ولو نوع المحتوى اتسجّل جوه الـ `theme`، وحد غيّر الـ `theme`، الخدمات تختفي من `dashboard` لحد ما حد يكتبها تاني، مع إنها لسه موجودة في قاعدة البيانات.
+
+وعملناه منفصل عن `plugin` الحضور، لأن محتوى الموقع العام ونظام الحضور حاجتين مختلفتين، وكل واحد ممكن يتحدّث لوحده.
+
+وفي أول الملف سطر بيقول إن الـ `plugin` محتاج `ACF`:
+```php
+ * Requires Plugins: advanced-custom-fields
+```
+وده بيمنع تفعيله لو `ACF` مش موجود، وموجود من نسخة `WordPress` 6.5.
+
+### تسجيل نوع المحتوى: `register_post_type()`
+
+```php
+register_post_type( 'stmina_service', array(
+	'labels'        => array( 'name' => 'الخدمات', 'singular_name' => 'خدمة', /* … */ ),
+	'public'        => true,
+	'show_in_rest'  => true,
+	'menu_icon'     => 'dashicons-groups',
+	'supports'      => array( 'title', 'editor', 'excerpt', 'thumbnail', 'page-attributes' ),
+	'has_archive'   => 'services',
+	'rewrite'       => array( 'slug' => 'service', 'with_front' => false ),
+) );
+```
+
+| الخاصية | معناها |
+|---|---|
+| الاسم `stmina_service` | الاسم الداخلي، بالبادئة بتاعتنا، وأقصى طول 20 حرف |
+| الخاصية `labels` | الكلام اللي بيظهر في `dashboard`: "الخدمات"، و"إضافة خدمة"، وغيرها |
+| الخاصية `public` | الخدمات بتظهر للزوار وليها روابط |
+| الخاصية `show_in_rest` | لازمة علشان محرر البلوكات يشتغل، وعلشان الخدمات تبان في `REST API` |
+| الخاصية `supports` | الخانات اللي في المحرر: العنوان، والمحتوى، والمقتطف، والصورة البارزة، والترتيب |
+| الخاصية `has_archive` | صفحة فيها كل الخدمات على الرابط `/services/` |
+| الخاصية `rewrite` | رابط الخدمة الواحدة يبقى `/service/اسمها/` |
+
+والتسجيل بيحصل في نقطة `init`، لأن `WordPress` محتاج يعرف أنواع المحتوى بدري، قبل ما يقرا الرابط ويعرف الزائر طالب أنهي صفحة.
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/plugins/post-types/registering-custom-post-types/
+```
+
+### التصنيف: `register_taxonomy()`
+
+المجموعات الست تصنيف مخصّص للخدمات، زي ما `Categories` تصنيف للمقالات:
+```php
+register_taxonomy( 'stmina_service_group', 'stmina_service', array(
+	'hierarchical'      => true,
+	'show_in_rest'      => true,
+	'show_admin_column' => true,
+	'rewrite'           => array( 'slug' => 'service-group', 'with_front' => false ),
+) );
+```
+
+| الخاصية | معناها |
+|---|---|
+| الخاصية `hierarchical` | لو `true` بيتصرّف زي `Categories` بمربعات اختيار، ولو `false` بيتصرّف زي `Tags` بخانة كتابة |
+| الخاصية `show_admin_column` | عمود "المجموعة" في جدول الخدمات في `dashboard` |
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/plugins/taxonomies/working-with-custom-taxonomies/
+```
+
+### الروابط وتحديثها: `flush_rewrite_rules()`
+
+`WordPress` بيحفظ قواعد الروابط (زي إن `/services/` معناها صفحة الخدمات) في قاعدة البيانات. ولما نسجّل نوع محتوى جديد، القواعد دي لازم تتحدّث، وإلا الروابط الجديدة هتطلع "الصفحة غير موجودة". وعلشان كده بنحدّثها مرة واحدة وقت التفعيل:
+```php
+register_activation_hook( __FILE__, function () {
+	stmina_register_services();
+	stmina_seed_services();
+	flush_rewrite_rules();
+} );
+```
+ولازم نسجّل نوع المحتوى الأول جوه نفس الدالة، لأن وقت التفعيل نقطة `init` بتكون عدّت خلاص. والتحديث ده تقيل، فمايتعملش أبدًا مع كل صفحة.
+
+**ولو الروابط بقت "غير موجودة" في أي وقت:** ادخل `Settings → Permalinks` واضغط `Save Changes` من غير ما تغيّر حاجة، وده بيعمل نفس التحديث.
+
+### اختيار الملف: ترتيب القوالب تاني
+
+`WordPress` بيختار الملف حسب نوع المحتوى (الباب 3):
+
+| الصفحة | `WordPress` بيدوّر بالترتيب ده |
+|---|---|
+| كل الخدمات | `archive-stmina_service.php` ← `archive.php` ← `index.php` |
+| خدمة واحدة | `single-stmina_service.php` ← `single.php` ← `singular.php` ← `index.php` |
+
+فبمجرد ما عملنا الملفين بالأسماء دي، `WordPress` بقى يستخدمهم لوحده من غير أي تسجيل.
+
+### جلب الخدمات: `get_posts()` و`tax_query`
+
+```php
+function stmina_services( $group = null, $exclude = array() ) {
+	$args = array(
+		'post_type'      => 'stmina_service',
+		'posts_per_page' => -1,
+		'orderby'        => array( 'menu_order' => 'ASC', 'title' => 'ASC' ),
+		'post__not_in'   => $exclude,
+	);
+	if ( $group ) {
+		$args['tax_query'] = array( array(
+			'taxonomy' => 'stmina_service_group',
+			'terms'    => $group->term_id,
+		) );
+	}
+	return get_posts( $args );
+}
+```
+
+| الخاصية | معناها |
+|---|---|
+| القيمة `-1` في `posts_per_page` | كل الخدمات من غير تقسيم صفحات |
+| الترتيب بـ `menu_order` | خانة `Order` في المحرر، وبيها محرر المحتوى يرتّب الخدمات |
+| الخاصية `tax_query` | خدمات مجموعة معينة بس |
+| الخاصية `post__not_in` | استبعاد خدمات، زي الخدمة المفتوحة في قسم "خدمات أخرى" |
+
+ودالة `get_posts()` بترجّع مصفوفة خدمات جاهزة. وتحتها كلاس `WP_Query`، وده اللي بنستخدمه لما نحتاج تقسيم صفحات أو `The Loop`.
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/reference/classes/wp_query/
+```
+
+### أجزاء بتتكرر: `get_template_part()` مع `$args`
+
+كارت الخدمة بيظهر في تلات أماكن: الرئيسية، وصفحة الخدمات، و"خدمات أخرى". فاتكتب مرة واحدة في ملف `template-parts/service-card.php`، وبيتنادى كده:
+```php
+get_template_part( 'template-parts/service-card', null, array( 'post' => $service ) );
+```
+والقيمة التالتة بتوصل للملف كمتغيّر اسمه `$args`، وده موجود من نسخة `WordPress` 5.5. وبنفس الطريقة عملنا:
+
+| الملف | فيه إيه |
+|---|---|
+| `template-parts/hero-top.php` | رأس الصفحة: الشعار والقايمة، والقسم الحالي بيتعلّم |
+| `template-parts/page-hero.php` | واجهة أي صفحة داخلية: الصورة، ومسار التنقل، والعنوان |
+| `template-parts/service-card.php` | كارت الخدمة |
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/reference/functions/get_template_part/
+```
+
+### صور الخدمة من غير خانة زيادة
+
+صور أنشطة الخدمة بتيجي من الصور المرفوعة جوه الخدمة نفسها، من غير الصورة البارزة:
+```php
+$photos = get_attached_media( 'image', $service );
+unset( $photos[ get_post_thumbnail_id( $service ) ] );
+```
+فمحرر المحتوى يرفع الصور وهو بيعدّل الخدمة، وهي بتظهر لوحدها. ولو مفيش صور، القسم مابيظهرش.
+
+---
+
+## الباب 12: الخانات بـ `ACF`
+
+### ليه `ACF`؟
+
+الخانات الإضافية (الموعد، والمكان، والمسؤولين وأرقامهم) ممكن تتعمل بإيدنا بدالة `add_meta_box()`. بس `ACF` بيوفّر واجهة جاهزة ونضيفة، وأنواع خانات كتير (نص، وصورة، واختيار، وزرار تشغيل وإطفاء)، وبيحفظ القيم في `post meta` العادي بتاع `WordPress`.
+
+### الخانات في الكود مش من اللوحة
+
+الطريقة المعتادة إن الخانات تتعمل من لوحة `ACF`. وإحنا عرّفناها في الكود بدالة `acf_add_local_field_group()`:
+```php
+add_action( 'acf/include_fields', function () {
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_service',
+		'title'    => 'بيانات الخدمة',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_service' ) ) ),
+		'fields'   => array(
+			array( 'key' => 'field_stmina_schedule', 'name' => 'schedule', 'label' => 'الموعد بالتفصيل', 'type' => 'text' ),
+			// …
+		),
+	) );
+} );
+```
+**ليه؟** علشان الخانات تبقى محفوظة في `GitHub` مع الكود، وتتنقل لأي موقع مع الـ `plugin` من غير ما حد يعملها بالإيد، وماحدش يقدر يمسحها بالغلط من اللوحة.
+
+| الجزء | معناه |
+|---|---|
+| الخاصية `key` | معرّف ثابت للخانة، لازم يبدأ بـ `field_` ويبقى فريد |
+| الخاصية `name` | الاسم اللي القيمة بتتحفظ بيه في قاعدة البيانات |
+| الخاصية `location` | الخانات تظهر فين، وهنا في الخدمات بس |
+| نقطة `acf/include_fields` | النقطة اللي `ACF` بيقرا فيها الخانات المتعرّفة في الكود |
+
+📖 التوثيق الرسمي:
+```
+https://www.advancedcustomfields.com/resources/register-fields-via-php/
+```
+
+### قراية القيمة بأمان
+
+```php
+function stmina_field( $name, $post = null ) {
+	$post = get_post( $post );
+	if ( ! $post ) {
+		return '';
+	}
+	return function_exists( 'get_field' ) ? get_field( $name, $post->ID ) : get_post_meta( $post->ID, $name, true );
+}
+```
+لو `ACF` اتقفل بالغلط، الموقع مايقعش، والقيم تتقري من `post meta` مباشرة. ولو اتقفل كمان، بتظهر رسالة حمرا في `dashboard` بدل ما الخانات تختفي من غير سبب.
+
+### إزاي `ACF` بيحفظ القيمة
+
+كل خانة ليها سطرين في جدول `wp_postmeta`:
+
+| الاسم | القيمة | فايدته |
+|---|---|---|
+| `schedule` | كل جمعة 6:00 مساءً | القيمة نفسها |
+| `_schedule` | `field_stmina_schedule` | بيربط القيمة بالخانة، علشان `ACF` يعرف نوعها وهو بيقرا |
+
+### الإدخال التلقائي
+
+الـ 17 خدمة والمجموعات الست اتدخلوا مرة واحدة وقت التفعيل، من ملف `inc/seed.php`:
+- **مرة واحدة بس:** بعد الإدخال بيتحفظ إعداد اسمه `stmina_content_seeded`، فلو الـ `plugin` اتقفل واتفعّل تاني مايتكررش.
+- **الصور:** بتتنسخ من فولدر الـ `theme` لمكتبة الوسائط بدوال `wp_upload_bits()` و`wp_insert_attachment()` و`wp_generate_attachment_metadata()`، فبيتعمل منها كل المقاسات، ومحرر المحتوى يقدر يغيّرها من `dashboard`.
+- **القيم:** بتتحفظ بالسطرين اللي فوق مباشرة، مش بدالة `update_field()`.
+
+**مشكلة قابلتنا هنا:** وقت التفعيل، نقطة `acf/include_fields` بتكون عدّت قبل ما الـ `plugin` بتاعنا يتحمّل، فالخانات لسه مش متسجّلة. ولو استخدمنا دالة `update_field()` بمعرّف الخانة، كانت هتحفظ القيمة باسم غلط. فبنحفظ بالطريقة المباشرة.
+
+---
+
+## الباب 13: الأبواب الجاية
 
 | الباب | المهمة | المفاهيم |
 |---|---|---|
 | الصفحات الداخلية | من الثالثة للسابعة | قالب الصفحة الداخلية من ملف `design/_inner.html`، وتقسيم الأجزاء المتكررة بدالة `get_template_part()` |
-| الخدمات والعظات والأخبار | من الثالثة للسابعة | أنواع محتوى مخصّصة بدالة `register_post_type()`، والتصنيفات، والحقول الإضافية، والاستعلامات بكلاس `WP_Query`، وربط أقسام الرئيسية بالمحتوى الحقيقي |
+| العظات والأخبار | من الخامسة للسابعة | أنواع محتوى تانية بنفس طريقة الخدمات، وتقسيم الصفحات بكلاس `WP_Query`، وربط أقسام الرئيسية بالمحتوى الحقيقي |
 | القوايم من لوحة التحكم | لما المحتوى يكتمل | القوايم بدالة `wp_nav_menu()` بدل الروابط الثابتة |
 | دخول الخادم والمخدومين | الثامنة | جداول مخصّصة بدالة `dbDelta()`، والأدوار والصلاحيات، ومسارات بفحص صلاحيات، ورموز الحماية `nonces`، وتنضيف المدخلات |
 | الحضور والمسح | من العاشرة للرابعة عشر | منطق `plugin`، واختبارات المسارات |
