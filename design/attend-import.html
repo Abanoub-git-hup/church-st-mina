@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a1c12">
+<title>استيراد من Excel | إعداد الخدام</title>
+<meta name="description" content="إضافة مخدومين كتير مرة واحدة من ملف Excel فيه عمودين: الاسم والموبايل.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/attend.css">
+<style>
+/* خاص بشاشة الاستيراد */
+.wrap-i{flex:1;width:100%;max-width:520px;margin-inline:auto;padding:var(--s-3) var(--gut) 0;display:grid;gap:var(--s-4);align-content:start}
+.p-top{position:sticky;top:var(--s-3);z-index:20;display:flex;align-items:center;gap:var(--s-2);padding:var(--s-2);border-radius:20px}
+.p-top b{flex:1;font-size:1rem;font-weight:500}
+.ibtn{width:44px;height:44px;flex:none;display:grid;place-items:center;border:0;border-radius:14px;background:var(--glass-2);color:var(--on-glass);cursor:pointer}
+.ibtn:hover{background:var(--glass-3)}
+.ibtn .icon{width:20px;height:20px}
+.pane{padding:var(--s-5) var(--s-4)}
+.pane h1,.pane h2{font-size:1.35rem;font-weight:300;line-height:1.45;margin-bottom:var(--s-2)}
+.pane h1 b,.pane h2 b{font-weight:500;font-variant-numeric:tabular-nums}
+.lead{font-size:.9rem;line-height:1.85;color:var(--on-glass-2)}
+.lead b{color:var(--on-glass);font-weight:500}
+.step{display:none}
+[data-step=pick] .s-pick,[data-step=preview] .s-preview,[data-step=done] .s-done,[data-step=bad] .s-bad{display:grid;gap:var(--s-4)}
+
+/* الشرح: ورقة Excel صغيرة بالعمودين المطلوبين */
+/* من اليمين زي Excel العربي: أرقام الصفوف يمين، وعمود A الاسم */
+.sheet{display:grid;grid-template-columns:28px 1fr 1fr;border:1px solid var(--glass-line-soft);border-radius:14px;overflow:hidden;font-size:.82rem;background:rgba(255,244,228,.06)}
+.sheet > *{min-height:36px;display:flex;align-items:center;padding:0 10px;border-bottom:1px solid var(--glass-line-soft);border-inline-start:1px solid var(--glass-line-soft)}
+.sheet > :nth-child(3n+1){border-inline-start:0;justify-content:center;padding:0;color:var(--on-glass-3);font-size:.75rem;background:rgba(255,244,228,.05)}
+.sheet .col{justify-content:center;color:var(--on-glass-3);font-size:.75rem;background:rgba(255,244,228,.05);min-height:26px}
+.sheet .hd{font-weight:500;color:var(--ink);background:var(--btn-light)}
+.sheet .mb{direction:ltr;justify-content:flex-end;font-variant-numeric:tabular-nums;color:var(--on-glass-2)}
+.sheet > :nth-last-child(-n+3){border-bottom:0}
+.rules{display:grid;gap:var(--s-2);font-size:.86rem;line-height:1.7;color:var(--on-glass-2)}
+.rules li{display:flex;gap:var(--s-2)}
+.rules li::before{content:"";flex:none;width:5px;height:5px;margin-top:.7em;border-radius:50%;background:var(--on-glass-3)}
+.pick-btn{position:relative}
+.pick-btn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.pick-btn:focus-within{outline:2px solid var(--on-glass);outline-offset:3px}
+.reading{display:none;align-items:center;justify-content:center;gap:var(--s-2);font-size:.88rem;color:var(--on-glass-2)}
+.is-reading .reading{display:flex}
+.is-reading .pick-btn{display:none}
+
+/* المعاينة: كل صف في الملف علامة عدّ. الطويلة الفاتحة هتتضاف، والقصيرة الدافية فيها مشكلة */
+.file{display:flex;align-items:center;gap:var(--s-2);font-size:.82rem;color:var(--on-glass-2);min-width:0}
+.file .icon{width:18px;height:18px;flex:none}
+.file span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;unicode-bidi:plaintext}
+.rows-tally{flex-wrap:wrap;row-gap:10px;height:auto}
+.rows-tally i.bad{height:10px;background:var(--warn)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--s-2) var(--s-4);font-size:.8rem;color:var(--on-glass-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:3px;height:14px;border-radius:1px;background:var(--on-glass)}
+.legend i.bad{height:8px;background:var(--warn)}
+.fixed-note{font-size:.8rem;line-height:1.7;color:var(--on-glass-3)}
+
+/* الصفوف المرفوضة: رقم الصف في الملف + الاسم + السبب */
+.rej h3,.ok-list summary{font-size:.95rem;font-weight:500;margin-bottom:var(--s-1)}
+.rej > p{font-size:.82rem;line-height:1.75;color:var(--on-glass-2);margin-bottom:var(--s-3)}
+.r-row{display:grid;grid-template-columns:52px 1fr;gap:var(--s-3);align-items:start;padding:10px 0;border-top:1px solid var(--glass-line-soft)}
+.r-no{display:grid;place-items:center;height:30px;border-radius:9px;background:rgba(242,179,90,.16);color:#FFD9A0;font-size:.78rem;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap}
+.r-who{display:block;font-size:.92rem;line-height:1.5}
+.r-who.none{color:var(--on-glass-3)}
+.r-why{display:block;font-size:.8rem;line-height:1.6;color:#FFD9A0}
+.ok-list summary{display:flex;align-items:center;justify-content:space-between;min-height:44px;cursor:pointer;list-style:none}
+.ok-list summary::-webkit-details-marker{display:none}
+.ok-list summary .icon{width:18px;height:18px;transition:rotate var(--t-fast)}
+.ok-list[open] summary .icon{rotate:180deg}
+.ok-list ol{display:grid;font-size:.88rem}
+.ok-list li{display:flex;justify-content:space-between;gap:var(--s-3);padding:8px 0;border-top:1px solid var(--glass-line-soft)}
+.ok-list li span:last-child{direction:ltr;color:var(--on-glass-2);font-variant-numeric:tabular-nums}
+.actions{display:grid;gap:var(--s-1)}
+
+/* بعد الإضافة: ابعت الكروت واحد واحد */
+.sent-bar{height:6px;border-radius:3px;background:rgba(255,248,238,.14);overflow:hidden}
+.sent-bar span{display:block;height:100%;width:0;border-radius:3px;background:var(--ok);transition:width var(--t-base) var(--ease)}
+.sent-count{font-size:.82rem;color:var(--on-glass-2);font-variant-numeric:tabular-nums}
+.w-row{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:var(--s-3);min-height:60px;padding:8px 0;border-top:1px solid var(--glass-line-soft)}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--glass-3);font-size:.82rem;font-weight:500}
+.w-name{display:block;font-size:.95rem;line-height:1.4}
+.w-mob{display:block;font-size:.78rem;color:var(--on-glass-2);direction:ltr;text-align:right;font-variant-numeric:tabular-nums}
+.wa{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border-radius:999px;background:#1F7A4D;color:#fff;font-size:.82rem;font-weight:500;white-space:nowrap}
+.wa:hover{background:#238a57}
+.wa .icon{width:18px;height:18px}
+.w-row.sent .wa{background:var(--glass-2);color:var(--on-glass-2)}
+.w-row.sent .av{background:rgba(155,208,127,.25);color:var(--ok)}
+
+/* ملف مش مفهوم */
+.s-bad .lead{margin-top:calc(var(--s-2) * -1)}
+.bad-ic{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(242,179,90,.16);color:#FFD9A0}
+.bad-ic .icon{width:24px;height:24px}
+</style>
+</head>
+<body class="has-nav" data-step="pick">
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="13" width="4" height="4" rx=".5"/><path d="M13 7h4v4M7 13v4h4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3 21l1.65-3.8A9 9 0 1 1 7.8 20.3L3 21Z"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+</svg>
+
+<!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس. الأسماء والأرقام وهمية -->
+<div class="review" role="group" aria-label="حالات الشاشة للمراجعة">
+  <span>نموذج للمراجعة (أسماء وأرقام وهمية)، اختر الحالة، أو جرّب بملف Excel حقيقي:</span>
+  <button class="chip" type="button" data-show="pick" aria-pressed="true">اختيار الملف</button>
+  <button class="chip" type="button" data-show="preview" aria-pressed="false">المعاينة</button>
+  <button class="chip" type="button" data-show="clean" aria-pressed="false">ملف سليم كله</button>
+  <button class="chip" type="button" data-show="bad" aria-pressed="false">ملف مش مفهوم</button>
+  <button class="chip" type="button" data-show="done" aria-pressed="false">بعد الإضافة</button>
+</div>
+
+<main class="wrap-i" id="main">
+  <header class="glass p-top">
+    <a class="ibtn" href="attend-members.html" aria-label="رجوع للمخدومين"><svg class="icon"><use href="#i-right"/></svg></a>
+    <b>استيراد من Excel</b>
+  </header>
+
+  <!-- 1. اختيار الملف -->
+  <section class="step s-pick" aria-labelledby="h-pick">
+    <div class="glass pane" style="display:grid;gap:var(--s-4)">
+      <div>
+        <h1 id="h-pick">ضيف مخدومين كتير مرة واحدة</h1>
+        <p class="lead">جهّز ملف Excel فيه <b>عمودين بس</b>: الاسم بالكامل، ورقم الموبايل. كل مخدوم في صف.</p>
+      </div>
+      <div class="sheet" role="img" aria-label="شكل الملف: العمود الأول الاسم، والتاني الموبايل، وكل مخدوم في صف">
+        <span></span><span class="col">A</span><span class="col">B</span>
+        <span>1</span><span class="hd">الاسم</span><span class="hd">الموبايل</span>
+        <span>2</span><span class="nm">مينا عادل</span><span class="mb">01012345678</span>
+        <span>3</span><span class="nm">مريم سمير</span><span class="mb">01198765432</span>
+      </div>
+      <ul class="rules">
+        <li>أول صف ممكن يكون عناوين (الاسم، الموبايل) أو يبدأ بالأسماء على طول.</li>
+        <li>اللي متسجّل قبل كده بنفس الرقم مش هيتضاف تاني.</li>
+        <li>هتشوف الأسماء الأول قبل ما تتضاف.</li>
+      </ul>
+      <div class="actions" id="pickBox">
+        <label class="btn btn-light pick-btn"><svg class="icon"><use href="#i-upload"/></svg>اختار ملف Excel
+          <input type="file" id="file" accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv">
+        </label>
+        <p class="reading" role="status"><svg class="icon" style="width:18px;height:18px"><use href="#i-sheet"/></svg>بنقرا الملف...</p>
+        <button class="textlink" type="button" id="tpl"><svg class="icon" style="width:18px;height:18px"><use href="#i-download"/></svg>نزّل ملف جاهز تملاه</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. المعاينة -->
+  <section class="step s-preview" aria-labelledby="h-preview">
+    <div class="glass pane" style="display:grid;gap:var(--s-4)">
+      <p class="file"><svg class="icon"><use href="#i-sheet"/></svg><span id="fileName"></span></p>
+      <div>
+        <h1 id="h-preview"></h1>
+        <p class="lead" id="pvLead"></p>
+      </div>
+      <div class="tally big rows-tally" id="rowsTally" aria-hidden="true"></div>
+      <div class="legend" aria-hidden="true"><span><i></i>هيتضاف</span><span><i class="bad"></i>فيه مشكلة</span></div>
+      <p class="fixed-note" id="fixedNote" hidden></p>
+    </div>
+
+    <div class="glass pane rej" id="rej">
+      <h3>صفوف مش هتتضاف</h3>
+      <p>صلّحها في الملف واستورده تاني. اللي اتضافوا المرة دي مش هيتكرروا.</p>
+      <div id="rejList"></div>
+    </div>
+
+    <details class="glass pane ok-list" id="okBox">
+      <summary><span id="okTitle"></span><svg class="icon"><use href="#i-down"/></svg></summary>
+      <ol id="okList"></ol>
+    </details>
+
+    <div class="actions">
+      <button class="btn btn-light" type="button" id="doAdd"></button>
+      <button class="textlink" type="button" id="again">اختار ملف تاني</button>
+    </div>
+  </section>
+
+  <!-- 3. بعد الإضافة -->
+  <section class="step s-done" aria-labelledby="h-done">
+    <div class="glass pane" style="display:grid;gap:var(--s-3)">
+      <div>
+        <h1 id="h-done"></h1>
+        <p class="lead">ابعت لكل واحد الكارت بتاعه على واتساب علشان يتمسح من أول جلسة. اللي تبعتله بيتعلّم عليه.</p>
+      </div>
+      <div class="sent-bar" aria-hidden="true"><span id="sentBar"></span></div>
+      <p class="sent-count" id="sentCount" role="status"></p>
+    </div>
+    <div class="glass pane" id="waList" style="padding-block:var(--s-2)" aria-label="ابعت الكروت"></div>
+    <div class="actions">
+      <a class="btn btn-glass" href="attend-members.html"><svg class="icon"><use href="#i-users"/></svg>روح لقائمة المخدومين</a>
+    </div>
+  </section>
+
+  <!-- ملف مش مفهوم -->
+  <section class="step s-bad" aria-labelledby="h-bad">
+    <div class="glass pane" style="display:grid;gap:var(--s-4)">
+      <span class="bad-ic"><svg class="icon"><use href="#i-alert"/></svg></span>
+      <h1 id="h-bad">مش لاقيين أسماء في الملف ده</h1>
+      <p class="lead" id="badLead">اتأكد إن الملف Excel وفيه عمودين: الاسم في الأول والموبايل في التاني، وإن الأسماء في أول صفحة في الملف.</p>
+      <div class="actions">
+        <button class="btn btn-light" type="button" id="badAgain"><svg class="icon"><use href="#i-upload"/></svg>اختار ملف تاني</button>
+        <button class="textlink" type="button" id="tpl2"><svg class="icon" style="width:18px;height:18px"><use href="#i-download"/></svg>نزّل ملف جاهز تملاه</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="glass g-nav" aria-label="التنقل في نظام الحضور">
+  <ul>
+    <li><a href="attend-sessions.html"><svg class="icon"><use href="#i-calendar"/></svg>الجلسات</a></li>
+    <li><a href="attend-members.html" aria-current="page"><svg class="icon"><use href="#i-users"/></svg>المخدومون</a></li>
+    <li><a href="attend-scan.html"><svg class="icon"><use href="#i-scan"/></svg>المسح</a></li>
+    <li><a href="attend-followup.html"><svg class="icon"><use href="#i-heart"/></svg>الافتقاد</a></li>
+    <li><a href="attend-more.html"><svg class="icon"><use href="#i-more"/></svg>المزيد</a></li>
+  </ul>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/attend-demo.js"></script>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const body = document.body, D = window.AttendDemo;
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  let rows = [], added = [], sent = new Set(), nextId = D.members.length;
+
+  // مكتبة قراءة Excel: بتتحمّل بس لما نحتاجها (في ووردبريس القراءة هتبقى على السيرفر)
+  let xlsx;
+  const loadXlsx = () => xlsx || (xlsx = new Promise((ok, no) => {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload = () => ok(window.XLSX); s.onerror = () => { xlsx = null; no(); };
+    document.head.appendChild(s);
+  }));
+
+  // ---------- تنضيف الرقم: أرقام عربي، ومسافات، و+20، وصفر ضايع من Excel ----------
+  function cleanMobile(v) {
+    let s = String(v ?? '').replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/\D/g, '');
+    let fixed = false;
+    if (/^(0020|20)1\d{9}$/.test(s)) { s = s.replace(/^(00)?20/, '0'); fixed = true; }
+    if (/^1[0125]\d{8}$/.test(s)) { s = '0' + s; fixed = true; }
+    return { s, fixed };
+  }
+  const looksMobile = v => /\d{6,}/.test(String(v ?? '').replace(/[٠-٩]/g, '0').replace(/\D/g, ''));
+  const isHeader = r => r.some(c => /^(الاسم|اسم|name|الموبايل|موبايل|رقم|mobile|phone)/i.test(String(c ?? '').trim()));
+
+  // ---------- فحص الصفوف: نفس قواعد "إضافة مخدوم" ----------
+  function check(table) {
+    const existing = new Map(D.members.map(m => [m.mobile, m.name]));
+    const seen = new Map(), out = [];
+    let start = 0;
+    while (start < table.length && table[start].every(c => String(c ?? '').trim() === '')) start++;
+    if (table[start] && isHeader(table[start])) start++;
+    for (let i = start; i < table.length; i++) {
+      const cells = table[i].map(c => String(c ?? '').trim()).filter(Boolean);
+      if (!cells.length) continue;
+      // العمود اللي شكله رقم هو الموبايل، حتى لو العمودين متبدّلين
+      let name = '', mob = '';
+      const a = String(table[i][0] ?? '').trim(), b = String(table[i][1] ?? '').trim();
+      if (looksMobile(a) && !looksMobile(b)) { name = b; mob = a; } else { name = a; mob = b; }
+      name = name.replace(/\s+/g, ' ');
+      const { s, fixed } = cleanMobile(mob);
+      const r = { line: i + 1, name, mobile: s, fixed, why: '' };
+      if (!name && !mob) continue;
+      if (!name) r.why = 'من غير اسم';
+      else if (!mob) r.why = 'من غير موبايل';
+      else if (name.split(' ').length < 2) r.why = 'الاسم كلمة واحدة، اكتبه اسمين على الأقل';
+      else if (!/^01[0125]\d{8}$/.test(s)) r.why = `الرقم ${esc(mob)} مش رقم موبايل مصري صحيح`;
+      else if (existing.has(s)) r.why = `الرقم متسجّل قبل كده لـ${esc(existing.get(s))}`;
+      else if (seen.has(s)) r.why = `الرقم مكرر، نفس رقم صف ${seen.get(s)}`;
+      if (!r.why) seen.set(s, r.line);
+      out.push(r);
+    }
+    return out;
+  }
+
+  // ---------- ملف تجريبي للمراجعة: أغلبه سليم وفيه كل أنواع المشاكل ----------
+  const SAMPLE_NAMES = ['أنطونيوس سامي','كيرلس عادل','مارينا رضا','بيشوي نادي','ماريان فوزي','مينا جورج','ڤيرونيكا عماد','أبانوب صموئيل','كاراس رامز','مريم إسحق','يوأنس منير','دميانة بطرس','بولس سمعان','ريتا ناصف','فيلوباتير أمير','إيريني موسى','باخوم حليم','سيلفيا رزق','مكاريوس شاكر','جوانا ثابت','أثناسيوس لبيب','ماجي يعقوب','ديفيد مرقس','كريستين وهيب','ستيفن رفعت','مادونا جميل','أغسطينوس سعد','نرمين كامل','بيمن ملاك','جيهان ساويرس'];
+  function sampleTable(clean) {
+    let seed = 11; const r = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    const t = [['الاسم', 'الموبايل']];
+    SAMPLE_NAMES.forEach((n, i) => {
+      const mob = '01' + [0, 1, 2, 5][i % 4] + String(20000000 + Math.floor(r() * 79999999)).slice(0, 8);
+      // صفين من غير الصفر اللي في الأول (Excel بيشيله لما الخانة تبقى رقم)
+      t.push([n, i === 4 || i === 17 ? Number(mob) : mob]);
+    });
+    if (!clean) {
+      t.splice(6, 0, ['جرجس مكرم', '']);
+      t.splice(11, 0, ['', '01223456781']);
+      t.splice(15, 0, ['شنودة', '01556677889']);
+      t.splice(19, 0, ['مارتن عزت', '0123456']);
+      t.splice(24, 0, ['ماريا نبيل', D.members[9].mobile]);
+      t.splice(28, 0, ['مينا جورج ونيس', t[7][1]]);
+    }
+    return t;
+  }
+
+  // ---------- العرض ----------
+  // العدد بالعامية: واحد، اتنين، من 3 لـ 10 جمع، ومن 11 مفرد
+  const count = (n, one, two, many) => n === 1 ? `${one} واحد` : n === 2 ? two : n <= 10 ? `${n} ${many}` : `${n} ${one}`;
+  const plural = n => count(n, 'مخدوم', 'مخدومين اتنين', 'مخدومين');
+  const rowsN = n => count(n, 'صف', 'صفين', 'صفوف');
+  function showPreview(fileName) {
+    const ok = rows.filter(r => !r.why), bad = rows.filter(r => r.why);
+    $('#fileName').textContent = fileName;
+    $('#h-preview').innerHTML = ok.length ? `هيتضاف <b>${plural(ok.length)}</b>` : 'مفيش ولا صف ينفع يتضاف';
+    $('#pvLead').innerHTML = `في الملف <b>${rowsN(rows.length)}</b>${bad.length ? `، منهم <b>${rowsN(bad.length)}</b> فيهم مشكلة ومش هيتضافوا` : '، وكلهم سليمين'}.`;
+    // علامات العدّ بنفس ترتيب الصفوف في الملف، في مجموعات من 5
+    let h = '';
+    rows.forEach((r, i) => { if (i % 5 === 0) h += (i ? '</span>' : '') + '<span class="grp">'; h += `<i${r.why ? ' class="bad"' : ''}></i>`; });
+    $('#rowsTally').innerHTML = h + (rows.length ? '</span>' : '');
+    const nFixed = ok.filter(r => r.fixed).length;
+    $('#fixedNote').hidden = !nFixed;
+    $('#fixedNote').textContent = nFixed ? `ظبطنا ${count(nFixed, 'رقم', 'رقمين', 'أرقام')} تلقائيًا: كان ناقصهم الصفر اللي في الأول (Excel بيشيله أحيانًا) أو مكتوبين بـ ‎+20.` : '';
+    $('#rej').hidden = !bad.length;
+    $('#rejList').innerHTML = bad.map(r => `<div class="r-row"><span class="r-no">صف ${r.line}</span><span><span class="r-who${r.name ? '' : ' none'}">${r.name ? esc(r.name) : `<bdi dir="ltr">${esc(r.mobile)}</bdi>`}</span><span class="r-why">${r.why}</span></span></div>`).join('');
+    $('#okBox').hidden = !ok.length;
+    $('#okTitle').textContent = `الأسماء اللي هتتضاف (${ok.length})`;
+    $('#okList').innerHTML = ok.map(r => `<li><span>${esc(r.name)}</span><span>${D.fmtMobile(r.mobile)}</span></li>`).join('');
+    const btn = $('#doAdd');
+    btn.disabled = !ok.length;
+    btn.innerHTML = `<svg class="icon"><use href="#i-plus"/></svg>${ok.length ? `ضيف ${plural(ok.length)}` : 'مفيش حد يتضاف'}`;
+    setStep('preview');
+  }
+
+  function showDone() {
+    $('#h-done').innerHTML = `اتضاف <b>${plural(added.length)}</b>`;
+    $('#waList').innerHTML = added.map(m => `<div class="w-row${sent.has(m.id) ? ' sent' : ''}" data-id="${m.id}">
+      <span class="av" aria-hidden="true">${sent.has(m.id) ? '<svg class="icon" style="width:18px;height:18px"><use href="#i-check"/></svg>' : D.initials(m.name)}</span>
+      <span><span class="w-name">${esc(m.name)}</span><span class="w-mob">${D.fmtMobile(m.mobile)}</span></span>
+      <a class="wa" href="${D.waCard(m)}" target="_blank" rel="noopener" aria-label="ابعت الكارت لـ${esc(m.name)} على واتساب"><svg class="icon"><use href="#i-wa"/></svg>${sent.has(m.id) ? 'اتبعت' : 'ابعت الكارت'}</a>
+    </div>`).join('');
+    updateSent();
+    setStep('done');
+  }
+
+  $('#waList').addEventListener('click', e => {
+    const a = e.target.closest('.wa'); if (!a) return;
+    // بنعلّم على الصف مكانه من غير ما نعيد رسم القائمة، علشان الرابط يفتح عادي
+    const row = a.closest('.w-row'); sent.add(+row.dataset.id);
+    row.classList.add('sent');
+    $('.av', row).innerHTML = '<svg class="icon" style="width:18px;height:18px"><use href="#i-check"/></svg>';
+    a.lastChild.textContent = 'اتبعت';
+    updateSent();
+  });
+  function updateSent() {
+    $('#sentCount').textContent = `اتبعت ${sent.size} من ${added.length}`;
+    $('#sentBar').style.width = (added.length ? sent.size / added.length * 100 : 0) + '%';
+  }
+
+  function setStep(st) {
+    body.dataset.step = st;
+    $('#pickBox').classList.remove('is-reading');
+    scrollTo(0, 0);
+    const h = $(`#h-${st}`); if (h) { h.tabIndex = -1; h.focus({ preventScroll: true }); }
+  }
+
+  // ---------- قراءة الملف ----------
+  $('#file').addEventListener('change', async e => {
+    const f = e.target.files[0]; e.target.value = '';
+    if (!f) return;
+    $('#pickBox').classList.add('is-reading');
+    try {
+      const X = await loadXlsx();
+      const wb = X.read(await f.arrayBuffer(), { type: 'array' });
+      const table = X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, raw: false, defval: '' });
+      rows = check(table);
+      if (!rows.length) return showBad('مش لاقيين أسماء في الملف ده', 'اتأكد إن الأسماء في أول صفحة في الملف، في عمودين: الاسم في الأول والموبايل في التاني.');
+      showPreview(f.name);
+    } catch {
+      showBad('الملف ده مش بيتفتح', 'اختار ملف Excel (بامتداد ‎.xlsx أو ‎.xls) أو CSV. لو الملف من Google Sheets نزّله الأول من File ثم Download ثم Microsoft Excel.');
+    }
+  });
+  function showBad(t, p) { $('#h-bad').textContent = t; $('#badLead').textContent = p; setStep('bad'); }
+  const repick = () => { setStep('pick'); $('#file').click(); };
+  $('#again').addEventListener('click', repick);
+  $('#badAgain').addEventListener('click', repick);
+
+  // ---------- الإضافة ----------
+  $('#doAdd').addEventListener('click', () => {
+    added = rows.filter(r => !r.why).map(r => ({ id: nextId++, name: r.name, mobile: r.mobile }));
+    sent = new Set();
+    showDone();
+  });
+
+  // ---------- ملف جاهز: عمودين بعناوينهم ----------
+  async function template() {
+    try {
+      const X = await loadXlsx();
+      const ws = X.utils.aoa_to_sheet([['الاسم', 'الموبايل']]);
+      ws['!cols'] = [{ wch: 28 }, { wch: 16 }];
+      // خانة الموبايل نص، علشان Excel مايشيلش الصفر اللي في الأول
+      for (let r = 1; r < 300; r++) ws[X.utils.encode_cell({ r, c: 1 })] = { t: 's', v: '', z: '@' };
+      ws['!ref'] = 'A1:B300';
+      const wb = X.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] };
+      X.utils.book_append_sheet(wb, ws, 'المخدومين');
+      X.writeFile(wb, 'مخدومين-إعداد-الخدام.xlsx');
+    } catch { toast('مش قادرين ننزّل الملف دلوقتي. اتأكد من النت وجرّب تاني.'); }
+  }
+  $('#tpl').addEventListener('click', template);
+  $('#tpl2').addEventListener('click', template);
+
+  let tt;
+  function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 3200); }
+
+  // ---------- حالات المراجعة ----------
+  const chips = $$('.review .chip');
+  chips.forEach(c => c.addEventListener('click', () => {
+    chips.forEach(x => x.setAttribute('aria-pressed', x === c));
+    const st = c.dataset.show;
+    if (st === 'pick') return setStep('pick');
+    if (st === 'bad') return showBad('مش لاقيين أسماء في الملف ده', 'اتأكد إن الأسماء في أول صفحة في الملف، في عمودين: الاسم في الأول والموبايل في التاني.');
+    rows = check(sampleTable(st === 'clean'));
+    if (st === 'done') { added = rows.filter(r => !r.why).map(r => ({ id: nextId++, name: r.name, mobile: r.mobile })); sent = new Set(added.slice(0, 3).map(m => m.id)); return showDone(); }
+    showPreview(st === 'clean' ? 'مخدومين-الدفعة-الجديدة.xlsx' : 'مخدومين إعداد الخدام 2026.xlsx');
+  }));
+})();
+</script>
+</body>
+</html>

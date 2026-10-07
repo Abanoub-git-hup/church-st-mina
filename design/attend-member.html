@@ -321,13 +321,11 @@ textarea.n-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
     $('#susName').textContent = m.name;
   }
 
-  // QR وهمي ثابت (شكل بس، مش بيتقري)
+  // QR وهمي ثابت (شكل بس، مش بيتقري)، نفس اللي في صفحة "كارتي"
   function qr(seed) {
-    const N = 25, cells = [], r = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
-    const finder = (x, y) => [[0,0,7],[1,1,5],[2,2,3]].map(([o,_,s], k) => `<rect x="${x+o}" y="${y+o}" width="${s}" height="${s}" fill="${k === 1 ? '#F6ECDC' : '#1E140D'}"/>`).join('');
-    const inF = (x, y) => (x < 8 && y < 8) || (x > N - 9 && y < 8) || (x < 8 && y > N - 9);
-    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (!inF(x, y) && r() > .52) cells.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`);
-    return `<svg viewBox="0 0 ${N} ${N}" shape-rendering="crispEdges"><g fill="#1E140D">${cells.join('')}</g>${finder(0, 0)}${finder(N - 7, 0)}${finder(0, N - 7)}</svg>`;
+    const g = D.qrCells(seed), N = g.length; let r = '';
+    g.forEach((row, y) => row.forEach((on, x) => { if (on) r += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }));
+    return `<svg viewBox="0 0 ${N} ${N}" shape-rendering="crispEdges"><g fill="#1E140D">${r}</g></svg>`;
   }
 
   // ---------- تعديل البيانات ----------
