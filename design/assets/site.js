@@ -122,6 +122,7 @@
       f.src = `https://www.youtube-nocookie.com/embed/${cur.dataset.id}?autoplay=1&rel=0`;
       f.title = cur.dataset.title; f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen'; f.allowFullscreen = true;
       frame.append(f);
+      dispatchEvent(new Event('site:media'));
     };
     const show = p => {
       cur = p; parts.forEach(x => x.setAttribute('aria-pressed', x === p));
@@ -133,6 +134,72 @@
     $('.yt-play', frame).addEventListener('click', embed);
     parts.forEach(p => p.addEventListener('click', () => show(p)));
   });
+
+  // ---------- ترنيمة الخلفية: مشغّل ساوند كلاود مخفي يتحكم فيه زر الشمعة العائم ----------
+  // المتصفح لا يسمح بالصوت قبل ضغطة، فالترانيم لا تبدأ إلا من الزر. رقم الترنيمة وموضعها يُحفظان
+  // في localStorage لتكمل من نفس الثانية في الصفحة التالية. القائمة تنتقل وحدها، وبعد آخر ترنيمة تعود لأولها.
+  (() => {
+    // لتغيير الترانيم: رابط قائمة تشغيل على ساوند كلاود (أو رابط ترنيمة واحدة)
+    const TRACK = 'https://soundcloud.com/abanoub-s-morise/sets/church-st-mina', KEY = 'hymn';
+    // الحالة المحفوظة تخص هذا الرابط فقط، فتغييره يبدأ من أول ترنيمة
+    const read = () => { try { const s = JSON.parse(localStorage.getItem(KEY)) || {}; return s.track === TRACK ? s : {}; } catch { return {}; } };
+    const save = s => { try { localStorage.setItem(KEY, JSON.stringify({ ...read(), ...s, track: TRACK })); } catch {} };
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'hymn'; btn.dataset.state = 'off';
+    btn.innerHTML = '<span class="hymn-candle" aria-hidden="true"></span><span class="hymn-tip" aria-hidden="true">اضغط لتكمل الترنيمة</span>';
+    document.body.append(btn);
+    let widget = null, ready = null, playing = false, idx = read().idx || 0, pos = read().pos || 0, seek = null, lastSave = 0, title = 'الترنيمة';
+    const label = () => btn.setAttribute('aria-label', (playing ? 'إيقاف ' : 'تشغيل ') + title);
+    const set = st => { btn.dataset.state = st; playing = st === 'on'; btn.setAttribute('aria-pressed', playing); label(); };
+    label(); btn.setAttribute('aria-pressed', 'false');
+
+    // يُحمَّل ساوند كلاود عند أول حاجة فقط
+    const load = () => ready || (ready = new Promise(res => {
+      const f = document.createElement('iframe');
+      f.className = 'hymn-frame'; f.title = 'مشغّل الترانيم'; f.allow = 'autoplay'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+      f.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(TRACK) + '&auto_play=false&visual=false&show_artwork=false&buying=false&sharing=false&download=false';
+      // السكربت أولًا ثم الإطار، حتى لا تفوتنا إشارة READY
+      const s = document.createElement('script'); s.src = 'https://w.soundcloud.com/player/api.js';
+      s.onload = () => {
+        document.body.append(f);
+        const E = SC.Widget.Events; widget = SC.Widget(f);
+        widget.bind(E.READY, () => res(widget));
+        widget.bind(E.PLAY, () => {
+          set('on');
+          widget.getCurrentSoundIndex(i => {
+            if (i !== idx) { idx = i; pos = 0; }
+            save({ playing: true, idx, pos });
+            if (seek) { widget.seekTo(seek); seek = null; }
+          });
+          widget.getCurrentSound(snd => { if (snd && snd.title) { title = 'ترنيمة: ' + snd.title; btn.title = snd.title; label(); } });
+        });
+        widget.bind(E.PAUSE, () => { if (btn.dataset.state === 'on') set('off'); });
+        // بعد آخر ترنيمة نعود لأول القائمة (وفي الترنيمة الواحدة تعيد نفسها)
+        widget.bind(E.FINISH, () => widget.getSounds(list => widget.getCurrentSoundIndex(i => { if (i >= list.length - 1) { idx = 0; pos = 0; widget.skip(0); } })));
+        widget.bind(E.PLAY_PROGRESS, e => { pos = e.currentPosition; if (Date.now() - lastSave > 2000) { lastSave = Date.now(); save({ idx, pos }); } });
+      };
+      document.head.append(s);
+    }));
+
+    // نرجع لنفس الترنيمة، والقفز للثانية المحفوظة يحصل أول ما تبدأ
+    const play = () => load().then(w => { seek = pos || null; if (idx > 0) w.skip(idx); else w.play(); });
+    const stop = () => { if (widget) widget.pause(); set('off'); save({ playing: false, pos }); };
+    btn.addEventListener('click', () => {
+      if (playing) return stop();
+      set('loading'); play();
+      setTimeout(() => { if (btn.dataset.state === 'loading') set('off'); }, 8000);
+    });
+
+    // كانت شغالة في الصفحة السابقة: نحاول نكمل، ولو المتصفح منع نطلب ضغطة
+    if (read().playing) {
+      set('loading'); play();
+      setTimeout(() => { if (!playing) set('resume'); }, 2500);
+    }
+    // صوت آخر في الصفحة (فيديو القداس أو مشغّل صوت) يوقف الترنيمة
+    addEventListener('site:media', () => { if (playing) stop(); });
+    document.addEventListener('play', e => { if (!e.target.muted && btn.dataset.state !== 'off') stop(); }, true);
+    addEventListener('pagehide', () => { if (playing) save({ pos }); });
+  })();
 
   // ---------- العد التنازلي ----------
   const cd = $('#countdown');
