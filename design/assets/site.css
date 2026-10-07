@@ -581,21 +581,23 @@ body{background:var(--umber-700)}
 .has-dd.open > .dd-btn .icon,.has-dd:hover > .dd-btn .icon{rotate:180deg}
 .top-nav .has-dd:hover > a,.top-nav .has-dd.open > a,.float-nav nav .has-dd:hover > a,.float-nav nav .has-dd.open > a{color:var(--cream);background:rgba(246,236,220,.08)}
 
-/* اللوح المنسدل: زجاج رأسي */
-.dd{position:absolute;top:calc(100% + 12px);left:50%;z-index:140;min-width:210px;padding:8px;border-radius:18px;
-  background:var(--glass);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
-  border:1px solid var(--glass-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 24px 50px rgba(10,6,3,.4);
+/* اللوح المنسدل: زجاج فاتح خفيف، وإطار ذهبي رفيع متدرّج (أوضح فوق ويخف لتحت) */
+.dd{position:absolute;top:calc(100% + 12px);left:50%;z-index:140;min-width:200px;padding:8px;border-radius:20px;
+  background:linear-gradient(180deg,rgba(255,244,228,.11),rgba(255,244,228,.05));-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);
+  box-shadow:inset 0 1px 0 rgba(255,248,238,.14),0 18px 40px rgba(10,6,3,.28);
   opacity:0;visibility:hidden;translate:-50% 8px;transition:opacity var(--t-fast),translate var(--t-base) var(--ease),visibility 0s linear var(--t-base)}
+.dd::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(243,201,135,.55),rgba(243,201,135,.12) 60%,rgba(255,248,238,.08));
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .dd::before{content:"";position:absolute;inset-inline:0;top:-14px;height:14px}
 .has-dd:hover > .dd,.has-dd.open > .dd{opacity:1;visibility:visible;translate:-50% 0;transition:opacity var(--t-fast),translate var(--t-base) var(--ease)}
 /* القائمة نفسها ul جوه قائمة الهيدر الأفقية، فلازم نرجّعها رأسية صراحةً */
 .top-nav ul.dd,.float-nav nav ul.dd,ul.dd,.dd ul{display:flex;flex-direction:column;gap:2px}
-.top-nav .dd a,.float-nav nav .dd a,.dd a{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 14px;border-radius:12px;background:none;font-size:.95rem;font-weight:300;color:rgba(255,248,238,.82);white-space:nowrap;transition:background var(--t-fast),color var(--t-fast)}
-.dd a::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.35;flex:none}
-.top-nav .dd a:hover,.float-nav nav .dd a:hover,.dd a:hover,.dd a:focus-visible{background:var(--glass-2);color:#FFF8EE}
-.dd a[aria-current=page]{color:var(--gold-soft);background:var(--glass-2)}
-.dd a[aria-current=page]::before{opacity:1}
-.dd-title{padding:8px 14px 6px;font-size:.78rem;font-weight:500;color:var(--gold-soft)}
+/* الصفحات: نفس شكل روابط القائمة الرئيسية وهوفرها (كبسولة بخلفية فاتحة خفيفة) */
+.top-nav .dd a,.float-nav nav .dd a,.dd a{display:flex;align-items:center;min-height:42px;padding:6px 16px;border-radius:var(--r-full);background:none;font-size:.92rem;font-weight:300;color:var(--cream-2);white-space:nowrap;transition:all var(--t-fast)}
+.top-nav .dd a:hover,.float-nav nav .dd a:hover,.dd a:hover,.dd a:focus-visible{color:var(--cream);background:rgba(246,236,220,.08)}
+.dd a[aria-current=page],.top-nav .dd a[aria-current=page]{color:var(--gold-soft);background:rgba(246,236,220,.08)}
+.dd-title{padding:6px 16px 4px;font-size:.78rem;font-weight:500;color:var(--gold-soft)}
 
 /* أيقونات الهيدر (الدخول والسوشيال): دواير زجاج بنفس الشكل */
 .login-dd{flex:none}
