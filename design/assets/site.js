@@ -136,7 +136,7 @@
   });
 
   // ---------- ترنيمة الخلفية: مشغّل ساوند كلاود مخفي يتحكم فيه زر الشمعة العائم ----------
-  // المتصفح لا يسمح بالصوت قبل ضغطة، فالترانيم لا تبدأ إلا من الزر. رقم الترنيمة وموضعها يُحفظان
+  // التشغيل افتراضي، لكن المتصفح لا يسمح بالصوت قبل ضغطة، فتبدأ مع أول لمسة في الصفحة. رقم الترنيمة وموضعها يُحفظان
   // في localStorage لتكمل من نفس الثانية في الصفحة التالية. القائمة تنتقل وحدها، وبعد آخر ترنيمة تعود لأولها.
   (() => {
     // لتغيير الترانيم: رابط قائمة تشغيل على ساوند كلاود (أو رابط ترنيمة واحدة)
@@ -183,20 +183,23 @@
 
     // نرجع لنفس الترنيمة، والقفز للثانية المحفوظة يحصل أول ما تبدأ
     const play = () => load().then(w => { seek = pos || null; if (idx > 0) w.skip(idx); else w.play(); });
-    const stop = () => { if (widget) widget.pause(); set('off'); save({ playing: false, pos }); };
-    btn.addEventListener('click', () => {
-      if (playing) return stop();
-      set('loading'); play();
-      setTimeout(() => { if (btn.dataset.state === 'loading') set('off'); }, 8000);
-    });
+    // byUser: الزائر قفلها بنفسه، فتفضل مقفولة في كل الصفحات لحد ما يشغّلها تاني
+    const stop = (byUser = false) => { if (widget) widget.pause(); set('off'); save({ playing: false, pos, ...(byUser && { off: true }) }); };
+    const start = () => { disarm(); save({ off: false }); set('loading'); play(); setTimeout(() => { if (btn.dataset.state === 'loading') set('off'); }, 8000); };
+    btn.addEventListener('click', () => playing ? stop(true) : start());
 
-    // كانت شغالة في الصفحة السابقة: نحاول نكمل، ولو المتصفح منع نطلب ضغطة
-    if (read().playing) {
+    // التشغيل افتراضي: نحاول نبدأ مع فتح الصفحة، ولو المتصفح منع الصوت (وده المعتاد قبل أي ضغطة)
+    // تبدأ الترنيمة مع أول لمسة أو ضغطة في أي مكان في الصفحة
+    const first = e => { if (!btn.contains(e.target)) start(); else disarm(); };
+    const arm = () => ['pointerdown', 'keydown'].forEach(t => addEventListener(t, first, { capture: true, once: true }));
+    function disarm() { ['pointerdown', 'keydown'].forEach(t => removeEventListener(t, first, { capture: true })); }
+    if (!read().off) {
+      const wasPlaying = read().playing;
       set('loading'); play();
-      setTimeout(() => { if (!playing) set('resume'); }, 2500);
+      setTimeout(() => { if (!playing) { set(wasPlaying ? 'resume' : 'off'); arm(); } }, 2500);
     }
     // صوت آخر في الصفحة (فيديو القداس أو مشغّل صوت) يوقف الترنيمة
-    addEventListener('site:media', () => { if (playing) stop(); });
+    addEventListener('site:media', () => { disarm(); if (playing) stop(); });
     document.addEventListener('play', e => { if (!e.target.muted && btn.dataset.state !== 'off') stop(); }, true);
     addEventListener('pagehide', () => { if (playing) save({ pos }); });
   })();
