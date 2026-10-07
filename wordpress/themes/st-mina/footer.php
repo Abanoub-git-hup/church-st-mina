@@ -30,6 +30,7 @@ defined( 'ABSPATH' ) || exit;
     </div>
     <div class="f-bar">
       <span>© <?php echo esc_html( wp_date( 'Y' ) ); ?> كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر</span>
+      <span dir="ltr">Developed by <a href="https://abanoubmaurice.com/" target="_blank" rel="noopener">Abanoub Maurice</a></span>
     </div>
   </div>
 </footer>
