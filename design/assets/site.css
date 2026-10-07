@@ -568,3 +568,47 @@ body{background:var(--umber-700)}
 .hymn[data-state=resume] .hymn-tip{opacity:1}
 .hymn[data-state=resume]{border-color:var(--gold)}
 .hymn-frame{position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none}
+
+/* ===== القوائم المنسدلة (السلوك في site.js) ===== */
+.has-dd{position:relative;display:flex;align-items:center}
+.top-nav .has-dd > a,.float-nav nav .has-dd > a{padding-inline-end:4px}
+.dd-btn{display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:50%;background:none;color:var(--cream-2);cursor:pointer;transition:background var(--t-fast),color var(--t-fast)}
+.dd-btn:hover{color:var(--cream);background:rgba(246,236,220,.08)}
+.dd-btn .icon{width:14px;height:14px;transition:rotate var(--t-fast)}
+.has-dd.open > .dd-btn .icon{rotate:180deg}
+.dd{position:absolute;top:calc(100% + 10px);inset-inline-start:0;z-index:140;min-width:220px;padding:var(--s-2);border-radius:var(--r-md);background:rgba(30,20,13,.96);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line-strong);box-shadow:0 18px 40px rgba(0,0,0,.45);
+  opacity:0;visibility:hidden;translate:0 6px;transition:opacity var(--t-fast),translate var(--t-fast),visibility 0s linear var(--t-fast)}
+.dd::before{content:"";position:absolute;inset-inline:0;top:-12px;height:12px}
+.has-dd:hover > .dd,.has-dd.open > .dd{opacity:1;visibility:visible;translate:0 0;transition:opacity var(--t-fast),translate var(--t-fast)}
+.dd a{display:block;padding:10px 14px;border-radius:var(--r-sm);font-size:.92rem;font-weight:300;color:var(--cream-2);white-space:nowrap;transition:background var(--t-fast),color var(--t-fast)}
+.dd a:hover,.dd a:focus-visible{background:rgba(246,236,220,.08);color:var(--cream)}
+.dd a[aria-current=page]{color:var(--gold-soft)}
+.dd-title{padding:6px 14px 8px;font-size:.78rem;font-weight:500;color:var(--gold)}
+
+/* زر دخول الخدام: دايرة بأيقونة، والقائمة بتفتح ناحية الحافة */
+.login-dd{flex:none}
+.login-btn{width:48px;height:48px;background:rgba(246,236,220,.1);border:1px solid var(--line-strong);color:var(--cream)}
+.login-btn .icon{width:20px;height:20px}
+.has-dd.open > .login-btn .icon{rotate:none}
+.login-btn:hover,.login-dd.open > .login-btn{background:var(--cream);color:var(--ink)}
+.login-dd .dd{inset-inline-start:auto;inset-inline-end:0}
+.float-nav .login-btn{width:42px;height:42px}
+.hero-top .wrap,.float-nav{gap:var(--s-3)}
+
+/* قائمة الموبايل: الأقسام بتفتح صفحاتها تحتها */
+.drawer .has-dd{display:block}
+.drawer .has-dd > .dd-btn{position:absolute;inset-inline-end:0;top:var(--s-3);width:48px;height:48px}
+.drawer .has-dd > .dd-btn .icon{width:20px;height:20px}
+.drawer .dd{position:static;display:none;min-width:0;padding:0 0 var(--s-3);background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;opacity:1;visibility:visible;translate:none}
+.drawer .dd::before{display:none}
+.drawer .has-dd.open > .dd{display:block}
+.drawer .dd a{font-size:1.05rem;padding:10px 0;padding-inline-start:var(--s-4);border-bottom:0}
+.drawer-login{margin-top:var(--s-8)}
+.drawer-login p{display:flex;align-items:center;gap:var(--s-2);font-size:.85rem;font-weight:500;color:var(--gold);margin-bottom:var(--s-2)}
+.drawer-login a{display:block;padding:var(--s-3) var(--s-4);border-radius:var(--r-md);border:1px solid var(--line-strong);font-size:1rem;font-weight:400;color:var(--cream)}
+.drawer-login a:hover{border-color:var(--gold)}
+/* الهيدر بعد إضافة زر الدخول: أيقونات السوشيال من 1280px (موجودة في الفوتر وقائمة الموبايل)،
+   والقوائم المنسدلة في نص القسم علشان ماتطلعش برة الشاشة */
+@media (min-width:1100px) and (max-width:1279px){.hero-top .socials{display:none}}
+.top-nav .dd,.float-nav nav .dd{inset-inline-start:auto;left:50%;translate:-50% 6px}
+.top-nav .has-dd:hover > .dd,.top-nav .has-dd.open > .dd,.float-nav nav .has-dd:hover > .dd,.float-nav nav .has-dd.open > .dd{translate:-50% 0}

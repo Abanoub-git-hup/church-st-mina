@@ -10,6 +10,60 @@
   const frame = $('.hero, .page-hero');
   window.Site = { $, $$, animate, frame };
 
+  // ---------- القوائم المنسدلة: صفحات كل قسم، ودخول الخدام لكل اجتماع ----------
+  // الروابط بتتحسب من رابط القسم نفسه، فتشتغل في كل الصفحات (حتى 404 اللي روابطها من جذر الموقع)
+  const SUB = {
+    'church-history': [['النشأة', 'church-history.html'], ['الآباء', 'church-fathers.html'], ['الصور', 'church-gallery.html'], ['الموقع', 'church-location.html']],
+    'services': [['مدارس الأحد', 'services.html#g-sunday'], ['الاجتماعات', 'services.html#g-meet'], ['الخدام', 'services.html#g-servants'], ['الفرق والأنشطة', 'services.html#g-teams'], ['الحضانة', 'services.html#g-nursery'], ['الأسرة والمجتمع', 'services.html#g-family']],
+    'library': [['العظات', 'library.html#panel-sermons'], ['النشرات', 'library.html#panel-bulletins'], ['الترانيم', 'library.html#panel-hymns']],
+    'news': [['الأخبار والإعلانات', 'news.html'], ['المناسبة القادمة', 'season.html']]
+  };
+  // لإضافة نظام حضور لاجتماع تاني: سطر جديد هنا بالاسم ورابط شاشة الدخول بتاعته
+  const MEETINGS = [['اجتماع إعداد الخدام', 'attend-login.html']];
+
+  const chev = '<svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>';
+  const keyOf = a => (a.getAttribute('href') || '').replace(/^\//, '').replace(/\.html.*$/, '');
+  // الخادم ممكن يعرض الصفحة من غير .html، فالمقارنة بعد شيلها
+  const bare = u => u.split('#')[0].replace(/\.html$/, '');
+  const here = bare(location.href);
+  const subLinks = (items, base) => items.map(([t, h]) => {
+    const url = new URL(h, base).href;
+    return `<li><a href="${url}"${!url.includes('#') && bare(url) === here ? ' aria-current="page"' : ''}>${t}</a></li>`;
+  }).join('');
+  let ddN = 0;
+  const setOpen = (box, open) => { box.classList.toggle('open', open); $('.dd-btn', box).setAttribute('aria-expanded', open); };
+  const closeAll = except => $$('.has-dd.open').forEach(b => { if (b !== except) setOpen(b, false); });
+
+  $$('.top-nav li, .float-nav nav li, #drawer li').forEach(li => {
+    const a = $('a', li), items = a && SUB[keyOf(a)];
+    if (!items) return;
+    const id = 'dd' + ++ddN;
+    li.classList.add('has-dd');
+    a.insertAdjacentHTML('afterend', `<button class="dd-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="صفحات ${a.textContent.trim()}">${chev}</button><ul class="dd" id="${id}">${subLinks(items, a.href)}</ul>`);
+  });
+
+  // زر دخول الخدام: أيقونة فوق في الهيدر، وتحتها الاجتماعات اللي ليها نظام حضور
+  const navBase = ($('.top-nav a[href], #drawer li a[href]') || {}).href || location.href;
+  const loginList = MEETINGS.map(([t, h]) => `<li><a href="${new URL(h, navBase).href}">${t}</a></li>`).join('');
+  const userIcon = '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>';
+  $$('.hero-top .menu-btn, .float-nav .menu-btn').forEach(btn => {
+    const id = 'dd' + ++ddN;
+    btn.insertAdjacentHTML('beforebegin', `<div class="has-dd login-dd"><button class="dd-btn login-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="دخول الخدام">${userIcon}</button><div class="dd" id="${id}"><p class="dd-title">دخول الخدام</p><ul>${loginList}</ul></div></div>`);
+  });
+  const drawerList = $('#drawer > ul');
+  if (drawerList) drawerList.insertAdjacentHTML('afterend', `<div class="drawer-login"><p>${userIcon}دخول الخدام</p><ul>${loginList}</ul></div>`);
+
+  $$('.has-dd').forEach(box => {
+    $('.dd-btn', box).addEventListener('click', e => { e.stopPropagation(); const open = !box.classList.contains('open'); closeAll(box); setOpen(box, open); });
+    box.addEventListener('focusout', e => { if (!box.contains(e.relatedTarget) && !box.closest('#drawer')) setOpen(box, false); });
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('#drawer')) closeAll(); });
+  addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    const open = $('.has-dd.open:not(#drawer .has-dd)');
+    if (open) { setOpen(open, false); $('.dd-btn', open).focus(); }
+  });
+
   // ---------- القائمة ----------
   const drawer = $('#drawer');
   if (drawer) {
@@ -53,8 +107,10 @@
       if (animate) { gsap.fromTo(panel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .6, ease: 'power3.out' }); ScrollTrigger.refresh(); }
     };
     // فتح التبويب من الرابط: #اسم-اللوحة
-    const fromHash = tabs.find(t => location.hash && '#' + t.getAttribute('aria-controls') === location.hash);
-    if (fromHash) select(fromHash);
+    const fromHash = () => tabs.find(t => location.hash && '#' + t.getAttribute('aria-controls') === location.hash);
+    if (fromHash()) select(fromHash());
+    // من القائمة المنسدلة وإنت في نفس الصفحة: الرابط بيغيّر الـ hash بس
+    addEventListener('hashchange', () => { const t = fromHash(); if (t) select(t); });
     tabs.forEach((t, i) => {
       t.addEventListener('click', () => select(t));
       t.addEventListener('keydown', e => {
