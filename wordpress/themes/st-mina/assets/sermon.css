@@ -1,0 +1,42 @@
+/* خاص بصفحة العظة: إطار الفيديو، والحالات البديلة (صوت وPDF) */
+.player{position:relative;max-width:980px;margin-inline:auto;aspect-ratio:16/9;border-radius:var(--r-xl);overflow:hidden;background:var(--umber-900);border:1px solid rgba(243,201,135,.3);box-shadow:0 40px 90px -30px rgba(0,0,0,.75)}
+.player img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55}
+.player .ph{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:var(--s-3);text-align:center;padding:var(--s-6);background:radial-gradient(circle,rgba(23,15,9,.35),rgba(23,15,9,.75))}
+.player .big{width:84px;height:84px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center;position:relative}
+.player .big .icon{width:30px;height:30px;fill:currentColor;margin-inline-end:-4px}
+.player .big::after{content:"";position:absolute;inset:-9px;border-radius:50%;border:1px solid var(--gold);opacity:.5}
+.player small{color:var(--cream-2)}
+.s-meta{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--s-2) var(--s-8);margin-top:var(--s-6);color:var(--cream-2);font-size:.95rem}
+.s-meta span{display:inline-flex;align-items:center;gap:var(--s-2)}
+.s-meta .icon{color:var(--gold);width:18px;height:18px}
+.alts{display:grid;gap:var(--s-5);max-width:980px;margin-inline:auto;grid-template-columns:1fr 1fr}
+.alt-label{grid-column:1/-1;text-align:center;color:var(--muted);font-size:.85rem}
+.audio-p,.pdf-c{display:flex;align-items:center;gap:var(--s-4);padding:var(--s-5);border-radius:var(--r-lg);background:var(--umber-800);border:1px solid var(--line)}
+.audio-p .big{flex:none;width:60px;height:60px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center}
+.audio-p .big .icon{fill:currentColor;margin-inline-end:-3px}
+.audio-p .tr{flex:1}
+.audio-p .bar{height:4px;border-radius:4px;background:var(--line-strong);margin-top:var(--s-2);position:relative}
+.audio-p .bar span{position:absolute;inset-block:0;inset-inline-start:0;width:35%;border-radius:4px;background:var(--gold)}
+.audio-p .t{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem;margin-top:var(--s-1);font-variant-numeric:tabular-nums}
+.pdf-c .ic{flex:none;width:60px;height:72px;border-radius:var(--r-sm);background:var(--cream);color:var(--gold-deep);display:grid;place-items:center}
+.pdf-c .ic .icon{width:28px;height:28px}
+.pdf-c b{display:block;font-weight:400}
+.pdf-c small{color:var(--muted)}
+.pdf-c .link{margin-inline-start:auto}
+@media (max-width:760px){.alts{grid-template-columns:1fr}.pdf-c{flex-wrap:wrap}.pdf-c .link{margin-inline-start:0}}
+/* في WordPress: زرار التشغيل فوق صورة YouTube، والـ iframe بعد الضغط، والحالة الواحدة في النص */
+.player button.ph,.player a.ph{border:0;width:100%;color:inherit;font:inherit;cursor:pointer}
+.player .ph:hover .big,.player .ph:focus-visible .big{background:var(--gold-soft)}
+.player .big{transition:background var(--t-fast)}
+.player img{opacity:.7}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.player.embed{display:grid;place-items:center}
+.player.embed iframe{position:static;max-width:100%}
+.alts.one{grid-template-columns:1fr;max-width:640px}
+.audio-p button.big{border:0;cursor:pointer}
+.audio-p .i-pause{display:none;width:14px;height:16px;border-inline:4px solid currentColor}
+.audio-p .big[aria-pressed=true] .i-p{display:none}
+.audio-p .big[aria-pressed=true] .i-pause{display:block}
+.audio-p .bar{cursor:pointer}
+.audio-p .bar span{width:0}
+.pdf-c .link + .link{margin-inline-start:var(--s-4)}

@@ -311,9 +311,13 @@ get_header();
       <a class="link" href="<?php stmina_link( 'library' ); ?>" data-rise>كل العظات <svg class="icon"><use href="#i-nw"/></svg></a>
     </div>
     <div class="cards">
-      <a class="sermon" href="<?php stmina_link( 'sermon' ); ?>" data-rise><div class="top"><span class="mi"><svg class="icon"><use href="#i-headphones"/></svg></span><span class="kind">عظة صوتية</span></div><h3>عنوان العظة يظهر هنا</h3><ul><li>اسم المتحدث</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>استمع الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
-      <a class="sermon" href="<?php stmina_link( 'sermon' ); ?>" data-rise><div class="top"><span class="mi"><svg class="icon" style="fill:currentColor"><use href="#i-play"/></svg></span><span class="kind">فيديو</span></div><h3>عنوان العظة يظهر هنا</h3><ul><li>اسم المتحدث</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>شاهد الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
-      <a class="sermon" href="<?php stmina_link( 'sermon' ); ?>" data-rise><div class="top"><span class="mi"><svg class="icon"><use href="#i-file"/></svg></span><span class="kind">ملف PDF</span></div><h3>عنوان العظة يظهر هنا</h3><ul><li>اسم المتحدث</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>اقرأ الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
+      <?php
+      // أحدث 3 عظات من المكتبة
+      $latest = function_exists( 'stmina_sermons' ) ? stmina_sermons( array( 'numberposts' => 3 ) ) : array();
+      foreach ( $latest as $sermon ) {
+        get_template_part( 'template-parts/sermon-card', null, array( 'post' => $sermon ) );
+      }
+      ?>
     </div>
   </div>
 </section>

@@ -6,7 +6,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.5.0' );
+define( 'STMINA_THEME_VERSION', '0.6.1' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
 
@@ -46,6 +46,14 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( is_page( 'worship' ) ) {
 		wp_enqueue_style( 'stmina-worship', $uri . 'worship.css', array( 'stmina-site' ), $ver );
 		wp_enqueue_script( 'stmina-worship', $uri . 'worship.js', array( 'stmina-site' ), $ver, true );
+	}
+	if ( is_page( 'library' ) ) {
+		wp_enqueue_style( 'stmina-library', $uri . 'library.css', array( 'stmina-site' ), $ver );
+		wp_enqueue_script( 'stmina-library', $uri . 'library.js', array( 'stmina-site' ), $ver, true );
+	}
+	if ( is_singular( 'stmina_sermon' ) ) {
+		wp_enqueue_style( 'stmina-sermon', $uri . 'sermon.css', array( 'stmina-site' ), $ver );
+		wp_enqueue_script( 'stmina-sermon', $uri . 'sermon.js', array( 'stmina-site' ), $ver, true );
 	}
 	if ( is_post_type_archive( 'stmina_service' ) ) {
 		wp_enqueue_style( 'stmina-services', $uri . 'services.css', array( 'stmina-site' ), $ver );

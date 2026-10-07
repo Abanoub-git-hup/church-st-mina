@@ -92,6 +92,55 @@ add_action( 'acf/include_fields', function () {
 		),
 	) );
 
+	// ---------- العظة ----------
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_sermon',
+		'title'    => 'بيانات العظة',
+		'position' => 'acf_after_title',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_sermon' ) ) ),
+		'fields'   => array(
+			array(
+				'key' => 'field_stmina_sermon_speaker', 'name' => 'speaker', 'label' => 'المتحدث', 'type' => 'post_object',
+				'post_type' => array( 'stmina_priest' ), 'return_format' => 'id', 'allow_null' => 1, 'ui' => 1,
+				'instructions' => 'اختار أب من الآباء الكهنة. لو المتحدث ضيف سيبها فاضية واكتب اسمه في الخانة اللي جنبها',
+				'wrapper' => array( 'width' => 50 ),
+			),
+			array( 'key' => 'field_stmina_sermon_guest', 'name' => 'guest_name', 'label' => 'اسم المتحدث الضيف', 'type' => 'text', 'instructions' => 'مثال: نيافة الأنبا ...', 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_sermon_note', 'name' => '', 'label' => 'تاريخ العظة', 'type' => 'message', 'message' => 'تاريخ العظة هو تاريخ النشر. غيّره من خانة "Publish" في الجنب. والموضوع من خانة "المواضيع".' ),
+			array( 'key' => 'field_stmina_sermon_video', 'name' => 'video_url', 'label' => 'رابط الفيديو', 'type' => 'url', 'instructions' => 'رابط YouTube أو Facebook. لو موجود، العظة بتبقى فيديو' ),
+			array( 'key' => 'field_stmina_sermon_audio', 'name' => 'audio', 'label' => 'ملف الصوت', 'type' => 'file', 'return_format' => 'id', 'mime_types' => 'mp3,m4a,ogg,wav', 'instructions' => 'لو مفيش فيديو، العظة بتبقى صوتية', 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_sermon_pdf', 'name' => 'pdf', 'label' => 'ملف PDF', 'type' => 'file', 'return_format' => 'id', 'mime_types' => 'pdf', 'instructions' => 'لو مفيش فيديو ولا صوت، العظة بتبقى ملف للقراية', 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_sermon_verse', 'name' => 'verse', 'label' => 'آية العظة', 'type' => 'textarea', 'rows' => 2, 'wrapper' => array( 'width' => 70 ) ),
+			array( 'key' => 'field_stmina_sermon_verse_ref', 'name' => 'verse_ref', 'label' => 'الشاهد', 'type' => 'text', 'instructions' => 'مثال: يوحنا 3: 16', 'wrapper' => array( 'width' => 30 ) ),
+		),
+	) );
+
+	// ---------- النشرة ----------
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_bulletin',
+		'title'    => 'ملف النشرة',
+		'position' => 'acf_after_title',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_bulletin' ) ) ),
+		'fields'   => array(
+			array( 'key' => 'field_stmina_bulletin_pdf', 'name' => 'pdf', 'label' => 'ملف PDF', 'type' => 'file', 'return_format' => 'id', 'mime_types' => 'pdf', 'required' => 1, 'wrapper' => array( 'width' => 60 ) ),
+			array( 'key' => 'field_stmina_bulletin_issue', 'name' => 'issue', 'label' => 'رقم العدد', 'type' => 'number', 'wrapper' => array( 'width' => 40 ) ),
+			array( 'key' => 'field_stmina_bulletin_note', 'name' => '', 'label' => 'ملاحظات', 'type' => 'message', 'message' => 'شهر النشرة هو تاريخ النشر. وعنوان المقال الرئيسي في خانة "Excerpt". ولو مفيش صورة غلاف (Featured image) بيظهر غلاف بالشعار.' ),
+		),
+	) );
+
+	// ---------- الترنيمة ----------
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_hymn',
+		'title'    => 'الترنيمة',
+		'position' => 'acf_after_title',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_hymn' ) ) ),
+		'fields'   => array(
+			array( 'key' => 'field_stmina_hymn_audio', 'name' => 'audio', 'label' => 'ملف الصوت', 'type' => 'file', 'return_format' => 'id', 'mime_types' => 'mp3,m4a,ogg,wav', 'required' => 1, 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_hymn_team', 'name' => 'team', 'label' => 'الفريق', 'type' => 'text', 'instructions' => 'مثال: كورال ترينتي', 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_hymn_lyrics', 'name' => 'lyrics', 'label' => 'الكلمات', 'type' => 'textarea', 'rows' => 8, 'new_lines' => '' ),
+		),
+	) );
+
 	// ---------- واجهة الصفحات ----------
 	acf_add_local_field_group( array(
 		'key'      => 'group_stmina_page_hero',
