@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#271A11">
+<title>دخول الخادم | إعداد الخدام</title>
+<meta name="description" content="دخول الخدام لنظام حضور خدمة إعداد الخدام بكنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* نظام الحضور: خلفية ثابتة بلا صور ولا حركات زخرفية (design.md القسم 5) */
+:root{--danger:#F2937F;--danger-bg:rgba(242,147,127,.1);--warn-bg:#E0B060}
+body{background:var(--umber-800);min-height:100svh;display:flex;flex-direction:column}
+body::after{display:none}
+
+/* لافتة المراجعة: للنموذج فقط، لا تدخل الموقع الحقيقي */
+.review{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--s-2);padding:var(--s-3) var(--s-4);border-bottom:1px dashed rgba(243,201,135,.35);background:var(--umber-900);font-size:.8rem;color:var(--gold-soft)}
+.review span{width:100%;text-align:center}
+.review .chip{font-size:.8rem;padding:4px 14px;min-height:32px}
+@media (min-width:520px){.review span{width:auto}}
+
+/* شريط عدم الاتصال */
+.offline{display:none;align-items:center;gap:var(--s-3);padding:var(--s-3) var(--s-4);background:var(--warn-bg);color:var(--ink);font-size:.88rem;font-weight:500;line-height:1.6}
+.offline .icon{width:20px;height:20px}
+[data-state=offline] .offline{display:flex}
+
+.att{flex:1;width:100%;max-width:420px;margin-inline:auto;padding:var(--s-8) var(--gut) var(--s-8);display:flex;flex-direction:column}
+
+/* الرأس: شمعة ثابتة واسم الخدمة */
+.att-head{text-align:center;margin-bottom:var(--s-10)}
+.att-head .light{position:relative;display:grid;place-items:center;width:96px;height:96px;margin:0 auto var(--s-5);border-radius:50%;background:radial-gradient(circle, rgba(255,170,80,.22), rgba(255,140,50,.06) 55%, transparent 72%)}
+.att-head .candle{width:12px;height:44px;margin:14px 0 0}
+.att-head .candle::before{width:11px;height:20px;animation:none}
+.att-head .eyebrow{margin-bottom:var(--s-2)}
+.att-head h1{font-size:2rem;font-weight:200;line-height:1.4}
+.att-head p{color:var(--muted);font-size:.85rem;line-height:1.7;margin-top:var(--s-2)}
+
+/* الفورم */
+.field{margin-bottom:var(--s-5)}
+.field label{display:block;font-size:.9rem;font-weight:400;color:var(--cream-2);margin-bottom:var(--s-2)}
+.input{position:relative;display:flex;align-items:center}
+.input > .icon{position:absolute;inset-inline-start:var(--s-4);color:var(--muted);pointer-events:none}
+.input input{width:100%;height:56px;padding:0 48px 0 var(--s-4);border-radius:var(--r-md);border:1px solid var(--line-strong);background:var(--umber-900);color:var(--cream);font:inherit;font-size:1rem;font-weight:400;transition:border-color var(--t-fast),background var(--t-fast)}
+.input input::placeholder{color:var(--muted);opacity:.75}
+.input input:focus{outline:none;border-color:var(--gold);background:var(--umber-950)}
+.input input:focus-visible{box-shadow:0 0 0 3px rgba(224,176,96,.25)}
+.input input[dir=ltr]{text-align:right}
+.input input[dir=ltr]:not(:placeholder-shown){text-align:left}
+/* الخانات LTR داخل صفحة RTL: المسافات فعلية (يمين للأيقونة، يسار لزر العين) */
+.input.pw input{padding-left:56px}
+.eye{position:absolute;inset-inline-end:var(--s-1);width:48px;height:48px;display:grid;place-items:center;border:0;background:none;color:var(--cream-2);border-radius:var(--r-sm);cursor:pointer}
+.eye:hover{color:var(--gold-soft)}
+.eye .off{display:none}
+.eye[aria-pressed=true] .on{display:none}
+.eye[aria-pressed=true] .off{display:block}
+
+/* تذكرني */
+.remember{display:flex;align-items:center;gap:var(--s-3);min-height:48px;margin-bottom:var(--s-4);cursor:pointer;font-size:.92rem;color:var(--cream-2)}
+.remember input{appearance:none;-webkit-appearance:none;margin:0;width:24px;height:24px;flex:none;border-radius:7px;border:1.5px solid var(--line-strong);background:var(--umber-900);display:grid;place-items:center;cursor:pointer;transition:all var(--t-fast)}
+.remember input::after{content:"";width:6px;height:11px;border:solid var(--ink);border-width:0 2px 2px 0;rotate:45deg;translate:0 -1px;opacity:0}
+.remember input:checked{background:var(--gold);border-color:var(--gold)}
+.remember input:checked::after{opacity:1}
+.remember small{display:block;font-size:.78rem;color:var(--muted);line-height:1.5}
+
+/* رسالة الخطأ */
+.error{display:none;align-items:flex-start;gap:var(--s-3);padding:var(--s-3) var(--s-4);margin-bottom:var(--s-4);border-radius:var(--r-md);background:var(--danger-bg);border:1px solid rgba(242,147,127,.35);color:var(--danger);font-size:.9rem;line-height:1.7}
+.error .icon{margin-top:3px}
+[data-state=error] .error{display:flex}
+[data-state=error] .input input{border-color:rgba(242,147,127,.6)}
+
+/* زر الدخول */
+.submit{width:100%;height:56px;display:flex;align-items:center;justify-content:center;gap:var(--s-3);border:0;border-radius:var(--r-full);background:var(--gold);color:var(--ink);font-size:1.05rem;font-weight:500;cursor:pointer;transition:background var(--t-fast),opacity var(--t-fast)}
+.submit:hover{background:var(--gold-soft)}
+.submit:active{transform:translateY(1px)}
+.submit .busy{display:none}
+.spinner{width:20px;height:20px;border-radius:50%;border:2px solid rgba(30,20,13,.25);border-top-color:var(--ink);animation:spin .8s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+[data-state=loading] .submit{cursor:progress;background:var(--gold-soft)}
+[data-state=loading] .submit .idle{display:none}
+[data-state=loading] .submit .busy{display:flex;align-items:center;gap:var(--s-3)}
+[data-state=loading] .field,[data-state=loading] .remember{opacity:.55;pointer-events:none}
+[data-state=offline] .submit{background:var(--umber-600);color:var(--muted);cursor:not-allowed}
+.submit-note{display:none;text-align:center;font-size:.82rem;color:var(--muted);margin-top:var(--s-3)}
+[data-state=offline] .submit-note{display:block}
+
+/* نسيت كلمة السر */
+.forgot{margin-top:var(--s-6);text-align:center}
+.forgot button{border:0;background:none;color:var(--gold-soft);font-size:.92rem;font-weight:400;min-height:44px;padding-inline:var(--s-3);cursor:pointer;border-bottom:1px solid transparent}
+.forgot button:hover{border-bottom-color:currentColor}
+.forgot-note{margin-top:var(--s-3);padding:var(--s-4);border-radius:var(--r-md);background:var(--umber-700);border:1px solid var(--line);font-size:.9rem;line-height:1.8;color:var(--cream-2);text-align:start}
+.forgot-note b{color:var(--cream);font-weight:500}
+
+.back{margin-top:auto;padding-top:var(--s-12);text-align:center}
+.back a{display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;font-size:.88rem;color:var(--muted)}
+.back a:hover{color:var(--cream)}
+.back .icon{width:16px;height:16px}
+</style>
+</head>
+<body data-state="normal">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.9 5.2A9.6 9.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.6 3.5M6.6 6.6A16.6 16.6 0 0 0 2 12s3.5 7 10 7a9.4 9.4 0 0 0 5.4-1.6M3 3l18 18M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5h.01"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.4a5 5 0 0 1 7 0M5 12.8a10 10 0 0 1 4.4-2.5M14.6 10.3A10 10 0 0 1 19 12.8M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M12 20h.01"/></symbol>
+</svg>
+
+<!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس -->
+<div class="review" role="group" aria-label="حالات الشاشة للمراجعة">
+  <span>نموذج للمراجعة، اختر الحالة:</span>
+  <button class="chip" type="button" data-show="normal" aria-pressed="true">عادي</button>
+  <button class="chip" type="button" data-show="error" aria-pressed="false">بيانات غلط</button>
+  <button class="chip" type="button" data-show="loading" aria-pressed="false">جاري الدخول</button>
+  <button class="chip" type="button" data-show="offline" aria-pressed="false">بدون إنترنت</button>
+</div>
+
+<div class="offline" role="status">
+  <svg class="icon"><use href="#i-wifi-off"/></svg>
+  <span>أنت بدون إنترنت. الدخول يحتاج اتصالًا، وبعدها تقدر تسجّل الحضور حتى بدون إنترنت.</span>
+</div>
+
+<main class="att" id="main">
+  <header class="att-head">
+    <div class="light" aria-hidden="true"><div class="candle"></div></div>
+    <p class="eyebrow">إعداد الخدام</p>
+    <h1>دخول الخادم</h1>
+    <p>كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس<br>عرب العيايدة</p>
+  </header>
+
+  <form id="login" novalidate>
+    <div class="error" role="alert">
+      <svg class="icon"><use href="#i-alert"/></svg>
+      <span>البريد أو رقم الموبايل أو كلمة السر غير صحيحة. راجعها وحاول مرة أخرى.</span>
+    </div>
+
+    <div class="field">
+      <label for="who">البريد أو رقم الموبايل</label>
+      <div class="input">
+        <svg class="icon"><use href="#i-user"/></svg>
+        <input id="who" name="who" type="text" dir="ltr" autocomplete="username" inputmode="email" placeholder="مثال: 01001234567" required>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="pw">كلمة السر</label>
+      <div class="input pw">
+        <svg class="icon"><use href="#i-lock"/></svg>
+        <input id="pw" name="pw" type="password" dir="ltr" autocomplete="current-password" placeholder="••••••••" required>
+        <button class="eye" type="button" aria-pressed="false" aria-label="إظهار كلمة السر">
+          <svg class="icon on"><use href="#i-eye"/></svg>
+          <svg class="icon off"><use href="#i-eye-off"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <label class="remember">
+      <input type="checkbox" name="remember" checked>
+      <span>خليك مسجّل على الجهاز ده<small>اقفلها لو الموبايل مش بتاعك</small></span>
+    </label>
+
+    <button class="submit" type="submit">
+      <span class="idle">دخول</span>
+      <span class="busy"><span class="spinner" aria-hidden="true"></span>جاري الدخول…</span>
+    </button>
+    <p class="submit-note">الزر يرجع يشتغل أول ما يرجع الإنترنت.</p>
+  </form>
+
+  <div class="forgot">
+    <button type="button" aria-expanded="false" aria-controls="forgot-note">نسيت كلمة السر؟</button>
+    <div class="forgot-note" id="forgot-note" hidden>
+      تواصل مع <b>مسؤول الخدمة</b>، وهو يعيّن لك كلمة سر جديدة من حسابه.
+    </div>
+  </div>
+
+  <p class="back"><a href="home.html"><svg class="icon"><use href="#i-right"/></svg>العودة إلى موقع الكنيسة</a></p>
+</main>
+
+<script>
+(() => {
+  const body = document.body;
+  const chips = document.querySelectorAll('.review .chip');
+  const submit = document.querySelector('.submit');
+
+  function show(state){
+    body.dataset.state = state;
+    chips.forEach(c => c.setAttribute('aria-pressed', c.dataset.show === state));
+    submit.disabled = state === 'offline';
+    submit.setAttribute('aria-busy', state === 'loading');
+  }
+  chips.forEach(c => c.addEventListener('click', () => show(c.dataset.show)));
+
+  // في النموذج: الضغط على "دخول" يعرض التحميل ثم رسالة الخطأ كمثال
+  document.getElementById('login').addEventListener('submit', e => {
+    e.preventDefault();
+    if (body.dataset.state === 'loading' || submit.disabled) return;
+    show('loading');
+    setTimeout(() => show('error'), 1600);
+  });
+
+  const eye = document.querySelector('.eye');
+  const pw = document.getElementById('pw');
+  eye.addEventListener('click', () => {
+    const on = eye.getAttribute('aria-pressed') !== 'true';
+    eye.setAttribute('aria-pressed', on);
+    eye.setAttribute('aria-label', on ? 'إخفاء كلمة السر' : 'إظهار كلمة السر');
+    pw.type = on ? 'text' : 'password';
+  });
+
+  const fBtn = document.querySelector('.forgot button');
+  const fNote = document.getElementById('forgot-note');
+  fBtn.addEventListener('click', () => {
+    const open = fNote.hidden;
+    fNote.hidden = !open;
+    fBtn.setAttribute('aria-expanded', open);
+  });
+})();
+</script>
+</body>
+</html>
