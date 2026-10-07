@@ -569,46 +569,64 @@ body{background:var(--umber-700)}
 .hymn[data-state=resume]{border-color:var(--gold)}
 .hymn-frame{position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none}
 
-/* ===== القوائم المنسدلة (السلوك في site.js) ===== */
+/* ===== القوائم المنسدلة والأيقونات في الهيدر: زجاج (السلوك في site.js) ===== */
+:root{--glass:rgba(48,32,20,.42);--glass-2:rgba(255,244,228,.12);--glass-3:rgba(255,244,228,.2);--glass-line:rgba(255,244,228,.24);--glass-blur:blur(22px) saturate(1.35)}
+
+/* القسم اللي ليه صفحات: الاسم والسهم حاجة واحدة */
 .has-dd{position:relative;display:flex;align-items:center}
-.top-nav .has-dd > a,.float-nav nav .has-dd > a{padding-inline-end:4px}
-.dd-btn{display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:50%;background:none;color:var(--cream-2);cursor:pointer;transition:background var(--t-fast),color var(--t-fast)}
-.dd-btn:hover{color:var(--cream);background:rgba(246,236,220,.08)}
-.dd-btn .icon{width:14px;height:14px;transition:rotate var(--t-fast)}
-.has-dd.open > .dd-btn .icon{rotate:180deg}
-.dd{position:absolute;top:calc(100% + 10px);inset-inline-start:0;z-index:140;min-width:220px;padding:var(--s-2);border-radius:var(--r-md);background:rgba(30,20,13,.96);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line-strong);box-shadow:0 18px 40px rgba(0,0,0,.45);
-  opacity:0;visibility:hidden;translate:0 6px;transition:opacity var(--t-fast),translate var(--t-fast),visibility 0s linear var(--t-fast)}
-.dd::before{content:"";position:absolute;inset-inline:0;top:-12px;height:12px}
-.has-dd:hover > .dd,.has-dd.open > .dd{opacity:1;visibility:visible;translate:0 0;transition:opacity var(--t-fast),translate var(--t-fast)}
-.dd a{display:block;padding:10px 14px;border-radius:var(--r-sm);font-size:.92rem;font-weight:300;color:var(--cream-2);white-space:nowrap;transition:background var(--t-fast),color var(--t-fast)}
-.dd a:hover,.dd a:focus-visible{background:rgba(246,236,220,.08);color:var(--cream)}
-.dd a[aria-current=page]{color:var(--gold-soft)}
-.dd-title{padding:6px 14px 8px;font-size:.78rem;font-weight:500;color:var(--gold)}
+.top-nav .has-dd > a,.float-nav nav .has-dd > a{padding-inline-end:26px}
+.has-dd > .dd-btn{position:absolute;inset-inline-end:4px;top:50%;translate:0 -50%;display:grid;place-items:center;width:22px;height:22px;border:0;border-radius:6px;background:none;color:currentColor;opacity:.7;cursor:pointer}
+.has-dd > .dd-btn .icon{width:14px;height:14px;transition:rotate var(--t-fast)}
+.has-dd:hover > .dd-btn,.has-dd.open > .dd-btn{opacity:1}
+.has-dd.open > .dd-btn .icon,.has-dd:hover > .dd-btn .icon{rotate:180deg}
+.top-nav .has-dd:hover > a,.top-nav .has-dd.open > a,.float-nav nav .has-dd:hover > a,.float-nav nav .has-dd.open > a{color:var(--cream);background:rgba(246,236,220,.08)}
 
-/* زر دخول الخدام: دايرة بأيقونة، والقائمة بتفتح ناحية الحافة */
+/* اللوح المنسدل: زجاج رأسي */
+.dd{position:absolute;top:calc(100% + 12px);left:50%;z-index:140;min-width:210px;padding:8px;border-radius:18px;
+  background:var(--glass);-webkit-backdrop-filter:var(--glass-blur);backdrop-filter:var(--glass-blur);
+  border:1px solid var(--glass-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 24px 50px rgba(10,6,3,.4);
+  opacity:0;visibility:hidden;translate:-50% 8px;transition:opacity var(--t-fast),translate var(--t-base) var(--ease),visibility 0s linear var(--t-base)}
+.dd::before{content:"";position:absolute;inset-inline:0;top:-14px;height:14px}
+.has-dd:hover > .dd,.has-dd.open > .dd{opacity:1;visibility:visible;translate:-50% 0;transition:opacity var(--t-fast),translate var(--t-base) var(--ease)}
+/* القائمة نفسها ul جوه قائمة الهيدر الأفقية، فلازم نرجّعها رأسية صراحةً */
+.top-nav ul.dd,.float-nav nav ul.dd,ul.dd,.dd ul{display:flex;flex-direction:column;gap:2px}
+.top-nav .dd a,.float-nav nav .dd a,.dd a{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 14px;border-radius:12px;background:none;font-size:.95rem;font-weight:300;color:rgba(255,248,238,.82);white-space:nowrap;transition:background var(--t-fast),color var(--t-fast)}
+.dd a::before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.35;flex:none}
+.top-nav .dd a:hover,.float-nav nav .dd a:hover,.dd a:hover,.dd a:focus-visible{background:var(--glass-2);color:#FFF8EE}
+.dd a[aria-current=page]{color:var(--gold-soft);background:var(--glass-2)}
+.dd a[aria-current=page]::before{opacity:1}
+.dd-title{padding:8px 14px 6px;font-size:.78rem;font-weight:500;color:var(--gold-soft)}
+
+/* أيقونات الهيدر (الدخول والسوشيال): دواير زجاج بنفس الشكل */
 .login-dd{flex:none}
-.login-btn{width:48px;height:48px;background:rgba(246,236,220,.1);border:1px solid var(--line-strong);color:var(--cream)}
-.login-btn .icon{width:20px;height:20px}
-.has-dd.open > .login-btn .icon{rotate:none}
-.login-btn:hover,.login-dd.open > .login-btn{background:var(--cream);color:var(--ink)}
-.login-dd .dd{inset-inline-start:auto;inset-inline-end:0}
-.float-nav .login-btn{width:42px;height:42px}
+.hero-top .socials .circle,.has-dd > .login-btn{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;
+  background:rgba(255,244,228,.1);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--glass-line);color:#FFF8EE;transition:background var(--t-fast),color var(--t-fast),transform var(--t-base) var(--ease)}
+.hero-top .socials .circle:hover,.has-dd > .login-btn:hover,.login-dd.open > .login-btn{background:rgba(255,246,232,.92);color:var(--ink);transform:none}
+.hero-top .socials .circle .icon,.has-dd > .login-btn .icon{width:20px;height:20px}
+.login-dd > .login-btn{position:static;translate:none;opacity:1;border-radius:50%}
+.has-dd.open > .login-btn .icon,.login-dd:hover > .login-btn .icon{rotate:none}
+.login-dd .dd{left:auto;inset-inline-start:auto;inset-inline-end:0;translate:0 8px;min-width:230px}
+.login-dd:hover > .dd,.login-dd.open > .dd{translate:0 0}
+.float-nav .has-dd > .login-btn{width:42px;height:42px}
 .hero-top .wrap,.float-nav{gap:var(--s-3)}
+.hero-top .socials{gap:var(--s-2)}
 
-/* قائمة الموبايل: الأقسام بتفتح صفحاتها تحتها */
+/* قائمة الموبايل: الأقسام بتفتح صفحاتها تحتها في لوح زجاج */
 .drawer .has-dd{display:block}
-.drawer .has-dd > .dd-btn{position:absolute;inset-inline-end:0;top:var(--s-3);width:48px;height:48px}
+.drawer .has-dd > .dd-btn{inset-inline-end:0;top:var(--s-3);translate:none;width:48px;height:48px;border-radius:50%;opacity:1}
 .drawer .has-dd > .dd-btn .icon{width:20px;height:20px}
-.drawer .dd{position:static;display:none;min-width:0;padding:0 0 var(--s-3);background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;opacity:1;visibility:visible;translate:none}
+.drawer .has-dd:hover > .dd-btn .icon{rotate:none}
+.drawer .has-dd.open > .dd-btn .icon{rotate:180deg}
+.drawer .dd{position:static;display:none;min-width:0;margin:0 0 var(--s-3);translate:none;opacity:1;visibility:visible}
 .drawer .dd::before{display:none}
 .drawer .has-dd.open > .dd{display:block}
-.drawer .dd a{font-size:1.05rem;padding:10px 0;padding-inline-start:var(--s-4);border-bottom:0}
+.drawer .dd a{font-size:1.05rem;padding:0 14px;border-bottom:0}
 .drawer-login{margin-top:var(--s-8)}
-.drawer-login p{display:flex;align-items:center;gap:var(--s-2);font-size:.85rem;font-weight:500;color:var(--gold);margin-bottom:var(--s-2)}
-.drawer-login a{display:block;padding:var(--s-3) var(--s-4);border-radius:var(--r-md);border:1px solid var(--line-strong);font-size:1rem;font-weight:400;color:var(--cream)}
-.drawer-login a:hover{border-color:var(--gold)}
-/* الهيدر بعد إضافة زر الدخول: أيقونات السوشيال من 1280px (موجودة في الفوتر وقائمة الموبايل)،
-   والقوائم المنسدلة في نص القسم علشان ماتطلعش برة الشاشة */
+.drawer-login p{display:flex;align-items:center;gap:var(--s-2);font-size:.85rem;font-weight:500;color:var(--gold-soft);margin-bottom:var(--s-2)}
+.drawer-login p .icon{width:18px;height:18px}
+.drawer-login a{display:block;padding:var(--s-3) var(--s-4);border-radius:16px;background:var(--glass-2);border:1px solid var(--glass-line);font-size:1rem;font-weight:400;color:#FFF8EE}
+.drawer-login a:hover{background:var(--glass-3)}
+.drawer .socials .circle{background:rgba(255,244,228,.1);border:1px solid var(--glass-line);color:#FFF8EE}
+
+/* الهيدر بعد إضافة زر الدخول: أيقونات السوشيال من 1280px (موجودة في الفوتر وقائمة الموبايل) */
 @media (min-width:1100px) and (max-width:1279px){.hero-top .socials{display:none}}
-.top-nav .dd,.float-nav nav .dd{inset-inline-start:auto;left:50%;translate:-50% 6px}
-.top-nav .has-dd:hover > .dd,.top-nav .has-dd.open > .dd,.float-nav nav .has-dd:hover > .dd,.float-nav nav .has-dd.open > .dd{translate:-50% 0}
