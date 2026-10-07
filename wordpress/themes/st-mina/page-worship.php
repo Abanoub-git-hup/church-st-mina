@@ -88,7 +88,7 @@ while ( have_posts() ) :
 		</div>
 	</section>
 
-	<!-- إعلانات المواسم (هتتربط بالأخبار الحقيقية في المهمة السابعة) -->
+	<!-- إعلانات المواسم: أحدث 3 إعلانات من الأخبار -->
 	<section class="sec deep" aria-labelledby="t-more">
 		<div class="wrap">
 			<div class="more-head">
@@ -99,9 +99,13 @@ while ( have_posts() ) :
 				<a class="link" href="<?php stmina_link( 'news' ); ?>" data-rise>كل الأخبار <svg class="icon"><use href="#i-nw"/></svg></a>
 			</div>
 			<div class="cards">
-				<a class="news" href="<?php stmina_link( 'news' ); ?>" data-rise><div class="im top"><img src="<?php stmina_media( 'worship/schedule-great-lent-2026.jpg' ); ?>" alt="جدول قداسات الصوم الكبير 2026" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>الصوم الكبير</span></div><h3>جدول قداسات الصوم الكبير 2026</h3><p>قداسات يومية صباحًا ومساءً طوال أيام الصوم.</p></div></a>
-				<a class="news" href="<?php stmina_link( 'news' ); ?>" data-rise><div class="im top"><img src="<?php stmina_media( 'events/pope-kyrillos-revival.jpg' ); ?>" alt="إعلان نهضة البابا كيرلس السادس" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>6 – 9 مارس</span></div><h3>نهضة البابا كيرلس السادس</h3><p>زفة وتطييب وكلمة روحية، والقداس على مذبح البابا كيرلس.</p></div></a>
-				<a class="news" href="<?php stmina_link( 'news' ); ?>" data-rise><div class="im top"><img src="<?php stmina_media( 'events/virgin-mary-revival-2026.jpg' ); ?>" alt="إعلان نهضة السيدة العذراء" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>7 – 22 أغسطس</span></div><h3>نهضة السيدة العذراء</h3><p>برنامج النهضة من 7 إلى 22 أغسطس.</p></div></a>
+				<?php
+				// أحدث 3 إعلانات من الأخبار
+				$anns = function_exists( 'stmina_news' ) ? stmina_news( array( 'numberposts' => 3, 'meta_query' => array( array( 'key' => 'kind', 'value' => 'ann' ) ) ) ) : array();
+				foreach ( $anns as $n ) {
+					get_template_part( 'template-parts/news-card', null, array( 'post' => $n ) );
+				}
+				?>
 			</div>
 		</div>
 	</section>

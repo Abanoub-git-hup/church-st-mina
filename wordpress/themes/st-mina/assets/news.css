@@ -1,0 +1,5 @@
+/* خاص بالأخبار: إخفاء الكروت الإضافية لحين "عرض المزيد" */
+.news.later{display:none}
+.more-wrap{display:flex;justify-content:center;margin-top:var(--s-10)}
+.more-wrap[hidden]{display:none}
+.empty-note{text-align:center;color:var(--muted);padding:var(--s-12) 0}

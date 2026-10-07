@@ -280,25 +280,13 @@ get_header();
   </div>
 </section>
 
-<!-- ===== المناسبة القادمة ===== -->
-<section class="sec pool" aria-labelledby="t-event">
-  <div class="wrap event">
-    <div class="event-media" data-clip><img class="grade" data-parallax src="<?php stmina_media( 'worship/youth-night-liturgy-2.jpeg' ); ?>" alt="الشمامسة في الهيكل أمام أيقونة المسيح"></div>
-    <div>
-      <span class="eyebrow" data-rise>المناسبة القادمة</span>
-      <h2 class="title" id="t-event" data-split>عيد <b>الميلاد المجيد</b></h2>
-      <div class="countdown" id="countdown" data-date="2027-01-06T23:00:00+02:00" data-rise>
-        <div><b data-u="d">00</b><small>يوم</small></div><div><b data-u="h">00</b><small>ساعة</small></div><div><b data-u="m">00</b><small>دقيقة</small></div><div><b data-u="s">00</b><small>ثانية</small></div>
-      </div>
-      <ul class="ev-meta" data-rise>
-        <li><svg class="icon"><use href="#i-calendar"/></svg>ليلة 6 يناير 2027</li>
-        <li><svg class="icon"><use href="#i-clock"/></svg>موعد القداس يُعلن قريبًا</li>
-        <li><svg class="icon"><use href="#i-pin"/></svg>الكنيسة الكبيرة</li>
-      </ul>
-      <div data-rise><a class="pill" href="<?php stmina_link( 'season' ); ?>">تفاصيل المناسبة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a></div>
-    </div>
-  </div>
-</section>
+<!-- ===== المناسبة القادمة: أقرب مناسبة موسمية، والقسم بيختفي لو مفيش ===== -->
+<?php
+$season = function_exists( 'stmina_next_season' ) ? stmina_next_season() : null;
+if ( $season ) {
+  get_template_part( 'template-parts/season-event', null, array( 'post' => $season, 'link' => true ) );
+}
+?>
 
 <!-- ===== أحدث العظات ===== -->
 <section class="sec deep" id="sermons" aria-labelledby="t-serm">
@@ -337,15 +325,23 @@ get_header();
         <button class="chip" data-n="ann" aria-pressed="false">إعلانات</button>
       </div>
     </div>
+    <?php
+    // المثبّت في الدواير، وأحدث 3 من الباقي في الكروت
+    list( $pinned, $latest_news ) = function_exists( 'stmina_news_split' ) ? stmina_news_split( 3, 3 ) : array( array(), array() );
+    ?>
     <div class="nbubs">
-      <a class="nbub top" data-t="ann" href="<?php stmina_link( 'news-item' ); ?>" data-bub><span class="bi"><img src="<?php stmina_media( 'events/annual-party-umm-lilbay.jpg' ); ?>" alt="ملصق الحفل السنوي أم للبيع" loading="lazy"><span class="nb-txt"><small>الجمعة 28 أغسطس</small><b>الحفل السنوي<br>"أم للبيع"</b></span></span></a>
-      <a class="nbub" data-t="ann" href="<?php stmina_link( 'news-item' ); ?>" data-bub><span class="bi"><img src="<?php stmina_media( 'events/virgin-mary-revival-2026.jpg' ); ?>" alt="برنامج نهضة السيدة العذراء 2026" loading="lazy"><span class="nb-txt"><small>7 – 22 أغسطس</small><b>نهضة السيدة<br>العذراء مريم</b></span></span></a>
-      <a class="nbub" data-t="news" href="<?php stmina_link( 'news-item' ); ?>" data-bub><span class="bi"><img class="grade" src="<?php stmina_media( 'services/youth/minya-monasteries-trip-2026-1.jpeg' ); ?>" alt="الشباب في رحلة أديرة المنيا" loading="lazy"><span class="nb-txt"><small>الشباب · 2026</small><b>رحلة أديرة<br>المنيا</b></span></span></a>
+      <?php
+      foreach ( $pinned as $n ) {
+        get_template_part( 'template-parts/news-card', null, array( 'post' => $n, 'style' => 'bubble' ) );
+      }
+      ?>
     </div>
     <div class="cards">
-      <a class="news" data-t="ann" href="<?php stmina_link( 'news-item' ); ?>" data-rise><div class="im top"><img src="<?php stmina_media( 'services/counseling/counseling-course-poster.jpg' ); ?>" alt="إعلان كورس المشورة" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>يبدأ 14 يونيو 2026</span></div><h3>كورس المشورة للمقبلين على الزواج</h3><p>شهادة اجتياز ضمن مسوغات الزواج، ويقبل الشباب الجامعي والطلبة.</p></div></a>
-      <a class="news" data-t="news" href="<?php stmina_link( 'news-item' ); ?>" data-rise><div class="im"><img class="grade" src="<?php stmina_media( 'services/sunday-school/primary-football-1.jpg' ); ?>" alt="تسليم ميداليات المسابقة" loading="lazy"></div><div class="bd"><div class="k"><span>خبر</span><span>2026</span></div><h3>تسليم ميداليات مسابقة كرة القدم لمرحلة ابتدائي</h3><p>بحضور آباء الكنيسة والخدام وأولياء الأمور.</p></div></a>
-      <a class="news" data-t="ann" href="<?php stmina_link( 'news-item' ); ?>" data-rise><div class="im top"><img src="<?php stmina_media( 'events/pope-kyrillos-revival.jpg' ); ?>" alt="إعلان نهضة البابا كيرلس السادس" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>6 – 9 مارس</span></div><h3>نهضة البابا كيرلس السادس</h3><p>زفة وتطييب وكلمة روحية 6–8 م، والقداس الإثنين 9 مارس على مذبح البابا كيرلس.</p></div></a>
+      <?php
+      foreach ( $latest_news as $n ) {
+        get_template_part( 'template-parts/news-card', null, array( 'post' => $n ) );
+      }
+      ?>
     </div>
   </div>
 </section>

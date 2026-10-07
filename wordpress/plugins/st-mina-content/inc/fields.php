@@ -141,6 +141,34 @@ add_action( 'acf/include_fields', function () {
 		),
 	) );
 
+	// ---------- الخبر ----------
+	$season_only = array( array( array( 'field' => 'field_stmina_news_season', 'operator' => '==', 'value' => '1' ) ) );
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_news',
+		'title'    => 'بيانات الخبر',
+		'position' => 'acf_after_title',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_news' ) ) ),
+		'fields'   => array(
+			array( 'key' => 'field_stmina_news_kind', 'name' => 'kind', 'label' => 'النوع', 'type' => 'select', 'choices' => array( 'ann' => 'إعلان', 'news' => 'خبر' ), 'default_value' => 'ann', 'instructions' => 'الإعلان عن حاجة جاية، والخبر عن حاجة حصلت', 'wrapper' => array( 'width' => 25 ) ),
+			array( 'key' => 'field_stmina_news_when', 'name' => 'when_label', 'label' => 'الميعاد المكتوب', 'type' => 'text', 'instructions' => 'بيظهر على الكارت. مثال: 7 – 22 أغسطس، أو يبدأ 14 يونيو. لو فاضي بيظهر تاريخ النشر', 'wrapper' => array( 'width' => 40 ) ),
+			array( 'key' => 'field_stmina_news_place', 'name' => 'place', 'label' => 'المكان', 'type' => 'text', 'instructions' => 'مثال: الكنيسة الكبيرة', 'wrapper' => array( 'width' => 35 ) ),
+			array( 'key' => 'field_stmina_news_highlight', 'name' => 'highlight', 'label' => 'الجزء الدهبي من العنوان', 'type' => 'text', 'instructions' => 'لازم يكون آخر جزء في العنوان. لو فاضي بتبقى آخر كلمة', 'wrapper' => array( 'width' => 40 ) ),
+			array( 'key' => 'field_stmina_news_poster', 'name' => 'is_poster', 'label' => 'الصورة ملصق', 'type' => 'true_false', 'ui' => 1, 'instructions' => 'الملصق بيبان من فوق ومن غير فلتر الألوان', 'wrapper' => array( 'width' => 20 ) ),
+			array( 'key' => 'field_stmina_news_pinned', 'name' => 'pinned', 'label' => 'مثبّت فوق', 'type' => 'true_false', 'ui' => 1, 'instructions' => 'بيظهر في الدواير اللي فوق (أول 3 بس)', 'wrapper' => array( 'width' => 20 ) ),
+			array( 'key' => 'field_stmina_news_season', 'name' => 'is_season', 'label' => 'مناسبة موسمية', 'type' => 'true_false', 'ui' => 1, 'instructions' => 'الميلاد، أو أسبوع الآلام، أو القيامة. بتظهر خانات زيادة', 'wrapper' => array( 'width' => 20 ) ),
+			array( 'key' => 'field_stmina_news_note', 'name' => '', 'label' => 'الصورة والنبذة', 'type' => 'message', 'message' => 'الصورة من "Featured image"، والنبذة القصيرة اللي على الكارت من "Excerpt"، والتفاصيل في المحرر.' ),
+			// خانات المناسبة بس
+			array( 'key' => 'field_stmina_news_event_at', 'name' => 'event_at', 'label' => 'ميعاد المناسبة', 'type' => 'date_time_picker', 'display_format' => 'j F Y g:i a', 'return_format' => 'Y-m-d H:i:s', 'instructions' => 'العد التنازلي بيعدّ لحد الميعاد ده، وبعده المناسبة بتختفي من الرئيسية', 'conditional_logic' => $season_only, 'wrapper' => array( 'width' => 35 ) ),
+			array( 'key' => 'field_stmina_news_time_note', 'name' => 'time_note', 'label' => 'سطر الوقت', 'type' => 'text', 'instructions' => 'مثال: القداس 10 مساءً، أو موعد القداس يُعلن قريبًا', 'conditional_logic' => $season_only, 'wrapper' => array( 'width' => 65 ) ),
+			array( 'key' => 'field_stmina_news_verse_label', 'name' => 'verse_label', 'label' => 'الكلمة فوق الآية', 'type' => 'text', 'instructions' => 'مثال: بشارة الميلاد', 'conditional_logic' => $season_only, 'wrapper' => array( 'width' => 30 ) ),
+			array( 'key' => 'field_stmina_news_verse', 'name' => 'verse', 'label' => 'الآية', 'type' => 'textarea', 'rows' => 2, 'conditional_logic' => $season_only, 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_news_verse_ref', 'name' => 'verse_ref', 'label' => 'الشاهد', 'type' => 'text', 'conditional_logic' => $season_only, 'wrapper' => array( 'width' => 20 ) ),
+			array( 'key' => 'field_stmina_news_rows_title', 'name' => 'rows_title', 'label' => 'عنوان المواعيد', 'type' => 'text', 'instructions' => 'مثال: من صوم الميلاد إلى العيد', 'conditional_logic' => $season_only, 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_news_rows_highlight', 'name' => 'rows_highlight', 'label' => 'الجزء الدهبي منه', 'type' => 'text', 'instructions' => 'آخر جزء في العنوان. مثال: إلى العيد', 'conditional_logic' => $season_only, 'wrapper' => array( 'width' => 50 ) ),
+			array( 'key' => 'field_stmina_news_rows', 'name' => 'season_rows', 'label' => 'مواعيد الموسم', 'type' => 'textarea', 'rows' => 5, 'new_lines' => '', 'instructions' => 'كل ميعاد في سطر: الاسم | الميعاد | ملاحظة. مثال: صوم الميلاد | يبدأ 25 نوفمبر | 43 يومًا', 'conditional_logic' => $season_only ),
+		),
+	) );
+
 	// ---------- واجهة الصفحات ----------
 	acf_add_local_field_group( array(
 		'key'      => 'group_stmina_page_hero',
