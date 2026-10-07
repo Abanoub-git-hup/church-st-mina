@@ -4,7 +4,7 @@
 >
 > الملف بيتحدّث مع كل خطوة في بناء `theme` و`plugin`. كل باب فيه: عملنا إيه وليه، والمفهوم في `WordPress`، والكود الحقيقي مشروح، والبدائل، والأمان، والأخطاء اللي قابلتنا.
 >
-> آخر تحديث: يوم 7 أكتوبر 2026، في المهمة الأولى (الأساس).
+> آخر تحديث: يوم 7 أكتوبر 2026، في المهمة التانية (الرئيسية والقايمة).
 
 ## الفهرس
 
@@ -16,7 +16,9 @@
 - الباب 6: الرفع على `server` و `cache`
 - الباب 7: ربط Claude ب`dashboard` بتاعة `WordPress`
 - الباب 8: أخطاء قابلتنا وحلّها
-- الباب 9: الأبواب الجاية
+- الباب 9: تحويل تصميم HTML لـ `theme`
+- الباب 10: صفحة إعدادات بـ `Settings API`
+- الباب 11: الأبواب الجاية
 
 ---
 
@@ -529,13 +531,263 @@ define( 'WP_DEBUG_DISPLAY', false );
 
 ---
 
-## الباب 9: الأبواب الجاية
+## الباب 9: تحويل تصميم HTML لـ `theme`
+
+### الفكرة
+
+التصميم المعتمد صفحة HTML كاملة في ملف `design/home.html`. ومحتاجين نحوّلها لـ `theme` من غير ما الشكل يتغيّر ولا حرف. وبدل النسخ واللصق بالإيد، كتبنا سكريبت بيعمل التحويل:
+```
+node tools/convert-home.js
+```
+وده بيضمن إن أي تعديل في التصميم يتنقل بنفس الطريقة، ومفيش حاجة تتنسي أو تتلخبط.
+
+### تقسيم الصفحة لتلات ملفات
+
+أي صفحة في الموقع ليها بداية ونهاية ثابتين، والنص بيتغيّر. علشان كده `WordPress` بيقسّم الصفحة كده:
+
+| الملف | جواه إيه | بيتنادى بدالة |
+|---|---|---|
+| `header.php` | من `<!doctype>` لحد `<main>`: الـ `head`، والأيقونات، والشريط العائم، وقايمة الموبايل | `get_header()` |
+| `front-page.php` | الـ 14 قسم بتوع الرئيسية | — |
+| `footer.php` | الـ `footer`، وعارض الصور، ودالة `wp_footer()`، وقفل الصفحة | `get_footer()` |
+
+وأي صفحة جديدة بتبدأ بدالة `get_header()` وتخلص بدالة `get_footer()`، وفي النص المحتوى بتاعها بس. يعني لو غيّرنا حاجة في `header.php`، بتتغيّر في كل الموقع مرة واحدة.
+
+**ليه ملف `front-page.php` بالذات؟** لأنه أول ملف بيدوّر عليه `WordPress` للرئيسية في ترتيب القوالب (الباب 3)، وبيشتغل مهما كان اختيار الرئيسية في إعدادات القراية.
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/themes/basics/template-files/#template-partials
+https://developer.wordpress.org/reference/functions/get_header/
+```
+
+### الصفحة الاحتياطية بقت بنفس الشكل
+
+ملف `index.php` بقى بيستخدم نفس `header` و`footer`، ويعرض رسالة "الصفحة دي بتتجهّز" لأي صفحة لسه ماتعملتش. و`WordPress` نفسه بيرجّع كود `404` للصفحات اللي مش موجودة، فمحركات البحث مابتعتبرهاش صفحات حقيقية.
+
+### الصور والروابط بدوال
+
+في التصميم، الصور مكتوبة بمسار نسبي زي `../media/church/hero-prayer.png`، والروابط زي `worship.html`. وده مش هينفع في `WordPress`، لأن الصفحة ممكن تبقى على أي رابط. فعملنا دالتين في `functions.php`:
+
+```php
+function stmina_media( $path ) {
+	echo esc_url( get_template_directory_uri() . '/assets/media/' . $path );
+}
+
+function stmina_link( $page, $hash = '' ) {
+	echo esc_url( home_url( '/' . $page . '/' ) . $hash );
+}
+```
+
+| الدالة | بتعمل إيه | مثال |
+|---|---|---|
+| `get_template_directory_uri()` | رابط فولدر الـ `theme` على الموقع | `https://…/wp-content/themes/st-mina` |
+| `home_url()` | رابط الموقع نفسه، ولو الموقع اتنقل لدومين الكنيسة يتغيّر لوحده | `https://…/worship/` |
+| `esc_url()` | بتأمّن الرابط قبل طباعته (الجزء الجاي) | — |
+
+والسكريبت بيبدّل كل صورة ورابط في التصميم بالدوال دي، فالسطر ده:
+```html
+<img src="../media/church/hero-prayer.png">
+```
+بيبقى كده:
+```php
+<img src="<?php stmina_media( 'church/hero-prayer.png' ); ?>">
+```
+
+والصور المستخدمة في الرئيسية بس (47 صورة) اتنسخت لفولدر `assets/media` جوه الـ `theme`. وفي مهام المحتوى الجاية، صور العظات والأخبار هتترفع من مكتبة الوسائط في `dashboard` بدل ما تبقى جوه الكود.
+
+### الأمان في العرض: `Escaping`
+
+أي قيمة بتتطبع في الصفحة لازم تتأمّن **وقت الطباعة**، حتى لو إحنا اللي حاطينها. والسبب إن لو حد قدر يحط كود جوه نص (زي سكريبت)، التأمين بيحوّله لنص عادي مايشتغلش. والقاعدة: استخدم الدالة المناسبة لمكان الطباعة.
+
+| الدالة | بتتستخدم فين | عندنا |
+|---|---|---|
+| `esc_html()` | نص جوه الصفحة | آية الواجهة والقول |
+| `esc_attr()` | قيمة جوه خاصية HTML | قيمة خانة الإعدادات |
+| `esc_url()` | أي رابط | الصور والروابط |
+
+ومثال من الرئيسية:
+```php
+<h1 data-split><?php echo esc_html( stmina_home( 'hero_verse' ) ); ?> <em><?php echo esc_html( stmina_home( 'hero_highlight' ) ); ?></em></h1>
+```
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/apis/security/escaping/
+```
+
+### تحميل السكريبتات: `wp_enqueue_script`
+
+زي ملفات التنسيق (الباب 4)، السكريبتات بتتحمّل عن طريق `WordPress`:
+
+```php
+wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js', array(), null, true );
+wp_enqueue_script( 'gsap-scrolltrigger', '…/ScrollTrigger.min.js', array( 'gsap' ), null, true );
+wp_enqueue_script( 'stmina-site', $uri . 'site.js', array( 'gsap-scrolltrigger' ), $ver, true );
+```
+
+| الجزء | معناه |
+|---|---|
+| ترتيب الاعتماد | ملف `site.js` بيعتمد على مكتبة الحركة، فـ `WordPress` بيحمّلها الأول |
+| آخر قيمة `true` | السكريبت يتحط في آخر الصفحة جوه دالة `wp_footer()`، فالصفحة تظهر أسرع |
+
+### ملفات لصفحة واحدة بس: `is_front_page()`
+
+ملف `home.css` وملف `home.js` بتوع الرئيسية بس، فبنحمّلهم بشرط:
+```php
+if ( is_front_page() ) {
+	wp_enqueue_style( 'stmina-home', $uri . 'home.css', array( 'stmina-site' ), $ver );
+	wp_enqueue_script( 'stmina-home', $uri . 'home.js', array( 'stmina-site' ), $ver, true );
+}
+```
+ودوال الشروط دي اسمها `Conditional Tags`، ومنها كمان `is_page()` و`is_single()` و`is_404()`.
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/themes/basics/conditional-tags/
+```
+
+### بعت قيمة من PHP لـ JavaScript
+
+ملف `site.js` بيعمل القوايم المنسدلة، وكان مكتوب فيه روابط زي `worship.html`. وفي `WordPress` الرابط بقى `/worship/`. فبنبعتله رابط الموقع من PHP بدالة `wp_add_inline_script()`:
+```php
+wp_add_inline_script( 'stmina-site', 'window.SITE_BASE = ' . wp_json_encode( home_url( '/' ) ) . ';', 'before' );
+```
+| الجزء | معناه |
+|---|---|
+| القيمة `before` | السطر يتحط قبل ملف `site.js`، فيكون جاهز وقت ما السكريبت يشتغل |
+| دالة `wp_json_encode()` | بتحوّل القيمة لصيغة JavaScript آمنة |
+
+وجوه ملف `site.js`، لو المتغيّر `SITE_BASE` موجود، الروابط بتتحوّل لشكل `WordPress`، ولو مش موجود (في نماذج التصميم) بتفضل زي ما هي. كده نفس الملف شغال في المكانين.
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/reference/functions/wp_add_inline_script/
+```
+
+---
+
+## الباب 10: صفحة إعدادات بـ `Settings API`
+
+### ليه صفحة إعدادات؟
+
+آية الواجهة، والقول اللي في الدايرة، وآية التأمل نصوص بتتغيّر كل فترة. ومحرر المحتوى لازم يغيّرها من `dashboard` من غير ما يلمس الكود. فعملنا صفحة "إعدادات الرئيسية" في القايمة الجانبية، في ملف `inc/home-settings.php`.
+
+**البدائل اللي كانت قدامنا:**
+
+| الطريقة | ميزتها | عيبها |
+|---|---|---|
+| أداة `Customizer` | موجودة في `WordPress` ومعاينة فورية | أقل تحكّم في شكل الصفحة |
+| بلجن `ACF` | سهل جدًا في الحقول الكتير | الموقع بيعتمد على `plugin` خارجي |
+| **صفحة بـ `Settings API`** (اخترناها) | تحكّم كامل، ومافيش اعتماد على حد، وأحسن للمذاكرة | كود أكتر |
+
+### الأجزاء الأربعة لأي صفحة إعدادات
+
+**أولًا: تعريف الخانات في مكان واحد**
+```php
+function stmina_home_fields() {
+	return array(
+		'hero_verse' => array( 'آية الواجهة', 'فِي ٱلْعَالَمِ سَيَكُونُ لَكُمْ ضِيقٌ، وَلكِنْ ثِقُوا:', 'hero' ),
+		// …
+	);
+}
+```
+كل خانة ليها مفتاح، وعنوان، والنص الافتراضي من التصميم، والقسم اللي هتظهر فيه. ولو حبينا نضيف خانة، بنضيف سطر هنا بس.
+
+**ثانيًا: تسجيل الإعداد في نقطة `admin_init`**
+```php
+register_setting( 'stmina_home', 'stmina_home', array(
+	'type'              => 'array',
+	'sanitize_callback' => 'stmina_home_sanitize',
+	'default'           => array(),
+) );
+```
+| الجزء | معناه |
+|---|---|
+| الاسم الأول | اسم مجموعة الإعدادات اللي الفورم بيبعتها |
+| الاسم التاني | اسم الإعداد في جدول `wp_options`. كل الخانات بتتحفظ فيه كمصفوفة واحدة بدل 7 إعدادات منفصلة |
+| دالة `sanitize_callback` | بتنضّف القيم قبل الحفظ (الجزء الجاي) |
+
+وبعدها الأقسام والخانات:
+```php
+add_settings_section( 'hero', 'آية الواجهة', '__return_false', 'stmina-home' );
+add_settings_field( $key, $f[0], 'stmina_home_field', 'stmina-home', $f[2], array( 'key' => $key, 'label_for' => 'stmina-' . $key ) );
+```
+والخاصية `label_for` بتربط عنوان الخانة بالخانة نفسها، فلما تضغط على العنوان المؤشر يروح للخانة، وده مهم لقارئ الشاشة.
+
+**ثالثًا: تنضيف المدخلات: `Sanitizing`**
+```php
+function stmina_home_sanitize( $input ) {
+	$clean = array();
+	foreach ( array_keys( stmina_home_fields() ) as $key ) {
+		$clean[ $key ] = isset( $input[ $key ] ) ? sanitize_text_field( $input[ $key ] ) : '';
+	}
+	return $clean;
+}
+```
+- **بنحفظ المفاتيح المعروفة بس:** لو حد بعت مفتاح زيادة في الطلب، بيتشال.
+- **دالة `sanitize_text_field()`:** بتشيل أي كود HTML والمسافات الزيادة، وبتسيب النص العادي.
+- **القاعدة الذهبية:** نضّف وقت الحفظ (`sanitize`)، وأمّن وقت الطباعة (`escape`). الاتنين مع بعض، مش واحد بدل التاني.
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/apis/security/sanitizing/
+```
+
+**رابعًا: الصفحة نفسها والصلاحيات**
+```php
+add_menu_page( 'إعدادات الرئيسية', 'إعدادات الرئيسية', 'edit_theme_options', 'stmina-home', 'stmina_home_page', 'dashicons-admin-home', 3 );
+```
+| الجزء | معناه |
+|---|---|
+| الصلاحية `edit_theme_options` | اللي معاه الصلاحية دي بس يشوف الصفحة. المدير معاه، وبعدين هنديها لمحرر المحتوى (المهمة 24) |
+| الأيقونة `dashicons-admin-home` | أيقونة البيت من أيقونات `WordPress` |
+| الرقم 3 | مكانها في القايمة، تحت `Dashboard` على طول |
+
+وجوه الصفحة:
+```php
+<form action="options.php" method="post">
+	<?php
+	settings_fields( 'stmina_home' );
+	do_settings_sections( 'stmina-home' );
+	submit_button( 'حفظ' );
+	?>
+</form>
+```
+| الدالة | بتعمل إيه |
+|---|---|
+| ملف `options.php` | ملف من `WordPress` بيستقبل الفورم ويحفظ |
+| دالة `settings_fields()` | بتضيف رمز حماية `nonce` بيتأكد إن الطلب جاي من الصفحة دي فعلًا، مش من موقع تاني |
+| دالة `do_settings_sections()` | بترسم كل الأقسام والخانات اللي سجّلناها |
+
+📖 التوثيق الرسمي:
+```
+https://developer.wordpress.org/plugins/settings/settings-api/
+```
+
+### قراية القيمة في الرئيسية
+
+```php
+function stmina_home( $key ) {
+	$saved  = get_option( 'stmina_home', array() );
+	$fields = stmina_home_fields();
+	if ( ! empty( $saved[ $key ] ) ) {
+		return $saved[ $key ];
+	}
+	return isset( $fields[ $key ] ) ? $fields[ $key ][1] : '';
+}
+```
+لو الخانة فاضية، بيرجع النص الافتراضي من التصميم. فالرئيسية عمرها ماتظهر فاضية، حتى قبل ما حد يدخل الإعدادات.
+
+---
+
+## الباب 11: الأبواب الجاية
 
 | الباب | المهمة | المفاهيم |
 |---|---|---|
-| الرئيسية والقائمة | الثانية | ملف `front-page.php`، وتقسيم الصفحة بدالة `get_template_part()`، والقوائم بدالة `wp_nav_menu()`، وتحويل `design/home.html` لـ `theme`، وتحميل مكتبة الحركة بدالة `wp_enqueue_script()` |
-| الخدمات والعظات والأخبار | من الثالثة للسابعة | أنواع محتوى مخصّصة بدالة `register_post_type()`، والتصنيفات، والحقول الإضافية، والاستعلامات بكلاس `WP_Query` |
-| أمان العرض | من الثانية | تأمين أي نص قبل عرضه بدوال زي `esc_html()` و`esc_url()` |
+| الصفحات الداخلية | من الثالثة للسابعة | قالب الصفحة الداخلية من ملف `design/_inner.html`، وتقسيم الأجزاء المتكررة بدالة `get_template_part()` |
+| الخدمات والعظات والأخبار | من الثالثة للسابعة | أنواع محتوى مخصّصة بدالة `register_post_type()`، والتصنيفات، والحقول الإضافية، والاستعلامات بكلاس `WP_Query`، وربط أقسام الرئيسية بالمحتوى الحقيقي |
+| القوايم من لوحة التحكم | لما المحتوى يكتمل | القوايم بدالة `wp_nav_menu()` بدل الروابط الثابتة |
 | دخول الخادم والمخدومين | الثامنة | جداول مخصّصة بدالة `dbDelta()`، والأدوار والصلاحيات، ومسارات بفحص صلاحيات، ورموز الحماية `nonces`، وتنضيف المدخلات |
 | الحضور والمسح | من العاشرة للرابعة عشر | منطق `plugin`، واختبارات المسارات |
 | الشغل بدون إنترنت | من 21 لـ 23 | تطبيق ويب يشتغل من غير نت، وطابور عمليات ومزامنة |

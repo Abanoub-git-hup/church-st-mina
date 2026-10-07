@@ -23,7 +23,10 @@
 
 الرفع بيتم عن طريق ربط **Hostinger** في Claude:
 1. `hosting_files_generate-upload-url` للموقع.
-2. رفع كل ملف بـ TUS لفولدر مؤقت، مثلًا `wp-content/themes/st-mina-<رقم>/`.
+2. رفع الفولدر كله بسكريبت `tools/upload-wp.sh` لفولدر مؤقت، مثلًا `wp-content/themes/st-mina-<رقم>/`. المفاتيح من الخطوة 1 بتتبعت كـ `environment variables` ومابتتحفظش في أي ملف:
+```
+UP_URL=... UP_AUTH=... UP_REST=... tools/upload-wp.sh wordpress/themes/st-mina wp-content/themes/st-mina-u3
+```
 3. `wordpress_themes_deploy` (أو `wordpress_plugins_deploy`) بالـ slug: `st-mina` أو `st-mina-attendance`.
 4. **مسح الكاش:** `hosting_cache_clear-website`. من غيره الزوار بيشوفوا النسخة القديمة.
 
