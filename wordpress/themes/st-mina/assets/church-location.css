@@ -1,0 +1,9 @@
+/* خاص بالموقع: الخريطة داخل إطار مقوّس */
+.map-arch{position:relative;width:100%;aspect-ratio:4/4.6;border-radius:48% 48% var(--r-lg) var(--r-lg)/34% 34% var(--r-lg) var(--r-lg);overflow:hidden;background:var(--umber-800);border:1px solid rgba(243,201,135,.3);box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.map-arch iframe{position:absolute;inset:0;width:100%;height:100%;border:0;filter:invert(.92) hue-rotate(180deg) sepia(.35) saturate(.9) brightness(.95)}
+.map-wait{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:var(--s-2);text-align:center;padding:var(--s-8);background:radial-gradient(circle at 50% 35%,rgba(243,201,135,.14),transparent 60%)}
+.map-wait .icon{width:40px;height:40px;color:var(--gold)}
+.map-wait b{font-weight:400;font-size:1.2rem}
+.map-wait small{color:var(--muted)}
+.loc-actions{display:flex;flex-wrap:wrap;gap:var(--s-3);margin-top:var(--s-6)}
+@media (max-width:600px){.loc-actions .pill{width:100%;justify-content:space-between}}

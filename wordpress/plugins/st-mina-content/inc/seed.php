@@ -118,23 +118,59 @@ function stmina_seed_meta( $type, $id, $name, $value, $key, $acf_ref ) {
 }
 
 /**
- * نسخ صورة من فولدر الـ theme لمكتبة الوسائط. الصورة الواحدة بتتنسخ مرة واحدة بس.
+ * نسخ صورة من فولدر الـ theme لمكتبة الوسائط. الصورة الواحدة بتتنسخ مرة واحدة بس:
+ * لو اتنسخت قبل كده (حتى في مرة إدخال تانية) بنرجّع نفس الصورة.
  *
- * @param string $path المسار جوه assets/media في الـ theme.
+ * @param string $path    المسار جوه assets/media في الـ theme.
+ * @param int    $parent  المحتوى اللي الصورة "مرفوعة جواه" (attached). الملصقات جوه الأب، وصور الألبوم جوه الألبوم.
+ * @param string $caption تعليق الصورة.
  * @return int رقم الصورة في المكتبة، أو 0.
  */
-function stmina_seed_image( $path ) {
+function stmina_seed_image( $path, $parent = 0, $caption = '' ) {
 	static $done = array();
-	if ( isset( $done[ $path ] ) ) {
-		return $done[ $path ];
+	if ( ! isset( $done[ $path ] ) ) {
+		$done[ $path ] = stmina_seed_find_image( $path ) ?: stmina_seed_upload_image( $path );
 	}
+	$id = $done[ $path ];
+	if ( $id && ( $parent || $caption ) ) {
+		$update = array( 'ID' => $id );
+		if ( $parent && ! wp_get_post_parent_id( $id ) ) {
+			$update['post_parent'] = $parent;
+		}
+		if ( $caption ) {
+			$update['post_excerpt'] = $caption; // تعليق الصورة في المكتبة
+		}
+		wp_update_post( $update );
+	}
+	return $id;
+}
+
+/**
+ * صورة اتنسخت قبل كده من نفس الملف (بنقارن باسم الملف المحفوظ).
+ */
+function stmina_seed_find_image( $path ) {
+	$found = get_posts( array(
+		'post_type'      => 'attachment',
+		'post_status'    => 'inherit',
+		'posts_per_page' => 1,
+		'fields'         => 'ids',
+		'meta_query'     => array( array(
+			'key'     => '_wp_attached_file',
+			'value'   => '/' . basename( $path ),
+			'compare' => 'LIKE',
+		) ),
+	) );
+	return $found ? (int) $found[0] : 0;
+}
+
+function stmina_seed_upload_image( $path ) {
 	$file = get_template_directory() . '/assets/media/' . $path;
 	if ( ! file_exists( $file ) ) {
-		return $done[ $path ] = 0;
+		return 0;
 	}
 	$upload = wp_upload_bits( basename( $file ), null, file_get_contents( $file ) );
 	if ( ! empty( $upload['error'] ) ) {
-		return $done[ $path ] = 0;
+		return 0;
 	}
 	$type = wp_check_filetype( $upload['file'] );
 	$id   = wp_insert_attachment( array(
@@ -143,9 +179,9 @@ function stmina_seed_image( $path ) {
 		'post_status'    => 'inherit',
 	), $upload['file'] );
 	if ( ! $id || is_wp_error( $id ) ) {
-		return $done[ $path ] = 0;
+		return 0;
 	}
 	require_once ABSPATH . 'wp-admin/includes/image.php';
 	wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $upload['file'] ) );
-	return $done[ $path ] = $id;
+	return $id;
 }

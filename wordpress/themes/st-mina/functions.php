@@ -6,7 +6,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.3.0' );
+define( 'STMINA_THEME_VERSION', '0.4.0' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
 
@@ -42,7 +42,40 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( is_singular( 'stmina_service' ) ) {
 		wp_enqueue_style( 'stmina-service', $uri . 'service.css', array( 'stmina-site' ), $ver );
 	}
+	// صفحات الكنيسة: كل صفحة ليها ملف تنسيق باسم رابطها لو موجود
+	foreach ( array( 'church-history', 'church-fathers', 'church-location' ) as $slug ) {
+		if ( is_page( $slug ) ) {
+			wp_enqueue_style( 'stmina-' . $slug, $uri . $slug . '.css', array( 'stmina-site' ), $ver );
+		}
+	}
 } );
+
+/**
+ * واجهة الصفحة الداخلية من بيانات الصفحة نفسها: الصورة البارزة، والمقتطف،
+ * وخانات "واجهة الصفحة" (الكلمة الصغيرة، والعنوان، والجزء الدهبي).
+ *
+ * @param string $current القسم الحالي في القايمة.
+ * @param array  $parent  صفحة أعلى في مسار التنقل: array( 'الاسم', 'الرابط' ).
+ */
+function stmina_page_hero( $current, $parent = array() ) {
+	$id     = get_queried_object_id();
+	$crumbs = array( array( 'الرئيسية', home_url( '/' ) ) );
+	if ( $parent ) {
+		$crumbs[] = $parent;
+	}
+	$crumbs[] = array( get_the_title( $id ) );
+	$title    = get_post_meta( $id, 'hero_title', true );
+
+	get_template_part( 'template-parts/page-hero', null, array(
+		'current'   => $current,
+		'image'     => get_the_post_thumbnail_url( $id, 'full' ),
+		'crumbs'    => $crumbs,
+		'eyebrow'   => get_post_meta( $id, 'hero_eyebrow', true ),
+		'title'     => $title ? $title : get_the_title( $id ),
+		'highlight' => get_post_meta( $id, 'hero_highlight', true ),
+		'lead'      => has_excerpt( $id ) ? get_the_excerpt( $id ) : '',
+	) );
+}
 
 /**
  * عنوان بجزء دهبي في آخره، زي "خدمة <b>لكل عمر</b>". النص كله متأمّن.

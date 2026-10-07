@@ -48,6 +48,47 @@ add_action( 'acf/include_fields', function () {
 			array( 'key' => 'field_stmina_group_order', 'name' => 'order', 'label' => 'الترتيب', 'type' => 'number', 'default_value' => 10 ),
 		),
 	) );
+
+	// ---------- الأب الكاهن ----------
+	acf_add_local_field_group( array(
+		'key'          => 'group_stmina_priest',
+		'title'        => 'بيانات الأب',
+		'position'     => 'acf_after_title',
+		'instructions' => '',
+		'location'     => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_priest' ) ) ),
+		'fields'       => array(
+			array( 'key' => 'field_stmina_priest_rank', 'name' => 'rank', 'label' => 'الصفة', 'type' => 'text', 'default_value' => 'كاهن الكنيسة' ),
+			array( 'key' => 'field_stmina_priest_face', 'name' => 'face_image', 'label' => 'صورة الوش', 'type' => 'image', 'return_format' => 'id', 'preview_size' => 'medium', 'instructions' => 'صورة شخصية واضحة. لو الصورة ملصق والوش جزء منه، اضبط القص من الخانات اللي تحت' ),
+			array( 'key' => 'field_stmina_priest_fw', 'name' => 'face_w', 'label' => 'عرض الصورة في الدايرة', 'type' => 'number', 'instructions' => 'سيبه فاضي لو الصورة شخصية عادية', 'wrapper' => array( 'width' => 33 ) ),
+			array( 'key' => 'field_stmina_priest_fx', 'name' => 'face_x', 'label' => 'إزاحة أفقية', 'type' => 'number', 'wrapper' => array( 'width' => 33 ) ),
+			array( 'key' => 'field_stmina_priest_fy', 'name' => 'face_y', 'label' => 'إزاحة رأسية', 'type' => 'number', 'wrapper' => array( 'width' => 34 ) ),
+			array( 'key' => 'field_stmina_priest_note', 'name' => '', 'label' => 'ملصقات الأقوال', 'type' => 'message', 'message' => 'ارفع ملصقات أقوال الأب من زرار "Add Media" جوه الصفحة دي، أو من مكتبة الوسائط واختار "Attach" للأب ده. بتظهر تحت "من أقواله" بالترتيب.' ),
+		),
+	) );
+
+	// ---------- محطة التاريخ ----------
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_milestone',
+		'title'    => 'السنة',
+		'position' => 'acf_after_title',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_milestone' ) ) ),
+		'fields'   => array(
+			array( 'key' => 'field_stmina_milestone_year', 'name' => 'year', 'label' => 'السنة', 'type' => 'text', 'instructions' => 'اكتب 0000 لو لسه مش معروفة. والنبذة في خانة "Excerpt"' ),
+		),
+	) );
+
+	// ---------- واجهة الصفحات ----------
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_page_hero',
+		'title'    => 'واجهة الصفحة',
+		'position' => 'side',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'page' ) ) ),
+		'fields'   => array(
+			array( 'key' => 'field_stmina_page_eyebrow', 'name' => 'hero_eyebrow', 'label' => 'الكلمة الصغيرة فوق العنوان', 'type' => 'text' ),
+			array( 'key' => 'field_stmina_page_title', 'name' => 'hero_title', 'label' => 'عنوان الواجهة', 'type' => 'text', 'instructions' => 'لو فاضي بيظهر اسم الصفحة' ),
+			array( 'key' => 'field_stmina_page_highlight', 'name' => 'hero_highlight', 'label' => 'الجزء الدهبي', 'type' => 'text', 'instructions' => 'آخر جزء في العنوان' ),
+		),
+	) );
 } );
 
 /**
