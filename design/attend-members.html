@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a1c12">
+<title>المخدومون | إعداد الخدام</title>
+<meta name="description" content="مخدومو خدمة إعداد الخدام: إضافة مخدوم، والبحث، ونسب الحضور، ومين محتاج افتقاد.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/attend.css">
+<style>
+/* خاص بقائمة المخدومين */
+.wrap-m{flex:1;width:100%;max-width:520px;margin-inline:auto;padding:var(--s-8) var(--gut) 0}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s-3);margin-bottom:var(--s-5);text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.top small{display:block;font-size:.82rem;font-weight:500;color:var(--gold-soft)}
+.top h1{font-size:2.1rem;font-weight:300;line-height:1.25}
+.count-chip{padding:6px 14px;border-radius:999px;font-size:.8rem;color:var(--on-glass-2);text-shadow:none;white-space:nowrap}
+.count-chip b{color:var(--on-glass);font-weight:500;font-variant-numeric:tabular-nums}
+
+/* إضافة مخدوم: لوح بيتفتح مكانه */
+.addbox{padding:var(--s-2);margin-bottom:var(--s-4)}
+.add-start{display:flex;align-items:center;gap:var(--s-3);width:100%;min-height:60px;padding:var(--s-2) var(--s-3);border:0;border-radius:18px;background:none;color:var(--on-glass);font:inherit;text-align:start;cursor:pointer}
+.add-start:hover{background:var(--glass-2)}
+.add-start .plus{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--btn-light);color:var(--ink);flex:none}
+.add-start b{display:block;font-size:1rem;font-weight:500}
+.add-start small{display:block;font-size:.8rem;color:var(--on-glass-2)}
+.add-alt{display:flex;justify-content:center;padding:0 var(--s-3) var(--s-1)}
+.add-alt .textlink{font-size:.84rem}
+.add-alt .icon{width:16px;height:16px}
+.add-form,.added{display:none;padding:var(--s-4) var(--s-3) var(--s-3)}
+.addbox.is-open .add-start,.addbox.is-open .add-alt,.addbox.is-done .add-start,.addbox.is-done .add-alt{display:none}
+.addbox.is-open .add-form{display:block}
+.addbox.is-done .added{display:block}
+.add-form h2,.added h2{font-size:1.15rem;font-weight:400;margin-bottom:var(--s-4)}
+.g-input input[dir=ltr]{text-align:right}
+.g-input input[dir=ltr]:not(:placeholder-shown){text-align:left}
+.f-err{display:none;margin-top:var(--s-2);font-size:.84rem;color:var(--bad-text)}
+.g-field.bad .f-err{display:block}
+.g-field.bad input{border-color:rgba(255,180,163,.6)}
+.f-hint{margin-top:var(--s-2);font-size:.8rem;color:var(--on-glass-3)}
+.add-form .btn-light{margin-top:var(--s-2)}
+.add-form .textlink,.added .textlink{display:flex;width:100%;margin-top:var(--s-1)}
+.added p{font-size:.9rem;line-height:1.8;color:var(--on-glass-2);margin-bottom:var(--s-4)}
+.added p b{color:var(--on-glass);font-weight:500}
+.btn-wa{background:#1F7A4D;color:#fff}
+.btn-wa:hover{background:#238a57}
+
+/* الفلتر والبحث */
+.filters{display:flex;gap:var(--s-2);overflow-x:auto;padding-bottom:4px;margin-bottom:var(--s-3);scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.filters button{flex:none;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--glass-line-soft);background:var(--glass-2);color:var(--on-glass-2);font:inherit;font-size:.86rem;cursor:pointer;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.filters button b{font-weight:500;font-variant-numeric:tabular-nums}
+.filters button[aria-pressed=true]{background:var(--btn-light);color:var(--ink);border-color:transparent}
+.search{margin-bottom:var(--s-4)}
+.g-input .end .icon{width:20px;height:20px}
+
+/* الصفوف: الاسم ودايرة النسبة */
+.list{padding:var(--s-2)}
+.m-row{display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:var(--s-3);min-height:62px;padding:8px var(--s-2);border-radius:16px;color:inherit;transition:background var(--t-fast)}
+.m-row + .m-row{margin-top:2px}
+.m-row:hover{background:var(--glass-2)}
+.av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:var(--glass-3);font-size:.82rem;font-weight:500}
+.m-name{display:block;font-size:.98rem;line-height:1.4}
+.m-meta{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:.78rem;color:var(--on-glass-2)}
+.flag{display:inline-flex;align-items:center;gap:4px;padding:1px 9px;border-radius:999px;font-size:.75rem;font-weight:500}
+.flag.away{background:rgba(242,179,90,.2);color:#FFD9A0}
+.flag.off{background:rgba(255,248,238,.12);color:var(--on-glass-2)}
+.m-row.is-off .m-name,.m-row.is-off .av{opacity:.55}
+/* دايرة النسبة: بتتملي على قد نسبة الحضور */
+.ring{--p:0;position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(var(--on-glass) calc(var(--p) * 1%),rgba(255,248,238,.14) 0)}
+.ring::before{content:"";position:absolute;inset:3px;border-radius:50%;background:rgba(40,27,18,.72)}
+.ring span{position:relative;font-size:.78rem;font-weight:500;font-variant-numeric:tabular-nums}
+.ring.low{background:conic-gradient(var(--warn) calc(var(--p) * 1%),rgba(255,248,238,.14) 0)}
+.m-row.is-off .ring{background:rgba(255,248,238,.1)}
+.empty{display:none;padding:var(--s-6) var(--s-5);text-align:center}
+.empty h2{font-size:1.2rem;font-weight:400;margin-bottom:var(--s-2)}
+.empty p{font-size:.9rem;line-height:1.85;color:var(--on-glass-2)}
+[data-state=empty] .empty{display:block}
+[data-state=empty] .filters,[data-state=empty] .search,[data-state=empty] #list{display:none}
+.no-match{padding:var(--s-6) var(--s-3);text-align:center;font-size:.9rem;color:var(--on-glass-2)}
+</style>
+</head>
+<body class="has-nav" data-state="normal">
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="13" width="4" height="4" rx=".5"/><path d="M13 7h4v4M7 13v4h4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3 21l1.65-3.8A9 9 0 1 1 7.8 20.3L3 21Z"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></symbol>
+</svg>
+
+<!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس. الأسماء والأرقام وهمية -->
+<div class="review" role="group" aria-label="حالات الشاشة للمراجعة">
+  <span>نموذج للمراجعة (أسماء وأرقام وهمية)، اختر الحالة:</span>
+  <button class="chip" type="button" data-show="normal" aria-pressed="true">عادي</button>
+  <button class="chip" type="button" data-show="empty" aria-pressed="false">فاضي</button>
+</div>
+
+<main class="wrap-m" id="main">
+  <header class="top">
+    <div><small>إعداد الخدام</small><h1>المخدومون</h1></div>
+    <span class="glass count-chip" id="countChip"></span>
+  </header>
+
+  <!-- إضافة مخدوم -->
+  <div class="glass addbox" id="addbox">
+    <button class="add-start" type="button" id="addStart" aria-expanded="false" aria-controls="addForm">
+      <span class="plus"><svg class="icon"><use href="#i-plus"/></svg></span>
+      <span><b>إضافة مخدوم</b><small>الاسم ورقم الموبايل، وبعدها تبعتله الكارت</small></span>
+    </button>
+    <p class="add-alt"><a class="textlink" href="#"><svg class="icon"><use href="#i-sheet"/></svg>أو استورد مجموعة من ملف Excel</a></p>
+
+    <form class="add-form" id="addForm" novalidate>
+      <h2>مخدوم جديد · إعداد الخدام</h2>
+      <div class="g-field" id="fName">
+        <label for="name">الاسم بالكامل</label>
+        <div class="g-input"><input id="name" type="text" autocomplete="off" placeholder="مثال: مينا عادل" required></div>
+        <p class="f-err" role="alert">اكتب الاسم بالكامل (اسمين على الأقل).</p>
+      </div>
+      <div class="g-field" id="fMob">
+        <label for="mob">رقم الموبايل</label>
+        <div class="g-input"><input id="mob" type="tel" inputmode="numeric" dir="ltr" autocomplete="off" placeholder="01xxxxxxxxx" maxlength="11" required></div>
+        <p class="f-err" role="alert" id="mobErr"></p>
+        <p class="f-hint">الكارت بيتبعت على الرقم ده في واتساب.</p>
+      </div>
+      <button class="btn btn-light" type="submit"><svg class="icon"><use href="#i-plus"/></svg>أضف المخدوم</button>
+      <button class="textlink" type="button" id="addCancel">إلغاء</button>
+    </form>
+
+    <div class="added" id="added" role="status">
+      <h2>اتضاف <span id="addedName"></span></h2>
+      <p>ابعتله الكارت دلوقتي علشان يقدر يتمسح من أول جلسة. الكارت بيوصله رابط على واتساب، يفتحه ويحفظه صورة.</p>
+      <a class="btn btn-wa" id="addedWa" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-wa"/></svg>ابعتله الكارت على واتساب</a>
+      <button class="textlink" type="button" id="addMore">أضف مخدوم تاني</button>
+    </div>
+  </div>
+
+  <div class="glass empty">
+    <h2>مفيش مخدومين لسه</h2>
+    <p>أضف المخدومين واحد واحد من فوق، أو استوردهم مرة واحدة من ملف Excel فيه عمودين: الاسم والموبايل.</p>
+  </div>
+
+  <div class="filters" role="group" aria-label="اعرض" id="filters"></div>
+  <div class="g-input has-end search">
+    <input type="search" id="q" placeholder="دوّر بالاسم أو الرقم" aria-label="دوّر بالاسم أو رقم الموبايل" autocomplete="off">
+    <span class="end" aria-hidden="true"><svg class="icon"><use href="#i-search"/></svg></span>
+  </div>
+  <section class="glass list" id="list" aria-label="قائمة المخدومين" aria-live="polite"></section>
+</main>
+
+<nav class="glass g-nav" aria-label="التنقل في نظام الحضور">
+  <ul>
+    <li><a href="attend-sessions.html"><svg class="icon"><use href="#i-calendar"/></svg>الجلسات</a></li>
+    <li><a href="attend-members.html" aria-current="page"><svg class="icon"><use href="#i-users"/></svg>المخدومون</a></li>
+    <li><a href="attend-scan.html"><svg class="icon"><use href="#i-scan"/></svg>المسح</a></li>
+    <li><a href="#"><svg class="icon"><use href="#i-heart"/></svg>الافتقاد</a></li>
+    <li><a href="#"><svg class="icon"><use href="#i-more"/></svg>المزيد</a></li>
+  </ul>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="assets/attend-demo.js"></script>
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const body = document.body;
+  const D = window.AttendDemo;
+  let members = D.members.slice(), filter = 'all', nextId = members.length;
+  const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
+  const list = () => body.dataset.state === 'empty' ? [] : members;
+
+  // آخر حضور: أول جلسة في السجل فيها "حضر"
+  const lastSeen = m => { const k = m.log.indexOf('h'); return k < 0 ? 'ماحضرش لسه' : 'آخر حضور ' + (k === 0 ? 'الجلسة اللي فاتت' : fDay.format(D.sessionDates[k]).split('،')[0]); };
+
+  function renderFilters() {
+    const L = list();
+    const F = [['all', 'الكل', L.filter(m => !m.suspended).length], ['away', 'محتاج افتقاد', L.filter(m => !m.suspended && m.away >= 3).length], ['off', 'موقوف', L.filter(m => m.suspended).length]];
+    $('#filters').innerHTML = F.map(([k, t, n]) => `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${t} <b>${n}</b></button>`).join('');
+    $('#countChip').innerHTML = `<b>${L.filter(m => !m.suspended).length}</b> مخدوم`;
+  }
+
+  function renderList() {
+    const term = $('#q').value.trim().replace(/\s/g, '');
+    const L = list().filter(m => filter === 'off' ? m.suspended : !m.suspended && (filter !== 'away' || m.away >= 3))
+      .filter(m => !term || m.name.replace(/\s/g, '').includes(term) || m.mobile.includes(term))
+      .sort((a, b) => filter === 'away' ? b.away - a.away : a.name.localeCompare(b.name, 'ar'));
+    $('#list').innerHTML = L.length ? L.map(m => {
+      const flag = m.suspended ? '<span class="flag off">موقوف</span>' : m.away >= 3 ? `<span class="flag away">غاب ${m.away} مرات ورا بعض</span>` : '';
+      return `<a class="m-row${m.suspended ? ' is-off' : ''}" href="attend-member.html?id=${m.id}" aria-label="${m.name}، حضوره ${m.pct}%${m.suspended ? '، موقوف' : m.away >= 3 ? `، غاب ${m.away} مرات ورا بعض` : ''}">
+        <span class="av" aria-hidden="true">${D.initials(m.name)}</span>
+        <span><span class="m-name">${m.name}</span><span class="m-meta">${flag || lastSeen(m)}</span></span>
+        <span class="ring${m.pct < 60 ? ' low' : ''}" style="--p:${m.suspended ? 0 : m.pct}" aria-hidden="true"><span>${m.suspended ? '–' : m.pct + '%'}</span></span>
+      </a>`;
+    }).join('') : `<p class="no-match">${term ? 'مفيش مخدوم بالاسم أو الرقم ده.' : filter === 'away' ? 'مفيش حد غاب 3 مرات ورا بعض. ربنا يبارك.' : 'مفيش حد هنا.'}</p>`;
+  }
+  const render = () => { renderFilters(); renderList(); };
+
+  $('#filters').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; render(); });
+  $('#q').addEventListener('input', renderList);
+
+  // ---------- إضافة مخدوم ----------
+  const box = $('#addbox'), form = $('#addForm'), nameIn = $('#name'), mobIn = $('#mob');
+  const setOpen = st => { box.classList.toggle('is-open', st === 'open'); box.classList.toggle('is-done', st === 'done'); $('#addStart').setAttribute('aria-expanded', st === 'open'); };
+  $('#addStart').addEventListener('click', () => { form.reset(); $$('.g-field', form).forEach(f => f.classList.remove('bad')); setOpen('open'); nameIn.focus(); });
+  $('#addCancel').addEventListener('click', () => { setOpen(''); $('#addStart').focus(); });
+  $('#addMore').addEventListener('click', () => $('#addStart').click());
+  mobIn.addEventListener('input', () => { mobIn.value = mobIn.value.replace(/\D/g, '').slice(0, 11); });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = nameIn.value.trim().replace(/\s+/g, ' '), mob = mobIn.value.trim();
+    const dup = members.find(m => m.mobile === mob);
+    const nameOk = name.split(' ').length >= 2;
+    const mobMsg = !/^01[0125]\d{8}$/.test(mob) ? 'رقم الموبايل لازم يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015.' : dup ? `الرقم ده متسجّل لـ${dup.name}. لو ده نفس المخدوم افتح ملفه بدل ما تضيفه تاني.` : '';
+    $('#fName').classList.toggle('bad', !nameOk);
+    $('#fMob').classList.toggle('bad', !!mobMsg); $('#mobErr').textContent = mobMsg;
+    if (!nameOk) return nameIn.focus();
+    if (mobMsg) return mobIn.focus();
+    // من حالة "فاضي": أول مخدوم بيبدأ قائمة جديدة
+    if (body.dataset.state === 'empty') { members = []; body.dataset.state = 'normal'; chips.forEach(c => c.setAttribute('aria-pressed', c.dataset.show === 'normal')); }
+    const m = { id: nextId++, name, mobile: mob, log: [], present: 0, pct: 0, away: 0, suspended: false, joined: new Date() };
+    members.push(m); filter = 'all'; render();
+    $('#addedName').textContent = name; $('#addedWa').href = D.waCard(m);
+    setOpen('done'); $('#addedWa').focus();
+  });
+
+  // ---------- حالات المراجعة ----------
+  const chips = $$('.review .chip');
+  function setState(st) { body.dataset.state = st; chips.forEach(c => c.setAttribute('aria-pressed', c.dataset.show === st)); if (st === 'normal' && !members.length) members = D.members.slice(); render(); }
+  chips.forEach(c => c.addEventListener('click', () => { setOpen(''); setState(c.dataset.show); }));
+
+  render();
+})();
+</script>
+</body>
+</html>
