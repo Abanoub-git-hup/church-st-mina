@@ -8,6 +8,8 @@
   // اللي محتاجين افتقاد (غابوا ورا بعض)، واللي موقوف
   // 12: غاب 3 مرات وبينهم مرة بعذر (العذر مابيقطعش العدّ). 7: غاب مرتين بس فمش في الافتقاد
   const AWAY = { 26: 4, 33: 3, 38: 5, 12: ['a', 'e', 'a', 'a'], 7: 2 }, SUSPENDED = [40];
+  // نسبة التسجيل اليدوي للي غالبًا الكارت مش معاهم
+  const NOCARD = { 3: .75, 15: .6, 29: .5, 35: .4 };
 
   const members = NAMES.map((name, i) => {
     const r = rnd(i + 7);
@@ -17,15 +19,19 @@
     if (Array.isArray(AWAY[i])) { AWAY[i].forEach((x, k) => { log[k] = x; }); log[AWAY[i].length] = 'h'; }
     else if (AWAY[i]) { for (let k = 0; k < AWAY[i]; k++) log[k] = 'a'; log[AWAY[i]] = 'h'; }
     else if (log[0] === 'a') log[0] = 'h';
-    const present = log.filter(x => x === 'h').length;
+    const present = log.filter(x => x === 'h').length, excused = log.filter(x => x === 'e').length;
+    // التسجيل اليدوي: نادر عند الأغلب، وكتير عند اللي غالبًا مش معاهم الكارت
+    const rm = rnd(i * 13 + 5), manualRate = NOCARD[i] || .03;
+    const manual = log.map(x => x === 'h' && rm() < manualRate);
     // الغياب المتتالي من الأحدث: الغياب بعذر بيتعدّى (مابيتحسبش ومابيقطعش)، والحضور بيوقف العدّ
     let away = 0; for (const x of log) { if (x === 'h') break; if (x === 'a') away++; }
     const lastSeen = log.indexOf('h');
     const mobile = '01' + [0, 1, 2, 5][i % 4] + String(10000000 + Math.floor(r() * 89999999)).slice(0, 8);
     const joined = new Date(); joined.setDate(joined.getDate() - (40 + Math.floor(r() * 200)));
     return {
-      id: i, name, mobile, joined, log, present,
-      pct: Math.round(present / SESSIONS * 100),
+      id: i, name, mobile, joined, log, present, manual,
+      // نفس حساب "حضوري": حضر ÷ (الجلسات − الغياب بعذر)
+      pct: Math.round(present / (SESSIONS - excused) * 100),
       away, lastSeen,
       suspended: SUSPENDED.includes(i)
     };
