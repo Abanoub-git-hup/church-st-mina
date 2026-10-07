@@ -8,3 +8,6 @@ desktop.ini
 
 # نسخة المعاينة المبنية (تُبنى على Netlify)
 dist/
+
+# كلمات سر الاختبارات (Application Passwords)، على الجهاز بس
+tests/.env
