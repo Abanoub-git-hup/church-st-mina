@@ -581,13 +581,13 @@ body{background:var(--umber-700)}
 .has-dd.open > .dd-btn .icon,.has-dd:hover > .dd-btn .icon{rotate:180deg}
 .top-nav .has-dd:hover > a,.top-nav .has-dd.open > a,.float-nav nav .has-dd:hover > a,.float-nav nav .has-dd.open > a{color:var(--cream);background:rgba(246,236,220,.08)}
 
-/* اللوح المنسدل: زجاج فاتح خفيف، وإطار ذهبي رفيع متدرّج (أوضح فوق ويخف لتحت) */
+/* اللوح المنسدل: زجاج فاتح خفيف، وإطار فضي رفيع متدرّج (أوضح فوق ويخف لتحت) */
 .dd{position:absolute;top:calc(100% + 12px);left:50%;z-index:140;min-width:200px;padding:8px;border-radius:20px;
   background:linear-gradient(180deg,rgba(255,244,228,.11),rgba(255,244,228,.05));-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);
   box-shadow:inset 0 1px 0 rgba(255,248,238,.14),0 18px 40px rgba(10,6,3,.28);
   opacity:0;visibility:hidden;translate:-50% 8px;transition:opacity var(--t-fast),translate var(--t-base) var(--ease),visibility 0s linear var(--t-base)}
 .dd::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
-  background:linear-gradient(180deg,rgba(243,201,135,.55),rgba(243,201,135,.12) 60%,rgba(255,248,238,.08));
+  background:var(--gild);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .dd::before{content:"";position:absolute;inset-inline:0;top:-14px;height:14px}
 .has-dd:hover > .dd,.has-dd.open > .dd{opacity:1;visibility:visible;translate:-50% 0;transition:opacity var(--t-fast),translate var(--t-base) var(--ease)}
@@ -633,10 +633,10 @@ body{background:var(--umber-700)}
 /* الهيدر بعد إضافة زر الدخول: أيقونات السوشيال من 1280px (موجودة في الفوتر وقائمة الموبايل) */
 @media (min-width:1100px) and (max-width:1279px){.hero-top .socials{display:none}}
 
-/* ===== الهيدر الزجاجي: "زجاج بإطار مذهّب" =====
-   العلامة المشتركة: إطار ذهبي رفيع متدرّج (أوضح فوق ويخف لتحت) على القائمة الرئيسية،
+/* ===== الهيدر الزجاجي: "زجاج بإطار فضي" =====
+   العلامة المشتركة: إطار فضي رفيع متدرّج (أوضح فوق ويخف لتحت) على القائمة الرئيسية،
    والقوائم المنسدلة، والشريط العائم. الأيقونات كلها دواير زجاج بنفس الشكل. */
-:root{--gild:linear-gradient(180deg,rgba(243,201,135,.55),rgba(243,201,135,.12) 60%,rgba(255,248,238,.08))}
+:root{--gild:linear-gradient(180deg,rgba(236,240,246,.62),rgba(214,220,230,.16) 60%,rgba(255,255,255,.06))}
 .gilded::after,.top-nav::after,.float-nav::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--gild);
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 
@@ -663,3 +663,28 @@ body{background:var(--umber-700)}
 /* قائمة الموبايل: زجاج متغبّش فوق الصفحة بدل البني السادة */
 .drawer{background:linear-gradient(180deg,rgba(255,244,228,.06),rgba(255,244,228,.02)),rgba(23,15,9,.42);-webkit-backdrop-filter:blur(26px) saturate(1.3);backdrop-filter:blur(26px) saturate(1.3)}
 .drawer li a{border-bottom-color:rgba(255,244,228,.1)}
+/* الروابط اللي بتنزل على جزء في الصفحة: مسافة فوق علشان الشريط العائم مايغطيش العنوان */
+section[id],h2[id],h3[id]{scroll-margin-top:96px}
+
+/* ===== الأزرار (pill) بنفس زجاج الهيدر =====
+   كبسولة زجاج بإطار فضي متدرّج زي كبسولة القائمة. الأساسي دايرته فاتحة، والتانوي دايرته زجاج.
+   gold بقى نفس الأساسي علشان الموقع كله يبقى أسلوب واحد. */
+.pill,.pill.gold,.pill.ghost{position:relative;isolation:isolate;padding:6px 22px 6px 6px;border:0;color:#FFF8EE;
+  background:linear-gradient(180deg,rgba(255,244,228,.16),rgba(255,244,228,.07));-webkit-backdrop-filter:blur(16px) saturate(1.4);backdrop-filter:blur(16px) saturate(1.4);
+  box-shadow:inset 0 1px 0 rgba(255,248,238,.16),0 12px 30px rgba(10,6,3,.25);transition:background var(--t-fast),transform var(--t-fast)}
+.pill::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--gild);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.pill:hover,.pill.gold:hover,.pill.ghost:hover{background:linear-gradient(180deg,rgba(255,244,228,.24),rgba(255,244,228,.12))}
+.pill .dot,.pill.gold .dot{background:rgba(255,246,232,.92);color:var(--ink)}
+.pill.ghost{background:linear-gradient(180deg,rgba(255,244,228,.08),rgba(255,244,228,.03))}
+.pill.ghost .dot{background:rgba(255,244,228,.12);color:#FFF8EE;box-shadow:inset 0 0 0 1px var(--glass-line)}
+.pill.ghost:hover .dot{background:rgba(255,246,232,.92);color:var(--ink)}
+
+/* الهيدر على الموبايل: لوجو أصغر واسم الكنيسة بخط أصغر علشان يكفّي جنب زرار الدخول والقائمة */
+@media (max-width:600px){
+  .hero-top .wrap{gap:var(--s-2)}
+  .hero-top .brand{gap:var(--s-2)}
+  .hero-top .brand img{width:42px;height:42px}
+  .hero-top .brand span{font-size:.78rem;line-height:1.5}
+  .hero-top .menu-btn,.hero-top .has-dd > .login-btn{width:44px;height:44px}
+}

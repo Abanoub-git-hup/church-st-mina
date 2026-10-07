@@ -16,14 +16,15 @@
 /* خاص بالرئيسية: الواجهة الكبيرة، والدوائر الأربعة، ومجموعة صور الكنيسة */
 .hero-center{flex:1;display:grid;place-items:center;text-align:center;padding:var(--s-16) var(--gut) var(--s-24)}
 .hero-center > div{max-width:980px}
-.hello{display:inline-flex;align-items:center;gap:var(--s-2);padding:6px 18px;border-radius:var(--r-full);border:1px solid rgba(243,201,135,.35);background:rgba(23,15,9,.4);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--gold-soft);font-size:.9rem;font-weight:400;margin-bottom:var(--s-8)}
+.hello{position:relative;display:inline-flex;align-items:center;gap:var(--s-2);padding:6px 18px;border-radius:var(--r-full);color:#FFF8EE;background:linear-gradient(180deg,rgba(255,244,228,.12),rgba(255,244,228,.05));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4)}
+.hello::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--gild);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .hello .icon{width:16px;height:16px}
 .hero h1{font-family:var(--f-verse);font-weight:700;font-size:clamp(2rem,5.4vw,4.3rem);line-height:1.6;color:#FFF3E0;text-shadow:0 4px 30px rgba(0,0,0,.55)}
 .hero h1 em{font-style:normal;color:var(--gold-soft)}
 .hero .ref{display:block;margin-top:var(--s-4);color:var(--gold);font-size:.95rem}
 .hero .sub{margin:var(--s-8) auto 0;max-width:620px;color:var(--cream-2);font-size:1.02rem;line-height:2}
 .hero-ctas{display:flex;align-items:center;justify-content:center;gap:var(--s-4);flex-wrap:wrap;margin-top:var(--s-12)}
-@media (max-width:600px){.hero-ctas .pill{width:100%;justify-content:space-between}.hero-center{padding:var(--s-12) var(--gut) var(--s-20)}.hero .sub{margin-top:var(--s-6)}.hero-ctas{margin-top:var(--s-10);gap:var(--s-3)}}
+@media (max-width:600px){.hero-ctas{justify-content:flex-start}.hero-ctas .pill{min-height:44px;gap:var(--s-2);padding:4px 16px 4px 4px;font-size:.88rem}.hero-ctas .pill .dot{width:36px;height:36px}.hero-center{padding:var(--s-12) var(--gut) var(--s-20)}.hero .sub{margin-top:var(--s-6)}.hero-ctas{margin-top:var(--s-10);gap:var(--s-3)}}
 /* الدوائر الأربعة أسفل الواجهة */
 .hero-cards{position:relative;z-index:2;margin-top:var(--s-8)}
 .hcirc{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:var(--s-6)}
