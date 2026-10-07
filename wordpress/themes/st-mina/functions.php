@@ -6,7 +6,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.4.0' );
+define( 'STMINA_THEME_VERSION', '0.5.0' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
 
@@ -35,6 +35,17 @@ add_action( 'wp_enqueue_scripts', function () {
 	if ( is_front_page() ) {
 		wp_enqueue_style( 'stmina-home', $uri . 'home.css', array( 'stmina-site' ), $ver );
 		wp_enqueue_script( 'stmina-home', $uri . 'home.js', array( 'stmina-site' ), $ver, true );
+		// القداسات لدايرة "القداس القادم": اليوم، والساعة، والوقت مكتوب
+		if ( function_exists( 'stmina_slots' ) ) {
+			$masses = array_map( function ( $slot ) {
+				return array( 'd' => $slot['day'], 'h' => (int) $slot['start'], 't' => stmina_slot_time( $slot, true ) );
+			}, stmina_slots( 'mass' ) );
+			wp_add_inline_script( 'stmina-home', 'window.STMINA_MASSES = ' . wp_json_encode( $masses ) . ';', 'before' );
+		}
+	}
+	if ( is_page( 'worship' ) ) {
+		wp_enqueue_style( 'stmina-worship', $uri . 'worship.css', array( 'stmina-site' ), $ver );
+		wp_enqueue_script( 'stmina-worship', $uri . 'worship.js', array( 'stmina-site' ), $ver, true );
 	}
 	if ( is_post_type_archive( 'stmina_service' ) ) {
 		wp_enqueue_style( 'stmina-services', $uri . 'services.css', array( 'stmina-site' ), $ver );

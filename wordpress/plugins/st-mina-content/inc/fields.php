@@ -77,6 +77,21 @@ add_action( 'acf/include_fields', function () {
 		),
 	) );
 
+	// ---------- موعد في الجدول ----------
+	acf_add_local_field_group( array(
+		'key'      => 'group_stmina_slot',
+		'title'    => 'الموعد',
+		'position' => 'acf_after_title',
+		'location' => array( array( array( 'param' => 'post_type', 'operator' => '==', 'value' => 'stmina_slot' ) ) ),
+		'fields'   => array(
+			array( 'key' => 'field_stmina_slot_kind', 'name' => 'kind', 'label' => 'النوع', 'type' => 'select', 'choices' => array( 'mass' => 'قداس', 'meeting' => 'اجتماع ثابت' ), 'default_value' => 'mass', 'wrapper' => array( 'width' => 25 ) ),
+			array( 'key' => 'field_stmina_slot_day', 'name' => 'day', 'label' => 'اليوم', 'type' => 'select', 'choices' => stmina_days(), 'wrapper' => array( 'width' => 25 ) ),
+			array( 'key' => 'field_stmina_slot_start', 'name' => 'start', 'label' => 'من الساعة', 'type' => 'time_picker', 'display_format' => 'g:i a', 'return_format' => 'H:i:s', 'wrapper' => array( 'width' => 25 ) ),
+			array( 'key' => 'field_stmina_slot_end', 'name' => 'end', 'label' => 'لحد الساعة', 'type' => 'time_picker', 'display_format' => 'g:i a', 'return_format' => 'H:i:s', 'instructions' => 'سيبها فاضية لو مالوش نهاية محددة', 'wrapper' => array( 'width' => 25 ) ),
+			array( 'key' => 'field_stmina_slot_note', 'name' => 'note', 'label' => 'ملاحظة', 'type' => 'text', 'instructions' => 'بتظهر جنب الوقت. مثال: التربية الكنسية، أو اجتماع الشباب · الكنيسة الكبيرة، الروف' ),
+		),
+	) );
+
 	// ---------- واجهة الصفحات ----------
 	acf_add_local_field_group( array(
 		'key'      => 'group_stmina_page_hero',

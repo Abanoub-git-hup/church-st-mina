@@ -81,13 +81,7 @@ get_header();
     <div>
       <span class="eyebrow" data-rise>صلِّ معنا</span>
       <h2 class="title" id="t-sched" data-split>مواعيد <b>القداسات</b> والاجتماعات</h2>
-      <div class="days">
-        <div class="day" data-day="0" data-rise><div class="day-n">الأحد</div><div class="slots"><span>7:00 – 10:00 ص</span><span>9:00 – 11:00 ص</span></div></div>
-        <div class="day" data-day="2" data-rise><div class="day-n">الثلاثاء</div><div class="slots"><span>8:00 – 9:30 ص</span></div></div>
-        <div class="day" data-day="3" data-rise><div class="day-n">الأربعاء</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
-        <div class="day" data-day="5" data-rise><div class="day-n">الجمعة</div><div class="slots"><span>7:00 – 9:00 ص <em>التربية الكنسية</em></span><span>7:00 – 9:30 ص <em>الشعب</em></span><span>10:00 – 12:00 ظ</span><span class="meet">3:00 – 5:00 م <em>صلاة ودراسة الكتاب</em></span></div></div>
-        <div class="day" data-day="6" data-rise><div class="day-n">السبت</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
-      </div>
+      <?php get_template_part( "template-parts/schedule-days" ); ?>
       <div class="sched-foot" data-rise>
         <p>تتغير المواعيد في الأصوام والأعياد، وتُعلن في الأخبار.</p>
         <a class="pill" href="<?php stmina_link( 'worship' ); ?>">الجدول الكامل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
