@@ -632,3 +632,34 @@ body{background:var(--umber-700)}
 
 /* الهيدر بعد إضافة زر الدخول: أيقونات السوشيال من 1280px (موجودة في الفوتر وقائمة الموبايل) */
 @media (min-width:1100px) and (max-width:1279px){.hero-top .socials{display:none}}
+
+/* ===== الهيدر الزجاجي: "زجاج بإطار مذهّب" =====
+   العلامة المشتركة: إطار ذهبي رفيع متدرّج (أوضح فوق ويخف لتحت) على القائمة الرئيسية،
+   والقوائم المنسدلة، والشريط العائم. الأيقونات كلها دواير زجاج بنفس الشكل. */
+:root{--gild:linear-gradient(180deg,rgba(243,201,135,.55),rgba(243,201,135,.12) 60%,rgba(255,248,238,.08))}
+.gilded::after,.top-nav::after,.float-nav::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--gild);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+
+/* القائمة الرئيسية: كبسولة زجاج */
+@media (min-width:1100px){
+  /* الزجاج في طبقة ورا المحتوى: لو اتحط على العنصر نفسه، القائمة المنسدلة اللي جواه مش هتتغبّش صح */
+  .top-nav{position:relative;z-index:0;padding:5px;border-radius:var(--r-full);box-shadow:0 12px 30px rgba(10,6,3,.22)}
+  .top-nav::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,244,228,.1),rgba(255,244,228,.04));-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,248,238,.12)}
+  .top-nav ul{gap:2px}
+}
+.top-nav a[aria-current=page]{color:var(--gold-soft);background:rgba(246,236,220,.1)}
+
+/* زرار القائمة: دايرة زجاج زي أيقونة الدخول والسوشيال */
+.menu-btn{background:rgba(255,244,228,.1);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--glass-line);color:#FFF8EE;transition:background var(--t-fast),color var(--t-fast)}
+.menu-btn:hover{background:rgba(255,246,232,.92);color:var(--ink)}
+
+/* الشريط العائم وإنت بتنزل: زجاج بنفس الإطار */
+.float-nav{border:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 16px 40px rgba(10,6,3,.3)}
+.float-nav::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(180deg,rgba(255,244,228,.1),rgba(255,244,228,.04)),rgba(30,20,13,.18);-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,248,238,.12)}
+.float-nav nav a[aria-current=page]{color:var(--gold-soft);background:rgba(246,236,220,.1)}
+
+/* قائمة الموبايل: زجاج متغبّش فوق الصفحة بدل البني السادة */
+.drawer{background:linear-gradient(180deg,rgba(255,244,228,.06),rgba(255,244,228,.02)),rgba(23,15,9,.42);-webkit-backdrop-filter:blur(26px) saturate(1.3);backdrop-filter:blur(26px) saturate(1.3)}
+.drawer li a{border-bottom-color:rgba(255,244,228,.1)}
