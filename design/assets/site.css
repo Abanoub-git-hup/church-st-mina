@@ -688,3 +688,16 @@ section[id],h2[id],h3[id]{scroll-margin-top:96px}
   .hero-top .brand span{font-size:.78rem;line-height:1.5}
   .hero-top .menu-btn,.hero-top .has-dd > .login-btn{width:44px;height:44px}
 }
+
+/* اسم الكنيسة جنب اللوجو: يتقسم سطور متوازنة، فمافيش كلمة تنزل لوحدها */
+.brand b,.brand span{text-wrap:balance}
+/* الشريط العائم على الموبايل: الاسم بس على سطرين ("الجبل الأصفر" موجودة في الهيدر اللي فوق) */
+@media (max-width:600px){
+  .float-nav .brand > span{font-size:0;line-height:0}
+  .float-nav .brand b{font-size:.75rem;line-height:1.45}
+}
+/* أجزاء الاسم اللي لازم تفضل مع بعض في سطر واحد */
+.brand .nw{white-space:nowrap;font-size:inherit;font-weight:inherit;line-height:inherit;display:inline}
+/* الشاشات الصغيرة: "الجبل الأصفر" بتنزل سطر لوحدها، فالنقطة اللي قبلها تختفي */
+.brand .sep{font:inherit}
+@media (max-width:380px){.brand .sep{display:none}}
