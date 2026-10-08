@@ -933,3 +933,84 @@ describe('إدارة الخدام (المهمة 24)', () => {
     });
   });
 });
+
+describe('المسح من غير نت والمزامنة (المهام 21 لـ 23)', () => {
+  const at = (h, m = 0) => `${todayCairo()} ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:00`;
+  const uid = () => Math.random().toString(36).slice(2) + Date.now();
+  let a, b, c, d, s1, s2, oldToken;
+
+  before(async () => {
+    const add = async n => (await call('servant', 'POST', '/members', { full_name: n + ' ' + Date.now(), phone: phone() })).data;
+    a = await add('طابور أ'); b = await add('طابور ب'); c = await add('طابور ج'); d = await add('طابور د');
+    oldToken = c.qr_token;
+    await call('servant', 'POST', `/members/${c.id}/reissue`); // كارت ج القديم بقى ملغي
+    s1 = (await call('servant', 'POST', '/sessions', { kind: 'activity', date: todayCairo() })).data;
+    s2 = (await call('servant', 'POST', '/sessions', { kind: 'service', date: todayCairo() })).data;
+    assert.ok(s1.id && s2.id, 'الجلستين اتفتحوا');
+  });
+
+  test('الشنطة للخدام بس، وفيها الأسماء وأكواد الكروت من غير موبايلات', async () => {
+    assert.equal((await call('guest', 'GET', `/sessions/${s1.id}/pack`)).status, 401);
+    assert.equal((await call('subscriber', 'GET', `/sessions/${s1.id}/pack`)).status, 403);
+    const p = (await call('servant', 'GET', `/sessions/${s1.id}/pack`)).data;
+    const row = p.members.find(x => x.id === a.id);
+    assert.equal(row.token, a.qr_token);
+    assert.equal(row.status, null);
+    const text = JSON.stringify(p);
+    assert.ok(!text.includes('phone') && !text.includes(a.phone), 'مفيش أي موبايل');
+  });
+
+  const batch = () => [
+    { id: 'op1-' + s1.id, session_id: s1.id, type: 'scan', code: a.card_url, at: at(10, 5) },
+    { id: 'op2-' + s1.id, session_id: s1.id, type: 'set', member_id: b.id, status: 'excused', at: at(10, 6) },
+    { id: 'op3-' + s1.id, session_id: s1.id, type: 'scan', code: oldToken, at: at(10, 7) },
+    { id: 'op4-' + s1.id, session_id: s1.id, type: 'scan', code: 'z'.repeat(32), at: at(10, 8) },
+  ];
+
+  test('المزامنة: كل عملية بنتيجتها، والمرفوض بسببه', async () => {
+    assert.equal((await call('guest', 'POST', '/sync', { ops: batch() })).status, 401);
+    const r = await call('servant', 'POST', '/sync', { ops: batch() });
+    assert.equal(r.status, 200);
+    assert.deepEqual(r.data.results.map(x => x.result), ['ok', 'ok', 'revoked', 'unknown']);
+    assert.deepEqual(r.data.results.map(x => x.id), batch().map(x => x.id), 'كل نتيجة برقم عمليتها');
+    assert.equal(r.data.results[2].member.id, c.id, 'الكارت الملغي معروف لمين');
+  });
+
+  test('السجل بطريقة التسجيل واسم الخادم والوقت الأصلي', async () => {
+    const recs = (await call('servant', 'GET', `/sessions/${s1.id}/records`)).data;
+    const ra = recs.find(x => x.member_id === a.id), rb = recs.find(x => x.member_id === b.id);
+    assert.deepEqual([ra.status, ra.method, ra.recorded_at], ['present', 'scan', at(10, 5)]);
+    assert.deepEqual([rb.status, rb.method, rb.recorded_at], ['excused', 'manual', at(10, 6)]);
+    assert.ok(ra.recorded_by, 'اسم الخادم');
+  });
+
+  test('نفس الدفعة مرتين مابتعملش سجلات مكررة', async () => {
+    const r = await call('servant', 'POST', '/sync', { ops: batch() });
+    assert.deepEqual(r.data.results.map(x => x.result), ['dup', 'dup', 'revoked', 'unknown']);
+    const recs = (await call('servant', 'GET', `/sessions/${s1.id}/records`)).data;
+    assert.equal(recs.filter(x => x.member_id === a.id).length, 1);
+    assert.equal(recs.length, 2);
+  });
+
+  test('عملية متأخرة بعد الإنهاء: "غاب" بيتحوّل "حضر" في نفس السجل', async () => {
+    await call('servant', 'POST', `/sessions/${s2.id}/close`);
+    let roster = (await call('servant', 'GET', `/sessions/${s2.id}/roster`)).data;
+    assert.equal(roster.find(x => x.member_id === d.id).status, 'absent', 'الإنهاء سجّله غايب');
+    const r = await call('servant', 'POST', '/sync', { ops: [{ id: uid(), session_id: s2.id, type: 'scan', code: d.qr_token, at: at(9, 30) }] });
+    assert.equal(r.data.results[0].result, 'ok');
+    assert.equal(r.data.results[0].late, true);
+    const recs = (await call('servant', 'GET', `/sessions/${s2.id}/records`)).data.filter(x => x.member_id === d.id);
+    assert.equal(recs.length, 1, 'من غير سجل تاني');
+    assert.deepEqual([recs[0].status, recs[0].method, recs[0].recorded_at], ['present', 'scan', at(9, 30)]);
+  });
+
+  test('الوقت اللي في المستقبل بيبقى وقت المزامنة', async () => {
+    const r = await call('servant', 'POST', '/sync', { ops: [{ id: uid(), session_id: s1.id, type: 'scan', code: d.qr_token, at: '2099-01-01 10:00:00' }] });
+    assert.equal(r.data.results[0].result, 'ok');
+    assert.notEqual(r.data.results[0].recorded_at, '2099-01-01 10:00:00');
+  });
+
+  test('تنضيف', async () => {
+    for (const s of [s1, s2]) assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}`)).status, 200);
+  });
+});

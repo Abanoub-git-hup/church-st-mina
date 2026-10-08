@@ -92,6 +92,7 @@ defined( 'ABSPATH' ) || exit;
 [data-state=empty] .filters,[data-state=empty] .search,[data-state=empty] #list{display:none}
 .no-match{padding:var(--s-6) var(--s-3);text-align:center;font-size:.9rem;color:var(--on-glass-2)}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body class="has-nav" data-state="normal">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

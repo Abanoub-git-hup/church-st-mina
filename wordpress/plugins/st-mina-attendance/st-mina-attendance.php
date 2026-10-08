@@ -3,7 +3,7 @@
  * Plugin Name: St Mina Attendance
  * Plugin URI: https://github.com/Abanoub-git-hup/church-st-mina
  * Description: نظام الحضور بالـ QR لخدمة إعداد الخدام. الشاشات المعتمدة في design/attend-*.html، وقواعد الحساب في docs/design.md القسم 5.
- * Version: 0.15.0
+ * Version: 0.16.0
  * Author: Abanoub S. Maurice
  * Requires at least: 6.5
  * Requires PHP: 8.0
@@ -12,7 +12,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_ATT_VERSION', '0.15.0' );
+define( 'STMINA_ATT_VERSION', '0.16.0' );
 define( 'STMINA_ATT_FILE', __FILE__ );
 
 define( 'STMINA_ATT_DIR', plugin_dir_path( __FILE__ ) );
@@ -26,6 +26,7 @@ require_once STMINA_ATT_DIR . 'inc/records.php';  // المسح وسجل الح�
 require_once STMINA_ATT_DIR . 'inc/stats.php';    // النسب و"حضوري"
 require_once STMINA_ATT_DIR . 'inc/import.php';   // الاستيراد من Excel والكارت اتبعت
 require_once STMINA_ATT_DIR . 'inc/servants.php'; // إدارة الخدام والدعوات
+require_once STMINA_ATT_DIR . 'inc/offline.php';  // المسح من غير نت والمزامنة
 require_once STMINA_ATT_DIR . 'inc/app.php';     // شاشات /attend/ والدخول
 
 // التفعيل: الجداول والصلاحيات. والتحديثات من غير تفعيل بتتعمل على init (schema.php)

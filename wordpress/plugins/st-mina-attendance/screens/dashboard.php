@@ -116,6 +116,7 @@ defined( 'ABSPATH' ) || exit;
 [data-empty] .empty-p{display:block}
 [data-empty] .has-data{display:none}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body class="has-nav">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

@@ -133,6 +133,7 @@ body.scan::before{display:none}
 [data-state=nosession] .finder .line{display:none}
 [data-state=nosession] .dock{display:none}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body class="scan" data-state="normal">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

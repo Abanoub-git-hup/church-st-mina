@@ -117,6 +117,7 @@ defined( 'ABSPATH' ) || exit;
 [data-state=ended] .end-open,[data-state=ended] .confirm{display:none !important}
 [data-state=ended] .scan-link{display:none}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body data-state="open">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

@@ -1,23 +1,26 @@
-// service worker لصفحة "حضوري" (/me/<الكود>/)، وبيتقدّم من /me-sw.js (app.php: stmina_att_service_worker).
-// كل طلب بيروح للنت الأول، وبتتحفظ نسخة منه على الموبايل. ولو مفيش نت بيرجع آخر نسخة،
-// فالكارت والـ QR وآخر أرقام اتشافت بيظهروا جوه الكنيسة حتى لو النت واقع.
-// الأرقام نفسها جوه الصفحة (STMINA_ATT.me)، فنسخة الصفحة لوحدها كفاية من غير أي طلب REST.
-const CACHE = 'hodoury-' + (new URL(self.location).searchParams.get('v') || '1');
+// service worker واحد لتطبيقين، وبيتقدّم من جذر الموقع (app.php: stmina_att_service_worker):
+// - /me-sw.js بمجال /me/: صفحة "حضوري" بتاعة المخدوم (المهمة 19).
+// - /attend-sw.js بمجال /attend/: شاشات الخدام، وأهمها المسح من غير نت (المهمة 21).
+// كل طلب بيروح للنت الأول، وبتتحفظ نسخة منه على الموبايل. ولو مفيش نت بيرجع آخر نسخة.
+// طلبات REST مابتتحفظش هنا: بيانات المسح من غير نت ليها مكانها (الشنطة والطابور في attend-app.js).
+const SCOPE = new URL(self.registration.scope).pathname.includes('/attend/') ? 'attend-' : 'hodoury-';
+const CACHE = SCOPE + (new URL(self.location).searchParams.get('v') || '1');
+const SKIP = /\/wp-json\/|admin-ajax\.php|\/wp-admin\//;
 
 self.addEventListener('install', () => self.skipWaiting());
 
-// نسخة جديدة من الـ plugin: النسخ القديمة بتتمسح، والـ worker الجديد بيمسك الصفحات المفتوحة على طول
+// نسخة جديدة من الـ plugin: النسخ القديمة بتاعة نفس التطبيق بتتمسح، والـ worker الجديد بيمسك الصفحات المفتوحة
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k.startsWith('hodoury-') && k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.startsWith(SCOPE) && k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', e => {
   const req = e.request;
-  if (req.method !== 'GET' || !/^https?:$/.test(new URL(req.url).protocol)) return;
+  if (req.method !== 'GET' || !/^https?:$/.test(new URL(req.url).protocol) || SKIP.test(req.url)) return;
   e.respondWith(
     fetch(req)
       .then(res => {
@@ -28,6 +31,7 @@ self.addEventListener('fetch', e => {
         }
         return res;
       })
-      .catch(() => caches.match(req).then(r => r || Response.error()))
+      // الصفحات من غير الجزء اللي بعد ? (زي /attend/scan/?session=5)، فأي نسخة محفوظة من الشاشة تنفع
+      .catch(() => caches.match(req, { ignoreSearch: req.mode === 'navigate' }).then(r => r || Response.error()))
   );
 });

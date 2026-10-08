@@ -114,6 +114,7 @@ a.pane-h{color:inherit}
 .logout:hover{background:rgba(217,96,79,.12)}
 .logout .icon{width:18px;height:18px}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body class="has-nav">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

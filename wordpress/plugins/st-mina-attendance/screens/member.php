@@ -118,6 +118,7 @@ textarea.n-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
 .btn-out:hover{background:rgba(217,96,79,.12)}
 .is-off .suspend{display:none}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body class="has-nav">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

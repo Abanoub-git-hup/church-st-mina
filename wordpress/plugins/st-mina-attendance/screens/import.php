@@ -103,6 +103,7 @@ defined( 'ABSPATH' ) || exit;
 .bad-ic{display:grid;place-items:center;width:48px;height:48px;border-radius:50%;background:rgba(242,179,90,.16);color:#FFD9A0}
 .bad-ic .icon{width:24px;height:24px}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body class="has-nav" data-step="pick">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

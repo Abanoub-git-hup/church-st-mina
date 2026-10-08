@@ -38,6 +38,9 @@ add_action( 'init', function () {
 	// وservice worker واحد من جذر الموقع علشان يقدر يتحكم في كل اللي تحت /me/
 	add_rewrite_rule( '^me/([^/]+)/manifest\.webmanifest$', 'index.php?stmina_screen=manifest&stmina_token=$matches[1]', 'top' );
 	add_rewrite_rule( '^me-sw\.js$', 'index.php?stmina_screen=sw', 'top' );
+	// تطبيق الخدام "إعداد الخدام" (المهمة 21): نفس ملف الـ service worker بمجال /attend/، وmanifest واحد للكل
+	add_rewrite_rule( '^attend-sw\.js$', 'index.php?stmina_screen=sw', 'top' );
+	add_rewrite_rule( '^attend/manifest\.webmanifest$', 'index.php?stmina_screen=attmanifest', 'top' );
 	// القايمة في site.js بتودّي لـ /attend-login/ (من اسم ملف التصميم)
 	add_rewrite_rule( '^attend-login/?$', 'index.php?stmina_screen=login', 'top' );
 } );
@@ -45,7 +48,7 @@ add_action( 'init', function () {
 // WordPress بيزوّد / في آخر أي رابط (redirect_canonical)، فـ /me-sw.js بتتحوّل لـ /me-sw.js/.
 // والمتصفح بيرفض أي service worker وراه تحويل، فبنقفل التحويل للملفين دول بس
 add_filter( 'redirect_canonical', function ( $redirect ) {
-	return in_array( get_query_var( 'stmina_screen' ), array( 'sw', 'manifest' ), true ) ? false : $redirect;
+	return in_array( get_query_var( 'stmina_screen' ), array( 'sw', 'manifest', 'attmanifest' ), true ) ? false : $redirect;
 } );
 
 add_filter( 'query_vars', function ( $vars ) {
@@ -62,6 +65,10 @@ add_action( 'template_redirect', function () {
 	}
 	if ( 'manifest' === $screen ) {
 		stmina_att_manifest();
+		exit;
+	}
+	if ( 'attmanifest' === $screen ) {
+		stmina_att_servant_manifest();
 		exit;
 	}
 	if ( 'sw' === $screen ) {
@@ -102,6 +109,7 @@ function stmina_att_footer( $screen ) {
 	$config = array(
 		'rest'   => esc_url_raw( rest_url( 'stmina/v1/' ) ),
 		'nonce'  => wp_create_nonce( 'wp_rest' ),
+		'ajax'   => admin_url( 'admin-ajax.php' ), // لرمز nonce جديد لو القديم باظ (attend-app.js)
 		'base'   => stmina_att_url(),
 		'screen' => $screen,
 		'id'     => (int) get_query_var( 'stmina_id' ),
@@ -126,6 +134,10 @@ function stmina_att_footer( $screen ) {
 		$u                = stmina_att_invite_user( get_query_var( 'stmina_token' ) );
 		$config['invite'] = $u ? array( 'name' => $u->display_name, 'code' => get_query_var( 'stmina_token' ) ) : null;
 		unset( $config['user'] );
+	}
+	if ( ! in_array( $screen, array( 'card', 'login', 'invite' ), true ) ) {
+		$config['sw']      = add_query_arg( 'v', STMINA_ATT_VERSION, home_url( '/attend-sw.js' ) );
+		$config['swScope'] = wp_parse_url( stmina_att_url(), PHP_URL_PATH );
 	}
 	$url = STMINA_ATT_URL . 'assets/';
 	$ver = STMINA_ATT_VERSION;
@@ -308,7 +320,7 @@ add_action( 'edit_user_profile_update', 'stmina_att_save_phone' );
 /**
  * رقم قواعد الروابط. أي تغيير في add_rewrite_rule فوق يزوّده، فالروابط تتحدّث لوحدها (schema.php).
  */
-define( 'STMINA_ATT_RULES', '3' ); // 3: دعوة الخادم
+define( 'STMINA_ATT_RULES', '4' ); // 3: دعوة الخادم، و4: تطبيق الخدام من غير نت
 
 /**
  * وسوم التثبيت في head صفحة "حضوري". بتتحط من أداة التحويل في screens/card.php.
@@ -456,3 +468,46 @@ add_action( 'rest_api_init', function () {
 		},
 	) );
 } );
+
+// ---------------------------------------------------------------- تطبيق الخدام من غير نت (المهمة 21)
+
+/**
+ * وسوم التثبيت في head شاشات الخدام. بتتحط من أداة التحويل (قايمة HEAD).
+ */
+function stmina_att_servant_head() {
+	echo '<link rel="manifest" href="' . esc_url( stmina_att_url() . 'manifest.webmanifest' ) . "\">\n";
+	echo '<link rel="apple-touch-icon" href="' . esc_url( STMINA_ATT_URL . 'assets/icon-192.png' ) . "\">\n";
+	echo '<meta name="apple-mobile-web-app-capable" content="yes">' . "\n";
+	echo '<meta name="mobile-web-app-capable" content="yes">' . "\n";
+	echo '<meta name="apple-mobile-web-app-title" content="إعداد الخدام">' . "\n";
+}
+
+/**
+ * manifest تطبيق الخدام: بيفتح على شاشة المسح، لأنها اللي بتشتغل من غير نت.
+ */
+function stmina_att_servant_manifest() {
+	$icon = STMINA_ATT_URL . 'assets/icon-';
+	status_header( 200 );
+	nocache_headers();
+	header( 'Content-Type: application/manifest+json; charset=utf-8' );
+	header( 'X-Robots-Tag: noindex, nofollow', true );
+	echo wp_json_encode( array(
+		'id'               => stmina_att_url(),
+		'name'             => 'إعداد الخدام',
+		'short_name'       => 'إعداد الخدام',
+		'description'      => 'جلسات الحضور والمسح لخدمة إعداد الخدام',
+		'lang'             => 'ar',
+		'dir'              => 'rtl',
+		'start_url'        => stmina_att_url( 'scan' ),
+		'scope'            => stmina_att_url(),
+		'display'          => 'standalone',
+		'orientation'      => 'portrait',
+		'background_color' => '#2a1c12',
+		'theme_color'      => '#2a1c12',
+		'icons'            => array(
+			array( 'src' => $icon . '192.png', 'sizes' => '192x192', 'type' => 'image/png', 'purpose' => 'any' ),
+			array( 'src' => $icon . '512.png', 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'any' ),
+			array( 'src' => $icon . '512.png', 'sizes' => '512x512', 'type' => 'image/png', 'purpose' => 'maskable' ),
+		),
+	), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+}

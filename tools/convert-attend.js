@@ -9,6 +9,8 @@ const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'wordpress/plugins/st-mina-attendance/screens');
 const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html', card: 'attend-card.html', sessions: 'attend-sessions.html', scan: 'attend-scan.html', session: 'attend-session.html', import: 'attend-import.html', more: 'attend-more.html', dashboard: 'attend-dashboard.html', invite: 'attend-invite.html' };
 const HEAD = { card: '<?php stmina_att_card_head(); ?>' };
+// تطبيق الخدام "إعداد الخدام" (المهمة 21): كل الشاشات اللي ورا الدخول
+for (const k of ['sessions', 'members', 'member', 'scan', 'session', 'import', 'more', 'dashboard']) HEAD[k] = '<?php stmina_att_servant_head(); ?>';
 // أجزاء في التصميم مهامها لسه ماتعملتش، فبتتشال من الشاشة لحد ما تتعمل:
 // رسالة الخدام (19) والافتقاد (18)، والاتنين مؤجّلين بطلب المستخدم
 const LATER = {

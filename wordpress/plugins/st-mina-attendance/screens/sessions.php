@@ -108,6 +108,7 @@ defined( 'ABSPATH' ) || exit;
 [data-state=empty] .empty{display:block}
 [data-state=empty] #current,[data-state=empty] #history{display:none}
 </style>
+<?php stmina_att_servant_head(); ?>
 </head>
 <body class="has-nav" data-state="normal">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>

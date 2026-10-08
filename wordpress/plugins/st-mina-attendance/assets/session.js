@@ -2,7 +2,7 @@
 // وتصحيح أي سجل بـ PUT /sessions/{id}/records/{member}، وإنهاء الجلسة بضغط مطوّل ثانية ونص (POST /close).
 // الحالات: data-state = open أو ended، زي التصميم.
 (() => {
-  const { $, api, toast, esc, C } = window.Attend;
+  const { $, api, toast, esc, C, Q, sync } = window.Attend;
   const body = document.body;
   const icon = id => `<svg class="icon"><use href="#${id}"/></svg>`;
   const fTime = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { hour: 'numeric', minute: '2-digit' });
@@ -138,8 +138,19 @@
 
   // ---------- الإنهاء: تأكيد في نفس الشريط، وبعدين ضغط مطوّل ثانية ونص ----------
   const bar = $('#endBar'), hold = $('#hold');
-  $('.blocked').style.display = 'none'; // "فيه عمليات ماتزامنتش": مع المسح من غير نت (المهمة 23)
-  $('#askEnd').addEventListener('click', () => { bar.classList.add('confirming'); renderEnd(); hold.focus(); });
+  // الإنهاء مقفول طول ما فيه عمليات للجلسة دي على الموبايل ده لسه ماتزامنتش (المهمة 23)،
+  // لأن الإنهاء بيسجّل "غاب" للي ماتسجّلوش، وهما ممكن يكونوا في الطابور. ولو عملية من موبايل تاني
+  // وصلت بعد الإنهاء، السيرفر بيحوّل "غاب" لحالتها (offline.php)
+  function renderBlocked() {
+    const n = Q.count(+C.id);
+    $('.blocked').style.display = n ? 'flex' : 'none';
+    $('.blocked span').innerHTML = `فيه <b>${n === 1 ? 'عملية واحدة' : n + ' عمليات'}</b> على موبايلك لسه ماتزامنتش. شغّل النت واستنى لحد ما تتزامن، وبعدها تقدر تنهي الجلسة.`;
+    hold.disabled = n > 0;
+    return n;
+  }
+  addEventListener('stmina-queue', renderBlocked);
+  addEventListener('stmina-synced', () => { if (!renderBlocked()) load(); });
+  $('#askEnd').addEventListener('click', () => { bar.classList.add('confirming'); renderEnd(); if (renderBlocked()) sync(); else hold.focus(); });
   $('#cancelEnd').addEventListener('click', () => { bar.classList.remove('confirming'); $('#askEnd').focus(); });
   let holdT = 0;
   const startHold = e => {
@@ -157,6 +168,7 @@
 
   async function endSession() {
     stopHold();
+    if (renderBlocked()) return;
     hold.disabled = true;
     try {
       const s = await api(`sessions/${session.id}/close`, { method: 'POST' });
@@ -173,8 +185,10 @@
       toast(x.message);
     } finally {
       hold.disabled = false;
+      renderBlocked();
     }
   }
 
   load();
+  renderBlocked();
 })();
