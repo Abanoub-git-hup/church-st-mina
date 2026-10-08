@@ -269,7 +269,7 @@ function stmina_att_reissue( $member_id ) {
 		$wpdb->replace( stmina_att_table( 'revoked' ), array( 'token' => $old, 'member_id' => $member_id, 'revoked_at' => current_time( 'mysql' ) ) );
 	}
 	// والكارت الجديد لسه مااتبعتش
-	$wpdb->update( stmina_att_table( 'members' ), array( 'qr_token' => $token, 'card_sent_at' => null, 'updated_at' => current_time( 'mysql' ) ), array( 'id' => $member_id ) );
+	$wpdb->update( stmina_att_table( 'members' ), array( 'qr_token' => $token, 'card_sent_at' => null, 'pin_hash' => null, 'updated_at' => current_time( 'mysql' ) ), array( 'id' => $member_id ) );
 	return $token;
 }
 

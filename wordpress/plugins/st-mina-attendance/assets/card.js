@@ -1,9 +1,9 @@
 // صفحة المخدوم على /me/<الكود>/ بتبويبين: "حضوري" (النسب والشموع والرسم وآخر 10 جلسات) و"كارتي" (الـ QR وحفظه صورة).
 // من غير دخول ومن غير أي تعديل. البيانات جاية من PHP في STMINA_ATT.card وSTMINA_ATT.me (stats.php)،
 // أو null لو الكود غلط أو اتلغى. ومافيهاش ملاحظات الخدام ولا "يدوي" ولا بيانات حد تاني.
-// رسالة الخدام والتثبيت على الموبايل في المهمة 19.
+// والتثبيت على الموبايل كتطبيق اسمه "حضوري" بيفتح من غير نت (المهمة 19). رسالة الخدام مؤجّلة.
 (() => {
-  const { $, $$, esc, C, qrCells, qrSvg } = window.Attend;
+  const { $, $$, esc, C, qrCells, qrSvg, digits } = window.Attend;
   const card = C.card, me = C.me;
   const icon = id => `<svg class="icon"><use href="#${id}"/></svg>`;
   const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
@@ -13,9 +13,8 @@
   const KINDS = { mass: 'قداس', meeting: 'اجتماع', activity: 'نشاط', service: 'خدمة' };
   const ST = { present: ['حضر', 'i-check', 'h'], excused: ['غاب بعذر', 'i-note', 'e'], absent: ['غاب', 'i-x', 'a'] };
 
-  // المهمة 19: رسالة الخدام والتثبيت
+  // رسالة الخدام مؤجّلة بطلب المستخدم (المهمة 19)، فشريطها مستخبي
   $('#msg').style.display = 'none';
-  $('#install').style.display = 'none';
 
   if (!card) {
     $('#tabs').style.display = 'none';
@@ -32,6 +31,70 @@
   $('#hi').textContent = `أهلًا يا ${card.name.split(' ')[0]}`;
   $('#cardName').textContent = card.name;
   $('#qr').innerHTML = qrSvg(card.url);
+
+  // ---------- التثبيت على الموبايل (المهمة 19) ----------
+  // الـ service worker بيحفظ آخر نسخة من الصفحة، فتفتح من غير نت (me-sw.js)
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register(C.sw, { scope: C.swScope }).catch(() => {});
+
+  // كارت "حط الصفحة على شاشة موبايلك": أندرويد بيدّينا حدث beforeinstallprompt فنعرض زرار "ثبّتها"،
+  // وآيفون مافيهوش الحدث ده، فبنكتب الخطوات بس. وبيستخبى لو اتثبّتت أو المخدوم داس "مش دلوقتي"
+  // (style.display مش hidden، لأن تنسيق .install و.btn فيه display بيغلب علامة hidden)
+  $('#inBtn').style.display = 'none';
+  let deferred = null;
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const installed = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+  $('#inSteps').textContent = isIOS
+    ? 'من سفاري: دوس زرار المشاركة تحت، وبعدين "Add to Home Screen". هتفتحها بعد كده بضغطة زي أي تطبيق.'
+    : 'من كروم: دوس ⋮ فوق، وبعدين "Add to Home screen" أو "تثبيت التطبيق". هتفتحها بعد كده بضغطة زي أي تطبيق.';
+  try { if (localStorage.getItem('install-hidden') || installed()) $('#install').style.display = 'none'; } catch (e) { if (installed()) $('#install').style.display = 'none'; }
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; $('#inBtn').style.display = ''; });
+  addEventListener('appinstalled', () => { $('#install').style.display = 'none'; });
+  $('#inBtn').addEventListener('click', async () => {
+    if (!deferred) return;
+    deferred.prompt();
+    await deferred.userChoice;
+    deferred = null;
+    $('#install').style.display = 'none';
+  });
+  $('#inHide').addEventListener('click', () => {
+    $('#install').style.display = 'none';
+    try { localStorage.setItem('install-hidden', '1'); } catch (e) {}
+  });
+
+  // ---------- الرقم السري ----------
+  // علشان لو الرابط ضاع، يفتح صفحته من "دخول المخدوم" بموبايله والرقم ده.
+  // الطلب بـ fetch عادي من غير كوكي: الكود اللي في الرابط هو الإثبات، ولو خادم داخل بيفتح الصفحة،
+  // كوكي الدخول من غير nonce كانت هتخلّي WordPress يرفض الطلب
+  const pinBox = $('#pinBox'), pinErr = $('#pinErr');
+  const pinDone = () => {
+    pinBox.classList.add('done');
+    pinBox.classList.remove('edit');
+    $('#pinH').textContent = 'عندك رقم سري';
+    $('#pinP').textContent = 'لو الرابط ده ضاع منك، افتح صفحتك من "دخول المخدوم" بموبايلك والرقم السري.';
+  };
+  if (card.has_pin) pinDone();
+  $('#pinChange').addEventListener('click', () => { pinBox.classList.add('edit'); $('#pin1').focus(); });
+  $('#pinForm').addEventListener('submit', async e => {
+    e.preventDefault();
+    const a = digits($('#pin1').value), b = digits($('#pin2').value);
+    const bad = a.length !== 4 ? 'الرقم السري 4 أرقام.' : a !== b ? 'الرقمين مش زي بعض.' : '';
+    pinErr.textContent = bad;
+    pinErr.classList.toggle('show', !!bad);
+    if (bad) return $(a.length !== 4 ? '#pin1' : '#pin2').focus();
+    const btn = $('#pinForm .btn');
+    btn.disabled = true;
+    try {
+      const res = await fetch(`${C.rest}me/${card.token}/pin`, { method: 'POST', credentials: 'omit', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pin: a }) });
+      if (!res.ok) throw new Error();
+      $('#pinForm').reset();
+      pinDone();
+      $('#pinH').textContent = 'اتحفظ الرقم السري';
+    } catch (err) {
+      pinErr.textContent = navigator.onLine ? 'ماقدرناش نحفظ الرقم السري. جرّب تاني.' : 'حفظ الرقم السري يحتاج إنترنت.';
+      pinErr.classList.add('show');
+    }
+    btn.disabled = false;
+  });
 
   // ---------- حضوري ----------
   let type = 'all';

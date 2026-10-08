@@ -28,6 +28,8 @@ defined( 'ABSPATH' ) || exit;
 .hello img{width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 1px rgba(255,244,228,.4)}
 .hello small{display:block;font-size:.8rem;font-weight:500;color:var(--gold-soft)}
 .hello h1{font-size:1.6rem;font-weight:300;line-height:1.3}
+/* موقع الكنيسة: أيقونة فوق في آخر السطر، بنفس شكل أيقونة الخروج عند الخدام (.out في attend.css) */
+.hello .out{margin-inline-start:auto}
 [hidden]{display:none !important}
 
 /* رسالة الخدام */
@@ -94,6 +96,19 @@ defined( 'ABSPATH' ) || exit;
 .badge.a{background:rgba(217,96,79,.25);color:var(--bad-text)}
 
 /* تثبيت الصفحة على الموبايل */
+/* الرقم السري: نفس شكل كارت التثبيت، والفورم بيتفتح جواه */
+.pin-form{grid-column:1/-1;display:grid;gap:var(--s-3)}
+.pin-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s-2)}
+.pin-row input{text-align:center;letter-spacing:.3em}
+.pin-row input::placeholder{letter-spacing:0}
+.pin-err{display:none;font-size:.84rem;color:var(--bad-text)}
+.pin-err.show{display:block}
+.pin-form .btn{height:46px}
+.pin-change{grid-column:1/-1;justify-self:start}
+#pinBox.done .pin-form{display:none}
+#pinBox.done.edit .pin-form{display:grid}
+#pinBox:not(.done) .pin-change,#pinBox.edit .pin-change{display:none}
+
 .install{display:grid;grid-template-columns:44px 1fr;gap:var(--s-3);align-items:start;padding:var(--s-4)}
 .install .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--glass-3)}
 .install b{display:block;font-size:.95rem;font-weight:500}
@@ -123,6 +138,8 @@ defined( 'ABSPATH' ) || exit;
 .bad-link .ic .icon{width:28px;height:28px}
 .bad-link h1{font-size:1.3rem;font-weight:400;margin-bottom:var(--s-2)}
 .bad-link p{font-size:.9rem;line-height:1.85;color:var(--on-glass-2)}
+.bad-acts{display:grid;gap:var(--s-2);margin-top:var(--s-5)}
+.bad-acts .btn{height:48px;font-size:.95rem}
 
 /* التبويبين تحت */
 .g-nav.two ul{grid-template-columns:repeat(2,1fr)}
@@ -130,6 +147,7 @@ defined( 'ABSPATH' ) || exit;
 .g-nav button[aria-selected=true]{background:var(--glass-3);color:var(--on-glass)}
 .g-nav button .icon{width:22px;height:22px}
 </style>
+<?php stmina_att_card_head(); ?>
 </head>
 <body class="has-nav">
 <a class="skip" href="#main">تخطَّ إلى المحتوى</a>
@@ -144,6 +162,8 @@ defined( 'ABSPATH' ) || exit;
   <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></symbol>
   <symbol id="i-phone-add" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M12 8v6M9 11h6"/></symbol>
   <symbol id="i-link-off" viewBox="0 0 24 24"><path d="M9 15l6-6M10 6l1-1a4.2 4.2 0 0 1 6 6l-1 1M14 18l-1 1a4.2 4.2 0 0 1-6-6l1-1M3 3l18 18"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></symbol>
 </svg>
 
 
@@ -153,12 +173,17 @@ defined( 'ABSPATH' ) || exit;
     <div class="ic"><svg class="icon"><use href="#i-link-off"/></svg></div>
     <h1>الرابط ده مش شغال</h1>
     <p>ممكن يكون اتعملك كارت جديد والقديم اتلغى. اطلب من خادم إعداد الخدام يبعتلك الرابط الجديد على واتساب.</p>
+    <div class="bad-acts">
+      <a class="btn btn-glass" href="<?php echo esc_url( stmina_att_url( 'login' ) . '#member' ); ?>">ادخل بموبايلك والرقم السري</a>
+      <a class="textlink" href="<?php echo esc_url( home_url( '/' ) ); ?>">العودة إلى موقع الكنيسة</a>
+    </div>
   </section>
 
   <div id="page" hidden>
     <header class="hello">
       <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/media/brand/logo.png' ); ?>" alt="" width="44" height="44" id="logo">
       <div><small>إعداد الخدام</small><h1 id="hi"></h1></div>
+      <a class="glass out" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="موقع الكنيسة" title="موقع الكنيسة"><svg class="icon"><use href="#i-home"/></svg></a>
     </header>
 
     <!-- حضوري -->
@@ -188,6 +213,20 @@ defined( 'ABSPATH' ) || exit;
       <section class="glass card" aria-labelledby="lsH">
         <div class="c-h"><h2 id="lsH">آخر 10 جلسات</h2></div>
         <div class="last" id="last"></div>
+      </section>
+
+      <section class="glass install" id="pinBox" aria-labelledby="pinH">
+        <span class="ic"><svg class="icon"><use href="#i-lock"/></svg></span>
+        <div><b id="pinH">اعمل رقم سري</b><p id="pinP">علشان لو الرابط ده ضاع منك، تفتح صفحتك من "دخول المخدوم" بموبايلك والرقم السري.</p></div>
+        <form class="pin-form" id="pinForm" novalidate>
+          <div class="pin-row">
+            <div class="g-input"><input id="pin1" type="password" inputmode="numeric" maxlength="4" dir="ltr" autocomplete="new-password" placeholder="••••" aria-label="الرقم السري"></div>
+            <div class="g-input"><input id="pin2" type="password" inputmode="numeric" maxlength="4" dir="ltr" autocomplete="new-password" placeholder="اكتبه تاني" aria-label="اكتب الرقم السري تاني"></div>
+          </div>
+          <p class="pin-err" id="pinErr" role="alert"></p>
+          <button class="btn btn-light" type="submit">احفظ الرقم السري</button>
+        </form>
+        <button class="textlink pin-change" type="button" id="pinChange">غيّر الرقم السري</button>
       </section>
 
       <section class="glass install" id="install" aria-labelledby="inH">

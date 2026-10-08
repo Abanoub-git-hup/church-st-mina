@@ -58,6 +58,15 @@
 .forgot-note{margin-top:var(--s-2);padding:var(--s-3) var(--s-4);border-radius:12px;background:var(--glass-2);font-size:.86rem;line-height:1.8;color:var(--on-glass-2);text-align:start}
 .forgot-note b{color:var(--on-glass);font-weight:500}
 
+/* خادم أو مخدوم: مفتاح بخانتين فوق اللوح */
+.who{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;margin-bottom:var(--s-6);border-radius:14px;background:var(--glass-2);border:1px solid var(--glass-line-soft)}
+.who button{min-height:42px;border:0;border-radius:11px;background:none;color:var(--on-glass-2);font:inherit;font-size:.9rem;cursor:pointer;transition:background var(--t-fast),color var(--t-fast)}
+.who button:hover{color:var(--on-glass)}
+.who button[aria-selected=true]{background:var(--btn-light);color:var(--ink);font-weight:500}
+.who button:focus-visible{outline:2px solid var(--on-glass);outline-offset:2px}
+.first{margin-top:var(--s-4);padding:var(--s-3) var(--s-4);border-radius:12px;background:var(--glass-2);font-size:.84rem;line-height:1.8;color:var(--on-glass-2)}
+.first b{color:var(--on-glass);font-weight:500}
+
 .back{padding-top:var(--s-6);text-align:center}
 .back a{display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;padding-inline:var(--s-4);border-radius:999px;font-size:.84rem;color:var(--on-glass-2)}
 .back a:hover{color:var(--on-glass);background:var(--glass-2)}
@@ -74,6 +83,8 @@
   <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.9 5.2A9.6 9.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.6 3.5M6.6 6.6A16.6 16.6 0 0 0 2 12s3.5 7 10 7a9.4 9.4 0 0 0 5.4-1.6M3 3l18 18M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
   <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5h.01"/></symbol>
   <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.4a5 5 0 0 1 7 0M5 12.8a10 10 0 0 1 4.4-2.5M14.6 10.3A10 10 0 0 1 19 12.8M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M12 20h.01"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></symbol>
 </svg>
 
 <!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس -->
@@ -92,12 +103,18 @@
 
 <main class="login" id="main">
   <div class="glass panel">
+    <div class="who" role="tablist" aria-label="إنت مين؟">
+      <button type="button" role="tab" id="t-servant" aria-selected="true" aria-controls="p-servant">خادم</button>
+      <button type="button" role="tab" id="t-member" aria-selected="false" aria-controls="p-member" tabindex="-1">مخدوم</button>
+    </div>
+
     <header class="panel-head">
       <small>إعداد الخدام</small>
-      <h1>دخول الخادم</h1>
-      <p>ادخل بحسابك علشان تفتح الجلسات وتسجّل الحضور.</p>
+      <h1 id="loginH">دخول الخادم</h1>
+      <p id="loginP">ادخل بحسابك علشان تفتح الجلسات وتسجّل الحضور.</p>
     </header>
 
+    <div id="p-servant" role="tabpanel" aria-labelledby="t-servant">
     <form id="login" novalidate>
       <p class="error" role="alert">
         <svg class="icon"><use href="#i-alert"/></svg>
@@ -141,6 +158,48 @@
         كلّم <b>مسؤول الخدمة</b>، وهو يعيّن لك كلمة سر جديدة من حسابه.
       </p>
     </div>
+    </div>
+
+    <!-- المخدوم: موبايله والرقم السري اللي عمله من صفحته -->
+    <div id="p-member" role="tabpanel" aria-labelledby="t-member" hidden>
+      <form id="memberLogin" novalidate>
+        <p class="error" role="alert">
+          <svg class="icon"><use href="#i-alert"/></svg>
+          <span>رقم الموبايل أو الرقم السري مش صح. راجعهم وحاول تاني.</span>
+        </p>
+
+        <div class="g-field">
+          <label for="mPhone">رقم الموبايل</label>
+          <div class="g-input has-end">
+            <input id="mPhone" type="tel" inputmode="numeric" dir="ltr" maxlength="11" autocomplete="tel" placeholder="01001234567" required>
+            <span class="end" aria-hidden="true"><svg class="icon"><use href="#i-phone"/></svg></span>
+          </div>
+        </div>
+
+        <div class="g-field">
+          <label for="mPin">الرقم السري</label>
+          <div class="g-input has-end">
+            <input id="mPin" type="password" inputmode="numeric" dir="ltr" maxlength="4" autocomplete="current-password" placeholder="••••" required>
+            <span class="end" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg></span>
+          </div>
+        </div>
+
+        <button class="btn btn-light submit" type="submit">
+          <span class="idle">افتح صفحتي</span>
+          <span class="busy"><span class="spinner" aria-hidden="true"></span>جاري الفتح…</span>
+        </button>
+        <p class="submit-note">فتح صفحتك يحتاج إنترنت أول مرة. بعد كده لو ثبّتها على موبايلك، بتفتح من غيره.</p>
+      </form>
+
+      <p class="first"><b>أول مرة؟</b> افتح الرابط اللي جالك على واتساب من خادم الخدمة، واعمل منه رقمك السري.</p>
+
+      <div class="forgot">
+        <button class="textlink" type="button" aria-expanded="false" aria-controls="forgot-pin">نسيت الرقم السري؟</button>
+        <p class="forgot-note" id="forgot-pin" hidden>
+          اطلب من <b>خادم الخدمة</b> يبعتلك الكارت من جديد على واتساب، وافتح الرابط الجديد واعمل منه رقم سري تاني.
+        </p>
+      </div>
+    </div>
   </div>
 
   <p class="back"><a href="home.html"><svg class="icon"><use href="#i-right"/></svg>العودة إلى موقع الكنيسة</a></p>
@@ -177,13 +236,24 @@
     pw.type = on ? 'text' : 'password';
   });
 
-  const fBtn = document.querySelector('.forgot button');
-  const fNote = document.getElementById('forgot-note');
-  fBtn.addEventListener('click', () => {
+  document.querySelectorAll('.forgot button').forEach(fBtn => fBtn.addEventListener('click', () => {
+    const fNote = document.getElementById(fBtn.getAttribute('aria-controls'));
     const open = fNote.hidden;
     fNote.hidden = !open;
     fBtn.setAttribute('aria-expanded', open);
-  });
+  }));
+
+  // خادم أو مخدوم
+  const TXT = { servant: ['دخول الخادم', 'ادخل بحسابك علشان تفتح الجلسات وتسجّل الحضور.'], member: ['دخول المخدوم', 'افتح صفحتك وكارتك بموبايلك والرقم السري.'] };
+  document.querySelectorAll('.who button').forEach(t => t.addEventListener('click', () => {
+    const k = t.id.slice(2);
+    document.querySelectorAll('.who button').forEach(x => { x.setAttribute('aria-selected', x === t); x.tabIndex = x === t ? 0 : -1; });
+    document.getElementById('p-servant').hidden = k !== 'servant';
+    document.getElementById('p-member').hidden = k !== 'member';
+    document.getElementById('loginH').textContent = TXT[k][0];
+    document.getElementById('loginP').textContent = TXT[k][1];
+  }));
+  document.getElementById('memberLogin').addEventListener('submit', e => { e.preventDefault(); location.href = 'attend-card.html'; });
 })();
 </script>
 </body>

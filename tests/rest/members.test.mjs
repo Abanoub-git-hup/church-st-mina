@@ -757,3 +757,86 @@ describe('لوحة الخادم (المهمة 17)', () => {
     for (const s of [mass, meeting, old2, old5]) assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}`)).status, 200);
   });
 });
+
+describe('تثبيت "حضوري" على الموبايل (المهمة 19)', () => {
+  const SITE = env.STMINA_URL.replace(/\/$/, '');
+  let m;
+  before(async () => {
+    m = (await call('servant', 'POST', '/members', { full_name: 'تثبيت حضوري ' + Date.now(), phone: phone() })).data;
+  });
+
+  test('صفحة المخدوم فيها رابط manifest بتاعه', async () => {
+    const html = await (await fetch(m.card_url)).text();
+    assert.ok(html.includes(`href="${m.card_url}manifest.webmanifest"`));
+    assert.ok(html.includes('apple-touch-icon'));
+  });
+
+  test('الـ manifest بيفتح على رابط المخدوم نفسه، من غير شريط المتصفح', async () => {
+    const r = await fetch(m.card_url + 'manifest.webmanifest', { redirect: 'manual' });
+    assert.equal(r.status, 200, 'من غير تحويل');
+    assert.match(r.headers.get('content-type'), /application\/manifest\+json/);
+    const j = await r.json();
+    assert.equal(j.name, 'حضوري');
+    assert.equal(j.start_url, m.card_url);
+    assert.equal(j.scope, m.card_url);
+    assert.equal(j.display, 'standalone');
+    assert.ok(j.icons.some(i => i.sizes === '512x512'));
+  });
+
+  test('كود غلط: مفيش manifest', async () => {
+    assert.equal((await fetch(`${SITE}/me/${'z'.repeat(32)}/manifest.webmanifest`)).status, 404);
+  });
+
+  test('الـ service worker بيتقدّم من جذر الموقع من غير تحويل', async () => {
+    const r = await fetch(`${SITE}/me-sw.js?v=test${Date.now()}`, { redirect: 'manual' });
+    assert.equal(r.status, 200);
+    assert.match(r.headers.get('content-type'), /javascript/);
+    assert.ok((await r.text()).includes("addEventListener('fetch'"));
+  });
+});
+
+describe('دخول المخدوم بالموبايل والرقم السري', () => {
+  let m;
+  const login = (phone, pin) => call('guest', 'POST', '/member-login', { phone, pin });
+  before(async () => {
+    m = (await call('servant', 'POST', '/members', { full_name: 'رقم سري ' + Date.now(), phone: phone() })).data;
+  });
+
+  test('من غير رقم سري: الدخول مرفوض', async () => {
+    const r = await login(m.phone, '1234');
+    assert.equal(r.status, 401);
+  });
+
+  test('الرقم السري لازم 4 أرقام، وبالكود الصح بس', async () => {
+    for (const pin of ['123', '12345', 'abcd', '']) {
+      assert.equal((await call('guest', 'POST', `/me/${m.qr_token}/pin`, { pin })).status, 400, pin);
+    }
+    assert.equal((await call('guest', 'POST', `/me/${'z'.repeat(32)}/pin`, { pin: '1234' })).status, 404);
+    const r = await call('guest', 'POST', `/me/${m.qr_token}/pin`, { pin: '٤٨٢٧' });
+    assert.equal(r.status, 200, 'الأرقام العربي بتتقبل');
+  });
+
+  test('رقم سري غلط: نفس رسالة الرقم المش متسجّل', async () => {
+    const wrong = await login(m.phone, '1111');
+    const nobody = await login('01099999999', '4827');
+    assert.equal(wrong.status, 401);
+    assert.equal(wrong.data.message, nobody.data.message);
+  });
+
+  test('الموبايل والرقم السري الصح بيرجّعوا رابط صفحته', async () => {
+    const r = await login(m.phone, '4827');
+    assert.equal(r.status, 200);
+    assert.equal(r.data.redirect, m.card_url);
+    assert.ok(!JSON.stringify(r.data).includes('pin'), 'مفيش أي حاجة عن الرقم السري في الرد');
+  });
+
+  test('الرقم السري مابيظهرش للخدام', async () => {
+    const r = await call('servant', 'GET', `/members/${m.id}`);
+    assert.ok(!JSON.stringify(r.data).includes('pin'));
+  });
+
+  test('إعادة إصدار الكارت بتمسح الرقم السري', async () => {
+    await call('servant', 'POST', `/members/${m.id}/reissue`);
+    assert.equal((await login(m.phone, '4827')).status, 401);
+  });
+});

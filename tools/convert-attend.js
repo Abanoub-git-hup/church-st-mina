@@ -8,6 +8,7 @@ const path = require('path');
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'wordpress/plugins/st-mina-attendance/screens');
 const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html', card: 'attend-card.html', sessions: 'attend-sessions.html', scan: 'attend-scan.html', session: 'attend-session.html', import: 'attend-import.html', more: 'attend-more.html', dashboard: 'attend-dashboard.html' };
+const HEAD = { card: '<?php stmina_att_card_head(); ?>' };
 // أجزاء في التصميم مهامها لسه ماتعملتش، فبتتشال من الشاشة لحد ما تتعمل:
 // رسالة الخدام (19)، والافتقاد (18)، والخدام (24)
 const LATER = {
@@ -30,6 +31,8 @@ for (const [key, file] of Object.entries(SCREENS)) {
   h = h.replace(/[ \t]*<!-- لافتة المراجعة[^\n]*\n[ \t]*<div class="review"(?:[^\n]*<\/div>|[\s\S]*?\n[ \t]*<\/div>)\n/, '');
   // البيانات الوهمية وسكريبت النموذج في آخر الصفحة
   h = h.replace(/[ \t]*<script src="assets\/attend-demo\.js"><\/script>\n/, '');
+  // وسوم زيادة في head لشاشات معيّنة: التثبيت على الموبايل في "حضوري" (المهمة 19)
+  if (HEAD[key]) h = h.replace('</head>', () => HEAD[key] + '\n</head>');
   // الافتقاد (المهمة 18) مؤجّل بطلب المستخدم: التبويب بيتشال من شريط التنقل في كل الشاشات،
   // والتصميم فاضل زي ما هو لو رجعناله. لما يرجع، امسح السطر ده
   h = h.replace(/[ \t]*<li><a href="attend-followup\.html"[^\n]*<\/li>\n/g, '');
@@ -47,7 +50,10 @@ for (const [key, file] of Object.entries(SCREENS)) {
   h = h.replace(/url\("\.\.\/media\/([^"]+)"\)/g, (_, f) => `url("<?php echo esc_url( get_template_directory_uri() . '/assets/media/${f}' ); ?>")`);
   // الروابط
   h = h.replace(/href="home\.html"/g, () => 'href="<?php echo esc_url( home_url( \'/\' ) ); ?>"');
-  h = h.replace(/href="attend-([a-z]+)\.html"/g, (_, n) => `href="${link(n)}"`);
+  // (ومعاه #جزء لو موجود، زي attend-login.html#member لتبويب المخدوم)
+  h = h.replace(/href="attend-([a-z]+)\.html(#[a-z]+)?"/g, (_, n, hash) => hash
+    ? `href="<?php echo esc_url( stmina_att_url( '${n}' ) . '${hash}' ); ?>"`
+    : `href="${link(n)}"`);
   // ممنوع الأرشفة، زيادة على الهيدر X-Robots-Tag
   h = h.replace('<meta charset="utf-8">', () => '<meta charset="utf-8">\n<meta name="robots" content="noindex, nofollow">');
 

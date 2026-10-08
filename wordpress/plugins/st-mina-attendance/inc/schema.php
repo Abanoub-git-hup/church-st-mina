@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // رقم نسخة الجداول. أي تغيير في شكل جدول يزوّده، والتحديث بيشتغل لوحده
-define( 'STMINA_ATT_DB_VERSION', 7 ); // 7: الكارت اتبعت إمتى // 2: روابط /attend/، و3: رابط الكارت /me/، و4: الجلسات، و5: السجلات والأكواد الملغية، و6: مين صحّح السجل
+define( 'STMINA_ATT_DB_VERSION', 8 ); // 8: الرقم السري للمخدوم، و7: الكارت اتبعت إمتى // 2: روابط /attend/، و3: رابط الكارت /me/، و4: الجلسات، و5: السجلات والأكواد الملغية، و6: مين صحّح السجل
 
 /**
  * أسماء الجداول بالبادئة بتاعة الموقع (wp_ أو غيرها).
@@ -49,6 +49,7 @@ function stmina_att_install() {
   created_by bigint(20) unsigned NOT NULL DEFAULT 0,
   updated_at datetime NOT NULL,
   card_sent_at datetime DEFAULT NULL,
+  pin_hash varchar(255) DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY phone (phone),
   UNIQUE KEY qr_token (qr_token),
@@ -164,8 +165,10 @@ add_action( 'init', function () {
  * نفس طريقة st-mina-content: جوه التفعيل نفسه القواعد لسه ماتسجّلتش.
  */
 add_action( 'init', function () {
-	if ( get_option( 'stmina_att_flush' ) ) {
+	// وكمان لما قواعد الروابط نفسها تتغيّر (STMINA_ATT_RULES في app.php)، من غير ما الجداول تتغيّر
+	if ( get_option( 'stmina_att_flush' ) || STMINA_ATT_RULES !== get_option( 'stmina_att_rules' ) ) {
 		delete_option( 'stmina_att_flush' );
+		update_option( 'stmina_att_rules', STMINA_ATT_RULES );
 		flush_rewrite_rules();
 	}
 }, 99 );
