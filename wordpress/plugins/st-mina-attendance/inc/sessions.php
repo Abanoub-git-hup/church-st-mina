@@ -131,6 +131,7 @@ add_action( 'rest_api_init', function () {
 			'args'                => $args,
 			'callback'            => function ( WP_REST_Request $req ) {
 				$service = stmina_att_req_service( $req );
+				stmina_att_autoclose(); // الجلسات المنسية تخلص قبل ما القايمة تتعرض
 				return is_wp_error( $service ) ? $service : array_map( 'stmina_att_session_json', stmina_att_list_sessions( $service ) );
 			},
 		),
@@ -208,3 +209,32 @@ function stmina_att_req_session( WP_REST_Request $req ) {
 	$s = stmina_att_get_session( (int) $req['id'], $service );
 	return $s ? $s : new WP_Error( 'stmina_not_found', 'الجلسة دي مش موجودة.', array( 'status' => 404 ) );
 }
+
+// ---------------------------------------------------------------- الإنهاء التلقائي (المهمة 15)
+
+/**
+ * أي جلسة مفتوحة يومها خلص (قبل النهارده بتوقيت القاهرة) بتخلص لوحدها، بنفس نتيجة الإنهاء اليدوي
+ * (stmina_att_close_session في records.php): "غاب" لكل اللي ماتسجّلوش.
+ *
+ * @return int عدد الجلسات اللي خلصت.
+ */
+function stmina_att_autoclose() {
+	global $wpdb;
+	$stale = $wpdb->get_results( $wpdb->prepare(
+		'SELECT * FROM ' . stmina_att_table( 'sessions' ) . " WHERE status = 'open' AND session_date < %s",
+		current_time( 'Y-m-d' )
+	) );
+	foreach ( $stale as $s ) {
+		stmina_att_close_session( $s );
+	}
+	return count( $stale );
+}
+
+// مهمة WP-Cron كل ساعة. WP-Cron بيشتغل مع زيارات الموقع، فلو مفيش زيارات بيتأخر،
+// وعلشان كده كمان قايمة الجلسات والمسح بيعملوا نفس الفحص قبل ما يردّوا
+add_action( 'stmina_att_autoclose', 'stmina_att_autoclose' );
+add_action( 'init', function () {
+	if ( ! wp_next_scheduled( 'stmina_att_autoclose' ) ) {
+		wp_schedule_event( time(), 'hourly', 'stmina_att_autoclose' );
+	}
+} );

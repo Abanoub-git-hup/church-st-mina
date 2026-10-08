@@ -276,6 +276,7 @@ add_action( 'rest_api_init', function () {
 		'permission_callback' => 'stmina_att_can',
 		'args'                => $args + array( 'code' => array( 'type' => 'string', 'required' => true ) ),
 		'callback'            => function ( WP_REST_Request $req ) {
+			stmina_att_autoclose(); // مسح بعد نص الليل في جلسة امبارح = "مفيش جلسة مفتوحة"
 			$s = stmina_att_req_session( $req );
 			// الجلسة اللي اتمسحت أو مش موجودة = "مفيش جلسة مفتوحة"، مش خطأ
 			return stmina_att_scan( is_wp_error( $s ) ? null : $s, $req['code'] );

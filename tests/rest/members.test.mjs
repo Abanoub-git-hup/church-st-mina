@@ -36,6 +36,16 @@ const phone = () => '0100' + String(Math.floor(Math.random() * 1e7)).padStart(7,
 
 let member; // مخدوم بيتعمل مرة ويتستخدم في باقي الاختبارات
 
+// النهارده بتوقيت القاهرة زي الموقع. الجلسة اللي لازم تفضل مفتوحة لازم تبقى النهارده،
+// لأن أي جلسة مفتوحة من يوم فات بتخلص لوحدها (المهمة 15)
+const todayCairo = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(new Date());
+
+// لو تشغيل قبل كده وقف في النص، جلساته ممكن تمنع جلسات النهارده (نوع واحد في اليوم). خدمة الاختبار بس
+before(async () => {
+  const list = await call('servant', 'GET', '/sessions');
+  for (const x of list.data || []) await call('servant', 'DELETE', `/sessions/${x.id}`);
+});
+
 before(async () => {
   const r = await call('servant', 'POST', '/members', { full_name: 'مخدوم اختبار ' + Date.now(), phone: phone() });
   assert.equal(r.status, 201, 'الخادم لازم يقدر يضيف مخدوم: ' + JSON.stringify(r.data));
@@ -258,7 +268,7 @@ describe('الجلسات (المهمة 10)', () => {
   });
 
   test('فتح جلسة بيحفظ النوع والتاريخ والحالة "مفتوحة"', async () => {
-    const date = pastDay();
+    const date = todayCairo();
     const r = await call('servant', 'POST', '/sessions', { kind: 'mass', date });
     assert.equal(r.status, 201, JSON.stringify(r.data));
     s = r.data;
@@ -316,7 +326,7 @@ describe('المسح (المهام 11 و12)', () => {
   let s, a, b;
 
   before(async () => {
-    s = (await call('servant', 'POST', '/sessions', { kind: 'meeting', date: pastDay() })).data;
+    s = (await call('servant', 'POST', '/sessions', { kind: 'meeting', date: todayCairo() })).data;
     a = await newMember('مخدوم مسح ' + Date.now());
     b = await newMember('مخدوم تاني ' + Date.now());
   });
@@ -404,7 +414,7 @@ describe('اليدوي والتصحيح والإنهاء (المهام 13 و14)'
     d = await newMember('يدوي موقوف ' + Date.now());
     await call('servant', 'PATCH', `/members/${d.id}`, { status: 'stopped' });
     // جلسة النهارده (علشان المخدومين الجداد يبقوا متسجّلين يومها). لو نوع اتعمل النهارده قبل كده، نجرّب اللي بعده
-    const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(new Date()); // النهارده بتوقيت القاهرة زي الموقع
+    const date = todayCairo();
     for (const kind of ['activity', 'service', 'meeting', 'mass']) {
       const r = await call('servant', 'POST', '/sessions', { kind, date });
       if (r.status === 201) { today = r.data; break; }
@@ -483,4 +493,37 @@ describe('اليدوي والتصحيح والإنهاء (المهام 13 و14)'
     assert.equal((await call('servant', 'DELETE', `/sessions/${today.id}`)).status, 200);
     assert.equal((await call('servant', 'DELETE', `/sessions/${past.id}`)).status, 200);
   });
+});
+
+describe('الجلسات المنسية والحذف (المهمة 15)', () => {
+  const pastDay = () => { const d = new Date(); d.setDate(d.getDate() - 30 - Math.floor(Math.random() * 3000)); return d.toISOString().slice(0, 10); };
+
+  test('الجلسة المفتوحة من يوم فات بتخلص لوحدها بنفس نتيجة الإنهاء', async () => {
+    const old = (await call('servant', 'POST', '/sessions', { kind: 'activity', date: pastDay() })).data;
+    const m = (await call('servant', 'POST', '/members', { full_name: 'جلسة منسية ' + Date.now(), phone: phone() })).data;
+    await call('servant', 'PUT', `/sessions/${old.id}/records/${m.id}`, { status: 'excused' });
+    const list = (await call('servant', 'GET', '/sessions')).data;
+    const after = list.find(x => x.id === old.id);
+    assert.equal(after.status, 'closed', 'خلصت لوحدها');
+    assert.ok(after.closed_at);
+    const rec = (await call('servant', 'GET', `/sessions/${old.id}/roster`)).data.find(r => r.member_id === m.id);
+    assert.equal(rec.status, 'excused', 'السجل الموجود مابيتغيّرش');
+    await call('servant', 'DELETE', `/sessions/${old.id}`);
+  });
+
+  test('جلسة النهارده المفتوحة مابتخلصش لوحدها', async () => {
+    const t = (await call('servant', 'POST', '/sessions', { kind: 'service', date: todayCairo() })).data;
+    const after = (await call('servant', 'GET', '/sessions')).data.find(x => x.id === t.id);
+    assert.equal(after.status, 'open');
+    await call('servant', 'DELETE', `/sessions/${t.id}`);
+  });
+
+  test('حذف الجلسة المفتوحة مابيسيبش أي سجل', async () => {
+    const t = (await call('servant', 'POST', '/sessions', { kind: 'service', date: todayCairo() })).data;
+    const m = (await call('servant', 'POST', '/members', { full_name: 'حذف جلسة ' + Date.now(), phone: phone() })).data;
+    assert.equal((await call('servant', 'POST', `/sessions/${t.id}/scan`, { code: m.qr_token })).data.result, 'ok');
+    assert.equal((await call('servant', 'DELETE', `/sessions/${t.id}`)).status, 200);
+    assert.equal((await call('servant', 'GET', `/sessions/${t.id}/records`)).status, 404);
+  });
+
 });
