@@ -153,6 +153,7 @@ body.scan::before{display:none}
   <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
   <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.4a5 5 0 0 1 7 0M5 12.8a10 10 0 0 1 4.4-2.5M14.6 10.3A10 10 0 0 1 19 12.8M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M12 20h.01"/></symbol>
   <symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
 </svg>
 
 
@@ -182,6 +183,7 @@ body.scan::before{display:none}
       <svg class="icon on"><use href="#i-sound"/></svg><svg class="icon off"><use href="#i-mute"/></svg>
     </button>
     <button class="ibtn" type="button" id="torch" aria-pressed="false" aria-label="الكشاف" disabled><svg class="icon"><use href="#i-flash"/></svg></button>
+    <a class="ibtn out" href="<?php echo esc_url( stmina_att_url( 'login' ) ); ?>" data-logout aria-label="خروج من الحساب" title="خروج"><svg class="icon"><use href="#i-out"/></svg></a>
   </header>
 
   <section class="glass dock" aria-labelledby="recentH">

@@ -7,7 +7,17 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'wordpress/plugins/st-mina-attendance/screens');
-const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html', card: 'attend-card.html', sessions: 'attend-sessions.html', scan: 'attend-scan.html', session: 'attend-session.html', import: 'attend-import.html' };
+const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html', card: 'attend-card.html', sessions: 'attend-sessions.html', scan: 'attend-scan.html', session: 'attend-session.html', import: 'attend-import.html', more: 'attend-more.html' };
+// أجزاء في التصميم مهامها لسه ماتعملتش، فبتتشال من الشاشة لحد ما تتعمل:
+// رسالة الخدام (19)، والافتقاد (18)، والخدام (24)، ولوحة الخادم (17)
+const LATER = {
+  more: [
+    /[ \t]*<!-- رسالة الخدام -->\n[ \t]*<section class="glass pane" data-pane="msg">[\s\S]*?<\/section>\n\n/,
+    /[ \t]*<!-- الافتقاد -->\n[ \t]*<section class="glass pane" data-pane="fu">[\s\S]*?<\/section>\n\n/,
+    /[ \t]*<!-- الخدام -->\n[ \t]*<section class="glass pane" data-pane="srv">[\s\S]*?<\/section>\n\n/,
+    /[ \t]*<a class="glass tile" href="attend-dashboard\.html">[\s\S]*?<\/a>\n/,
+  ],
+};
 
 // اسم الشاشة في التصميم ← رابطها في WordPress
 const link = name => `<?php echo esc_url( stmina_att_url( '${name}' ) ); ?>`;
@@ -17,9 +27,14 @@ for (const [key, file] of Object.entries(SCREENS)) {
   let h = fs.readFileSync(path.join(ROOT, 'design', file), 'utf8');
 
   // لافتة المراجعة (للنموذج بس) والتعليق اللي قبلها
-  h = h.replace(/[ \t]*<!-- لافتة المراجعة[^\n]*\n[ \t]*<div class="review"[\s\S]*?\n[ \t]*<\/div>\n/, '');
+  // (اللافتة ممكن تبقى في سطر واحد زي "المزيد"، أو في كذا سطر بأزرار الحالات)
+  h = h.replace(/[ \t]*<!-- لافتة المراجعة[^\n]*\n[ \t]*<div class="review"(?:[^\n]*<\/div>|[\s\S]*?\n[ \t]*<\/div>)\n/, '');
   // البيانات الوهمية وسكريبت النموذج في آخر الصفحة
   h = h.replace(/[ \t]*<script src="assets\/attend-demo\.js"><\/script>\n/, '');
+  for (const re of LATER[key] || []) {
+    if (!re.test(h)) throw new Error(`${file}: مالقيتش ${re}`);
+    h = h.replace(re, '');
+  }
   h = h.replace(/<script>\n\(\(\) => \{[\s\S]*?<\/script>\n(?=<\/body>)/, () => `<?php stmina_att_footer( '${key}' ); ?>\n`);
   // ملفات التنسيق
   h = h.replace('href="assets/site.css"', () => 'href="<?php echo esc_url( get_template_directory_uri() . \'/assets/site.css\' ); ?>"');

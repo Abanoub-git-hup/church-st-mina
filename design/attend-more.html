@@ -14,7 +14,7 @@
 <style>
 /* خاص بالمزيد */
 .wrap-x{flex:1;width:100%;max-width:520px;margin-inline:auto;padding:var(--s-8) var(--gut) 0;display:grid;gap:var(--s-3);align-content:start}
-.top{margin-bottom:var(--s-2);text-shadow:0 2px 12px rgba(0,0,0,.45)}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--s-3);margin-bottom:var(--s-2);text-shadow:0 2px 12px rgba(0,0,0,.45)}
 .top small{display:block;font-size:.82rem;font-weight:500;color:var(--gold-soft)}
 .top h1{font-size:2.1rem;font-weight:300;line-height:1.25}
 .me{font-size:.86rem;color:var(--on-glass-2);margin-top:2px}
@@ -95,6 +95,10 @@ textarea.t-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
 .tile .pane-ic{width:44px;height:44px}
 .tile b{font-size:.95rem;font-weight:500}
 .tile small{font-size:.78rem;line-height:1.6;color:var(--on-glass-2)}
+.tile:only-child{grid-column:1/-1}
+
+/* موقع الكنيسة: نفس شكل عنوان اللوح، بس لينك */
+a.pane-h{color:inherit}
 
 /* حسابك */
 .logout{display:flex;align-items:center;justify-content:center;gap:var(--s-2);margin-top:var(--s-4);min-height:48px;border-radius:14px;border:1px solid rgba(255,180,163,.35);color:var(--bad-text);font-size:.92rem}
@@ -117,6 +121,8 @@ textarea.t-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
   <symbol id="i-sheet" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/></symbol>
   <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/></symbol>
   <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5a6.5 6.5 0 0 1 13 0"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1Z"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
   <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
   <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3 21l1.65-3.8A9 9 0 1 1 7.8 20.3L3 21Z"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></symbol>
   <symbol id="i-heart-s" viewBox="0 0 24 24"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10Z"/></symbol>
@@ -127,9 +133,8 @@ textarea.t-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
 
 <main class="wrap-x" id="main">
   <header class="top">
-    <small>إعداد الخدام</small>
-    <h1>المزيد</h1>
-    <p class="me">داخل باسم <b id="meName">خادم تجريبي</b></p>
+    <div><small>إعداد الخدام</small><h1>المزيد</h1><p class="me">داخل باسم <b id="meName">خادم تجريبي</b></p></div>
+    <a class="glass out" href="attend-login.html" data-logout aria-label="خروج من الحساب" title="خروج"><svg class="icon"><use href="#i-out"/></svg></a>
   </header>
 
   <!-- رسالة الخدام -->
@@ -219,6 +224,15 @@ textarea.t-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
     </a>
   </div>
 
+  <!-- موقع الكنيسة -->
+  <section class="glass pane">
+    <a class="pane-h" href="home.html">
+      <span class="pane-ic"><svg class="icon"><use href="#i-home"/></svg></span>
+      <span><b>موقع الكنيسة</b><small>الرئيسية والمواعيد والعظات</small></span>
+      <svg class="icon chev"><use href="#i-left"/></svg>
+    </a>
+  </section>
+
   <!-- حسابك -->
   <section class="glass pane" data-pane="me">
     <button class="pane-h" type="button" aria-expanded="false" aria-controls="b-me">
@@ -228,12 +242,12 @@ textarea.t-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
     </button>
     <div class="pane-b" id="b-me">
       <form id="pwForm" novalidate>
-        <div class="g-field"><label for="pw0">كلمة السر الحالية</label><div class="g-input"><input id="pw0" type="password" dir="ltr" autocomplete="current-password"></div></div>
+        <div class="g-field" id="fpw0"><label for="pw0">كلمة السر الحالية</label><div class="g-input"><input id="pw0" type="password" dir="ltr" autocomplete="current-password"></div><p class="f-err" role="alert" id="pw0Err">اكتب كلمة السر الحالية.</p></div>
         <div class="g-field" id="fpw1"><label for="pw1">كلمة السر الجديدة</label><div class="g-input"><input id="pw1" type="password" dir="ltr" autocomplete="new-password"></div><p class="f-err" role="alert">8 حروف أو أرقام على الأقل.</p></div>
         <div class="g-field" id="fpw2"><label for="pw2">اكتبها تاني</label><div class="g-input"><input id="pw2" type="password" dir="ltr" autocomplete="new-password"></div><p class="f-err" role="alert">مش زي اللي فوقها.</p></div>
         <button class="btn btn-glass" type="submit">غيّر كلمة السر</button>
       </form>
-      <a class="logout" href="attend-login.html"><svg class="icon"><use href="#i-out"/></svg>خروج من الحساب</a>
+      <a class="logout" href="attend-login.html" data-logout><svg class="icon"><use href="#i-out"/></svg>خروج من الحساب</a>
     </div>
   </section>
 </main>
@@ -350,6 +364,8 @@ textarea.t-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255
   $('#pwForm').addEventListener('submit', e => {
     e.preventDefault();
     const a = $('#pw1').value, b = $('#pw2').value;
+    $('#fpw0').classList.toggle('bad', !$('#pw0').value);
+    if (!$('#pw0').value) return $('#pw0').focus();
     $('#fpw1').classList.toggle('bad', a.length < 8); $('#fpw2').classList.toggle('bad', a.length >= 8 && a !== b);
     if (a.length < 8) return $('#pw1').focus();
     if (a !== b) return $('#pw2').focus();

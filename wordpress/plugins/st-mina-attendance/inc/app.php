@@ -6,6 +6,7 @@
  *   /attend/ و/attend/sessions  الجلسات (أول شاشة)
  *   /attend/members      المخدومين
  *   /attend/members/12   ملف مخدوم
+ *   /attend/more         المزيد: الاستيراد، وموقع الكنيسة، وكلمة السر والخروج
  *   أي شاشة تانية (الجلسات، والمسح ...)   "الشاشة دي جاية قريب" لحد ما مهمتها تتعمل
  *   /me/<الكود>/         كارت المخدوم (عام من غير دخول، ومابيدّيش أي صلاحية)
  *
@@ -182,6 +183,50 @@ add_action( 'rest_api_init', function () {
 		'callback'            => function () {
 			wp_logout();
 			return array( 'redirect' => stmina_att_url( 'login' ) );
+		},
+	) );
+
+	// تغيير كلمة السر من "حسابك" في المزيد. لازم كلمة السر الحالية، علشان لو حد لقى الموبايل مفتوح
+	// مايقدرش يقفل الحساب على صاحبه. ونفس حد المحاولات بتاع الدخول، بس لكل حساب.
+	register_rest_route( 'stmina/v1', '/password', array(
+		'methods'             => 'POST',
+		'permission_callback' => function () {
+			return current_user_can( 'stmina_attend' );
+		},
+		'args'                => array(
+			'current'  => array( 'type' => 'string', 'required' => true ),
+			'password' => array( 'type' => 'string', 'required' => true ),
+		),
+		'callback'            => function ( WP_REST_Request $req ) {
+			$user  = wp_get_current_user();
+			$key   = 'stmina_pw_' . $user->ID;
+			$fails = (int) get_transient( $key );
+			if ( $fails >= 5 ) {
+				return new WP_Error( 'stmina_too_many', 'محاولات غلط كتير. استنى ربع ساعة وجرّب تاني.', array( 'status' => 429 ) );
+			}
+			// 400 مش 401، علشان الشاشة ماترجعش لصفحة الدخول
+			if ( ! wp_check_password( $req['current'], $user->user_pass, $user->ID ) ) {
+				set_transient( $key, $fails + 1, 15 * MINUTE_IN_SECONDS );
+				return new WP_Error( 'stmina_bad_password', 'كلمة السر الحالية مش صح.', array(
+					'status' => 400,
+					'fields' => array( 'current' => 'كلمة السر الحالية مش صح.' ),
+				) );
+			}
+			$new = (string) $req['password'];
+			if ( mb_strlen( $new ) < 8 ) {
+				return new WP_Error( 'stmina_short_password', '8 حروف أو أرقام على الأقل.', array(
+					'status' => 400,
+					'fields' => array( 'password' => '8 حروف أو أرقام على الأقل.' ),
+				) );
+			}
+			delete_transient( $key );
+			// wp_update_user بيشفّر كلمة السر، وبيعمل كوكي دخول جديدة للجهاز ده،
+			// والأجهزة التانية بتخرج لوحدها لأن الكوكي القديمة متربوطة بكلمة السر القديمة
+			$done = wp_update_user( array( 'ID' => $user->ID, 'user_pass' => $new ) );
+			if ( is_wp_error( $done ) ) {
+				return new WP_Error( 'stmina_password_failed', 'ماقدرناش نغيّر كلمة السر. جرّب تاني.', array( 'status' => 500 ) );
+			}
+			return array( 'ok' => true );
 		},
 	) );
 } );

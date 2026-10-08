@@ -64,9 +64,14 @@
   // رابط واتساب برسالة الكارت جاهزة (الرقم بصيغة مصر الدولية: 2 + 01…)
   const waCard = m => `https://wa.me/2${m.phone}?text=${encodeURIComponent(`سلام ومحبة يا ${m.full_name.split(' ')[0]}\nده كارت حضورك في خدمة ${C.svc}. افتحه من الرابط واحفظه صورة، وورّيه للخادم كل مرة علشان يتمسح:\n${m.card_url}`)}`;
 
-  // زرار الخروج (من المزيد بعدين)، بيشتغل على أي عنصر عليه data-logout
+  // زرار الخروج: الأيقونة فوق في كل شاشة، وفي لوح "حسابك" في المزيد. أي عنصر عليه data-logout.
+  // هو لينك لصفحة الدخول، فلو السكريبت ماشتغلش بيروح هناك عادي (والصفحة بترجّعه لو لسه داخل)
   document.addEventListener('click', async e => {
-    if (!e.target.closest('[data-logout]')) return;
+    const el = e.target.closest('[data-logout]');
+    if (!el) return;
+    e.preventDefault();
+    if (el.getAttribute('aria-busy')) return;
+    el.setAttribute('aria-busy', 'true');
     const r = await api('logout', { method: 'POST' }).catch(() => null);
     location.href = r ? r.redirect : C.base + 'login/';
   });
