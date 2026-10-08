@@ -293,6 +293,15 @@ function stmina_att_phone_field( $user ) {
 				<p class="description">علشان يدخل شاشات الحضور بالموبايل بدل البريد. مثال: 01012345678</p>
 			</td>
 		</tr>
+		<?php if ( current_user_can( 'manage_options' ) ) : ?>
+		<tr>
+			<th>حساب اختبار</th>
+			<td>
+				<label><input type="checkbox" name="stmina_test" value="1" <?php checked( (bool) get_user_meta( $user->ID, 'stmina_test', true ) ); ?>> الحساب ده للاختبارات الأوتوماتيك بس</label>
+				<p class="description">بيستخبى من قايمة الخدام في "المزيد"، علشان صلاحيته ماتتسحبش بالغلط. والاختبارات بتفضل شغالة بيه عادي.</p>
+			</td>
+		</tr>
+		<?php endif; ?>
 	</table>
 	<?php
 }
@@ -310,6 +319,14 @@ function stmina_att_save_phone( $user_id ) {
 	$taken = $phone ? get_users( array( 'meta_key' => 'stmina_phone', 'meta_value' => $phone, 'exclude' => array( $user_id ), 'fields' => 'ids' ) ) : array();
 	if ( ! $taken ) {
 		update_user_meta( $user_id, 'stmina_phone', $phone );
+	}
+	// علامة حساب الاختبار: مدير الموقع بس (servants.php بيخبّي الحسابات دي من القايمة)
+	if ( current_user_can( 'manage_options' ) ) {
+		if ( ! empty( $_POST['stmina_test'] ) ) {
+			update_user_meta( $user_id, 'stmina_test', 1 );
+		} else {
+			delete_user_meta( $user_id, 'stmina_test' );
+		}
 	}
 }
 add_action( 'personal_options_update', 'stmina_att_save_phone' );

@@ -6,9 +6,10 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.7.5' );
+define( 'STMINA_THEME_VERSION', '0.7.6' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
+require_once get_template_directory() . '/inc/seo.php'; // وصف كل صفحة ومعاينة الرابط على واتساب
 
 add_action( 'after_setup_theme', function () {
 	add_theme_support( 'title-tag' );

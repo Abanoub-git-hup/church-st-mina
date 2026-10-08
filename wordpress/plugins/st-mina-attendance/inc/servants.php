@@ -51,6 +51,10 @@ function stmina_att_servant_json( WP_User $u ) {
  */
 function stmina_att_servants() {
 	$users = get_users( array( 'capability' => 'stmina_attend', 'orderby' => 'display_name' ) );
+	// حسابات الاختبار (علامة stmina_test من صفحة الحساب في dashboard) مابتظهرش، فماتتسحبش صلاحيتها بالغلط
+	$users = array_values( array_filter( $users, function ( $u ) {
+		return get_current_user_id() === $u->ID || ! get_user_meta( $u->ID, 'stmina_test', true );
+	} ) );
 	usort( $users, function ( $a, $b ) {
 		return (int) user_can( $b, 'manage_options' ) - (int) user_can( $a, 'manage_options' );
 	} );
@@ -183,8 +187,8 @@ add_action( 'rest_api_init', function () {
 			if ( ! $u || ! user_can( $u, 'stmina_attend' ) ) {
 				return new WP_Error( 'stmina_not_servant', 'الحساب ده مش خادم.', array( 'status' => 404 ) );
 			}
-			if ( get_current_user_id() === $u->ID || user_can( $u, 'manage_options' ) ) {
-				return new WP_Error( 'stmina_cant_revoke', 'مينفعش تسحب صلاحية نفسك ولا صلاحية مدير الموقع.', array( 'status' => 400 ) );
+			if ( get_current_user_id() === $u->ID || user_can( $u, 'manage_options' ) || get_user_meta( $u->ID, 'stmina_test', true ) ) {
+				return new WP_Error( 'stmina_cant_revoke', 'مينفعش تسحب صلاحية نفسك ولا صلاحية مدير الموقع ولا حساب اختبار.', array( 'status' => 400 ) );
 			}
 			$u->remove_role( 'stmina_servant' );
 			$u->remove_cap( 'stmina_attend' ); // لو كانت متدّية للحساب نفسه مش للدور

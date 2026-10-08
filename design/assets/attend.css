@@ -73,11 +73,12 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .has-nav main{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + var(--s-10))}
 
 /* علامات العدّ: 41 علامة في مجموعات من 5. الملآنة حضر، والقصيرة الباهتة لم يحضر */
-.tally{display:flex;flex-wrap:nowrap;align-items:flex-end;gap:6px;height:16px}
+/* علامات العدّ بتنزل سطر تاني لو المخدومين كتير (61 مخدوم = 13 مجموعة، أعرض من الكارت على الموبايل) */
+.tally{display:flex;flex-wrap:wrap;align-items:flex-end;gap:6px;min-height:16px;min-width:0}
 .tally .grp{display:flex;align-items:flex-end;gap:2px}
 .tally i{display:block;width:2px;height:16px;border-radius:1px;background:var(--on-glass)}
 .tally i.no{height:7px;background:rgba(255,248,238,.28)}
-.tally.big{height:28px}
+.tally.big{min-height:28px;row-gap:8px}
 .tally.big i{width:3px;height:28px}
 .tally.big i.no{height:10px}
 
@@ -87,7 +88,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 
 /* زرار الخروج فوق في كل شاشة (attend-app.js بيشغّله بعلامة data-logout).
    في الشاشات اللي عنوانها كبير بيقعد جنب الشارة في .top-end، وفي اللي فوقها شريط زجاج بياخد شكل .ibtn */
-.top-end{display:flex;align-items:center;gap:var(--s-2)}
+.top-end{display:flex;align-items:center;gap:var(--s-2);margin-inline-start:auto}
+/* العنوان والشارة وأيقونة الخروج: سطرين على الموبايلات الصغيرة (320) بدل ما يطلعوا برا */
+.top{flex-wrap:wrap;row-gap:var(--s-2)}
 .out{width:40px;height:40px;flex:none;display:grid;place-items:center;border-radius:14px;color:var(--on-glass-2);text-shadow:none;transition:color var(--t-fast),background var(--t-fast)}
 .out .icon{width:18px;height:18px}
 .out:hover{color:var(--bad-text)}
