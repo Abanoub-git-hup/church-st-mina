@@ -29,6 +29,8 @@ add_action( 'init', function () {
 	add_rewrite_rule( '^attend/?$', 'index.php?stmina_screen=sessions', 'top' );
 	add_rewrite_rule( '^attend/members/([0-9]+)/?$', 'index.php?stmina_screen=member&stmina_id=$matches[1]', 'top' );
 	add_rewrite_rule( '^attend/session/([0-9]+)/?$', 'index.php?stmina_screen=session&stmina_id=$matches[1]', 'top' );
+	// دعوة خادم جديد (servants.php): /attend/invite/<الكود>/
+	add_rewrite_rule( '^attend/invite/([A-Za-z0-9]+)/?$', 'index.php?stmina_screen=invite&stmina_token=$matches[1]', 'top' );
 	add_rewrite_rule( '^attend/([a-z]+)/?$', 'index.php?stmina_screen=$matches[1]', 'top' );
 	// كارت المخدوم. أي حاجة بعد /me/ بتوصل للشاشة، والكود الغلط بيظهر "الرابط ده مش شغال"
 	add_rewrite_rule( '^me/([^/]+)/?$', 'index.php?stmina_screen=card&stmina_token=$matches[1]', 'top' );
@@ -74,8 +76,8 @@ add_action( 'template_redirect', function () {
 	}
 
 	$can = current_user_can( 'stmina_attend' );
-	if ( 'card' === $screen ) {
-		// عامة: مفيش تحويل ولا فحص صلاحية، والصفحة نفسها مافيهاش غير الاسم والكارت
+	if ( 'card' === $screen || 'invite' === $screen ) {
+		// عامة: مفيش تحويل ولا فحص صلاحية. الكارت فيه الاسم والكارت بس، والدعوة فيها اسم الخادم بس
 	} elseif ( 'login' === $screen ) {
 		if ( $can ) {
 			wp_safe_redirect( stmina_att_url( 'sessions' ) );
@@ -118,6 +120,12 @@ function stmina_att_footer( $screen ) {
 		$config['sw']      = add_query_arg( 'v', STMINA_ATT_VERSION, home_url( '/me-sw.js' ) );
 		$config['swScope'] = wp_parse_url( home_url( '/me/' ), PHP_URL_PATH );
 		unset( $config['nonce'], $config['user'] );
+	}
+	if ( 'invite' === $screen ) {
+		// اسم صاحب الدعوة لو لسه شغالة، أو null. والكود نفسه السكريبت بياخده من الرابط
+		$u                = stmina_att_invite_user( get_query_var( 'stmina_token' ) );
+		$config['invite'] = $u ? array( 'name' => $u->display_name, 'code' => get_query_var( 'stmina_token' ) ) : null;
+		unset( $config['user'] );
 	}
 	$url = STMINA_ATT_URL . 'assets/';
 	$ver = STMINA_ATT_VERSION;
@@ -300,7 +308,7 @@ add_action( 'edit_user_profile_update', 'stmina_att_save_phone' );
 /**
  * رقم قواعد الروابط. أي تغيير في add_rewrite_rule فوق يزوّده، فالروابط تتحدّث لوحدها (schema.php).
  */
-define( 'STMINA_ATT_RULES', '2' );
+define( 'STMINA_ATT_RULES', '3' ); // 3: دعوة الخادم
 
 /**
  * وسوم التثبيت في head صفحة "حضوري". بتتحط من أداة التحويل في screens/card.php.

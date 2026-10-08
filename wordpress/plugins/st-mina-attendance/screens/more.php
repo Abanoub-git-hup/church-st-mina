@@ -144,6 +144,38 @@ a.pane-h{color:inherit}
     <a class="glass out" href="<?php echo esc_url( stmina_att_url( 'login' ) ); ?>" data-logout aria-label="خروج من الحساب" title="خروج"><svg class="icon"><use href="#i-out"/></svg></a>
   </header>
 
+  <!-- الخدام -->
+  <section class="glass pane" data-pane="srv">
+    <button class="pane-h" type="button" aria-expanded="false" aria-controls="b-srv">
+      <span class="pane-ic"><svg class="icon"><use href="#i-shield"/></svg></span>
+      <span><b>الخدام</b><small id="s-srv"></small></span>
+      <svg class="icon chev"><use href="#i-chev"/></svg>
+    </button>
+    <div class="pane-b" id="b-srv">
+      <p class="help">كل خادم هنا يقدر يفتح الجلسات ويمسح ويضيف مخدومين. ولو حد ساب الخدمة، مدير الموقع بيسحب صلاحيته، والسجلات اللي سجّلها بتفضل محفوظة باسمه.</p>
+      <div id="srvList"></div>
+      <form class="add-srv" id="addSrv" novalidate>
+        <h3>أضف خادم</h3>
+        <div class="g-field" id="fsName">
+          <label for="sName">الاسم</label>
+          <div class="g-input"><input id="sName" type="text" autocomplete="off" placeholder="مثال: أ. مينا عادل"></div>
+          <p class="f-err" role="alert">اكتب اسم الخادم.</p>
+        </div>
+        <div class="g-field" id="fsMob">
+          <label for="sMob">رقم الموبايل</label>
+          <div class="g-input"><input id="sMob" type="tel" inputmode="numeric" dir="ltr" maxlength="11" autocomplete="off" placeholder="01xxxxxxxxx"></div>
+          <p class="f-err" role="alert" id="sMobErr"></p>
+        </div>
+        <button class="btn btn-glass" type="submit">أضف وابعت الدعوة</button>
+        <div class="invited" id="invited" role="status">
+          <b id="invName"></b> اتضاف. ابعتله رابط الدعوة، يفتحه ويعمل كلمة السر بنفسه. الرابط بيشتغل 3 أيام بس.
+          <a class="btn btn-wa" id="invWa" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-wa"/></svg>ابعت الدعوة على واتساب</a>
+        </div>
+      </form>
+      <p class="note-role">تعديل محتوى الموقع (العظات والأخبار والنشرات) صلاحية تانية منفصلة، والمسؤول عن الموقع هو اللي بيديها.</p>
+    </div>
+  </section>
+
   <!-- شاشات تانية -->
   <div class="tiles">
     <a class="glass tile" href="<?php echo esc_url( stmina_att_url( 'import' ) ); ?>">

@@ -18,6 +18,8 @@ const AS = {
   guest: null,
   servant: auth(env.SERVANT_USER, env.SERVANT_APP_PASSWORD),
   subscriber: auth(env.SUBSCRIBER_USER, env.SUBSCRIBER_APP_PASSWORD),
+  // مدير الموقع (اختياري): اختبارات إضافة الخدام وسحب الصلاحية بتتخطى من غيره
+  admin: env.ADMIN_USER ? auth(env.ADMIN_USER, env.ADMIN_APP_PASSWORD) : null,
 };
 
 // طلب لمسار، بدور معيّن، والخدمة دايمًا "test"
@@ -838,5 +840,96 @@ describe('دخول المخدوم بالموبايل والرقم السري', (
   test('إعادة إصدار الكارت بتمسح الرقم السري', async () => {
     await call('servant', 'POST', `/members/${m.id}/reissue`);
     assert.equal((await login(m.phone, '4827')).status, 401);
+  });
+});
+
+describe('إدارة الخدام (المهمة 24)', () => {
+  const SITE = env.STMINA_URL.replace(/\/$/, '');
+  const wp = (role, method, path, body) => {
+    const headers = { 'Content-Type': 'application/json' };
+    if (AS[role]) headers.Authorization = AS[role];
+    return fetch(SITE + '/wp-json/wp/v2' + path, { method, headers, body: body ? JSON.stringify(body) : undefined })
+      .then(async r => ({ status: r.status, data: await r.json().catch(() => null) }));
+  };
+  const noAdmin = !AS.admin && 'محتاج ADMIN_USER وADMIN_APP_PASSWORD في tests/.env';
+
+  test('القايمة للخدام بس، والخادم العادي مايقدرش يدير', async () => {
+    assert.equal((await call('guest', 'GET', '/servants')).status, 401);
+    assert.equal((await call('subscriber', 'GET', '/servants')).status, 403);
+    const r = await call('servant', 'GET', '/servants');
+    assert.equal(r.status, 200);
+    assert.equal(r.data.can_manage, false);
+    assert.ok(r.data.servants.some(s => s.me), 'الخادم شايف نفسه في القايمة');
+    assert.ok(!JSON.stringify(r.data).includes('invite"'), 'مفيش أكواد دعوات في القايمة');
+  });
+
+  test('الخادم العادي مايقدرش يضيف ولا يسحب ولا يبعت دعوة', async () => {
+    assert.equal((await call('servant', 'POST', '/servants', { name: 'حد', phone: phone() })).status, 403);
+    const me = (await call('servant', 'GET', '/servants')).data.servants.find(s => s.me);
+    assert.equal((await call('servant', 'DELETE', `/servants/${me.id}`)).status, 403);
+    assert.equal((await call('servant', 'POST', `/servants/${me.id}/invite`)).status, 403);
+  });
+
+  test('الخادم مايقدرش يعدّل محتوى الموقع', async () => {
+    assert.equal((await wp('servant', 'POST', '/posts', { title: 'تجربة', status: 'draft' })).status, 403);
+  });
+
+  test('دعوة بكود غلط مابتشتغلش', async () => {
+    assert.equal((await call('guest', 'POST', '/invite', { code: 'z'.repeat(32), password: '12345678' })).status, 404);
+  });
+
+  describe('مدير الموقع', { skip: noAdmin }, () => {
+    const p = phone(), pass = 'Test-' + Math.random().toString(36).slice(2, 12);
+    let s, code;
+
+    test('إضافة خادم بالاسم والموبايل، ومعاه رابط دعوة', async () => {
+      const bad = await call('admin', 'POST', '/servants', { name: '', phone: '123' });
+      assert.equal(bad.status, 400);
+      assert.ok(bad.data.data.fields.name && bad.data.data.fields.phone);
+      const r = await call('admin', 'POST', '/servants', { name: 'خادم اختبار ' + Date.now(), phone: p });
+      assert.equal(r.status, 201, JSON.stringify(r.data));
+      s = r.data;
+      assert.equal(s.pending, true);
+      code = s.invite_url.match(/invite\/([A-Za-z0-9]{32})\//)[1];
+      assert.equal((await call('admin', 'POST', '/servants', { name: 'تاني', phone: p })).status, 400, 'الرقم مكرر');
+    });
+
+    test('الخادم الجديد بيعمل كلمة السر من الدعوة، والدعوة بتشتغل مرة واحدة', async () => {
+      assert.equal((await call('guest', 'POST', '/invite', { code, password: 'short' })).status, 400);
+      const r = await call('guest', 'POST', '/invite', { code, password: pass });
+      assert.equal(r.status, 200);
+      assert.equal((await call('guest', 'POST', '/invite', { code, password: pass })).status, 404, 'مرة واحدة بس');
+      const login = await call('guest', 'POST', '/login', { who: p, password: pass });
+      assert.equal(login.status, 200, 'بيدخل بموبايله');
+    });
+
+    test('الخادم الجديد معاه صلاحية الحضور ومن غير صلاحية تعديل المحتوى', async () => {
+      const u = (await wp('admin', 'GET', `/users/${s.id}?context=edit`)).data;
+      assert.equal(u.capabilities.stmina_attend, true);
+      assert.ok(!u.capabilities.edit_posts);
+    });
+
+    test('صلاحية المحرر مابتدّيش صلاحية الحضور', async () => {
+      const r = await wp('admin', 'POST', '/users', { username: 'ed' + Date.now(), email: `ed${Date.now()}@example.com`, password: pass + 'x', roles: ['editor'] });
+      assert.equal(r.status, 201);
+      const caps = (await wp('admin', 'GET', `/users/${r.data.id}?context=edit`)).data.capabilities;
+      assert.ok(caps.edit_posts && !caps.stmina_attend);
+      const me = (await wp('admin', 'GET', '/users/me')).data;
+      await wp('admin', 'DELETE', `/users/${r.data.id}?force=true&reassign=${me.id}`);
+    });
+
+    test('سحب الصلاحية بيمنعه فورًا، ومينفعش تسحب صلاحية نفسك', async () => {
+      const me = (await call('admin', 'GET', '/servants')).data.servants.find(x => x.me);
+      assert.equal((await call('admin', 'DELETE', `/servants/${me.id}`)).status, 400);
+      assert.equal((await call('admin', 'DELETE', `/servants/${s.id}`)).status, 200);
+      const login = await call('guest', 'POST', '/login', { who: p, password: pass });
+      assert.equal(login.status, 403, 'الحساب موجود بس مالوش صلاحية');
+      assert.ok(!(await call('admin', 'GET', '/servants')).data.servants.some(x => x.id === s.id));
+    });
+
+    test('تنضيف: حساب الاختبار بيتمسح', async () => {
+      const me = (await wp('admin', 'GET', '/users/me')).data;
+      assert.equal((await wp('admin', 'DELETE', `/users/${s.id}?force=true&reassign=${me.id}`)).status, 200);
+    });
   });
 });
