@@ -1,5 +1,5 @@
 // ملف المخدوم: البيانات من GET /members/{id}، والتعديل والإيقاف بـ PATCH، والملاحظات من /notes.
-// الحضور (المهمة 14) لسه ماتعملش، فقسمه بيقول كده. والكارت وإعادة إصداره من /members/{id}/reissue.
+// الحضور بنفس حساب "حضوري" (stats.php). والكارت وإعادة إصداره من /members/{id}/reissue.
 (() => {
   const { $, $$, api, toast, esc, fmtMobile, initials, toDate, fDate, digits, qrSvg, waCard, C } = window.Attend;
   const body = document.body;
@@ -37,11 +37,39 @@
       : '<p class="no-notes">مفيش ملاحظات لسه.</p>';
   }
 
-  // الحضور: لسه مفيش جلسات
+  // ---------- الحضور: نفس أرقام "حضوري" (GET /members/{id}/stats) ----------
   const att = $('#attH').closest('section');
-  $('.c-h small', att).textContent = '';
-  $('.att', att).innerHTML = '<p class="no-notes">الحضور هيظهر هنا أول ما الجلسات تبدأ.</p>';
-  $('.last', att).style.display = 'none';
+  const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
+  const toDay = s => { const [y, mo, d] = s.split('-').map(Number); return new Date(y, mo - 1, d); };
+  async function loadStats() {
+    let st;
+    try { st = await api(`members/${C.id}/stats`); } catch { return; }
+    const s = st.kinds.all;
+    $('#nSess').textContent = s.total;
+    if (!s.total) {
+      $('.att', att).innerHTML = '<p class="no-notes">لسه مفيش جلسات خلصت من ساعة ما اتسجّل.</p>';
+      $('.last', att).style.display = 'none';
+      return;
+    }
+    const ring = $('#ring');
+    ring.style.setProperty('--p', s.pct ?? 0);
+    ring.classList.toggle('low', s.pct !== null && s.pct < 60);
+    ring.setAttribute('aria-label', `نسبة الحضور ${s.pct}%`);
+    $('#pct').textContent = s.pct === null ? '–' : s.pct + '%';
+    $('#facts').innerHTML = `
+      <span>حضر <b>${s.present}</b> من <b>${s.total}</b> جلسة</span>
+      <span>غاب بعذر <b>${s.excused}</b> ${s.excused === 1 ? 'مرة' : 'مرات'}</span>
+      ${st.away >= 3 ? `<span class="warn">غاب <b>${st.away}</b> مرات ورا بعض، محتاج افتقاد</span>` : st.away ? '<span>غاب الجلسة اللي فاتت</span>' : '<span>حضر الجلسة اللي فاتت</span>'}
+      ${st.manual ? `<span>اتسجّل يدوي <b>${st.manual}</b> ${st.manual === 1 ? 'مرة' : 'مرات'}</span>` : ''}`;
+    const L = { present: ['h', 'حضر'], excused: ['e', 'غاب بعذر'], absent: ['a', 'غاب'] };
+    $('#dots').innerHTML = Array.from({ length: 10 }, (_, k) => {
+      const x = st.last[k];
+      if (!x) return '<i class="n" aria-hidden="true"></i>';
+      const label = `${x.kind_name} ${fDay.format(toDay(x.date))}: ${L[x.status][1]}`;
+      return `<i class="${L[x.status][0]}" title="${label}" aria-label="${label}" role="img"></i>`;
+    }).join('');
+  }
+  loadStats();
 
   // ---------- تعديل البيانات ----------
   const who = $('#whoCard');

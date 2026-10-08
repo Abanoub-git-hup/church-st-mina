@@ -1,27 +1,89 @@
-// كارت المخدوم على /me/<الكود>/: الاسم والـ QR وزرار "احفظ الكارت كصورة". من غير دخول ومن غير أي تعديل.
-// البيانات جاية من PHP في STMINA_ATT.card (الاسم والرابط بس)، أو null لو الكود غلط أو اتلغى.
-// تبويب "حضوري" هيتضاف في المهمة 16، فدلوقتي الصفحة بتفتح على الكارت على طول.
+// صفحة المخدوم على /me/<الكود>/ بتبويبين: "حضوري" (النسب والشموع والرسم وآخر 10 جلسات) و"كارتي" (الـ QR وحفظه صورة).
+// من غير دخول ومن غير أي تعديل. البيانات جاية من PHP في STMINA_ATT.card وSTMINA_ATT.me (stats.php)،
+// أو null لو الكود غلط أو اتلغى. ومافيهاش ملاحظات الخدام ولا "يدوي" ولا بيانات حد تاني.
+// رسالة الخدام والتثبيت على الموبايل في المهمة 19.
 (() => {
-  const { $, C, qrCells, qrSvg } = window.Attend;
-  const card = C.card;
+  const { $, $$, esc, C, qrCells, qrSvg } = window.Attend;
+  const card = C.card, me = C.me;
+  const icon = id => `<svg class="icon"><use href="#${id}"/></svg>`;
+  const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
+  const fMonth = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { month: 'short' });
+  const fDate = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' });
+  const toDay = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d || 1); };
+  const KINDS = { mass: 'قداس', meeting: 'اجتماع', activity: 'نشاط', service: 'خدمة' };
+  const ST = { present: ['حضر', 'i-check', 'h'], excused: ['غاب بعذر', 'i-note', 'e'], absent: ['غاب', 'i-x', 'a'] };
 
-  // الأجزاء اللي لسه مستنية "حضوري": التبويبين، والتحية بالنسبة، وتبويب حضوري نفسه
-  $('#tabs').style.display = 'none';
-  $('#tab-me').style.display = 'none';
-  document.body.classList.remove('has-nav');
+  // المهمة 19: رسالة الخدام والتثبيت
+  $('#msg').style.display = 'none';
+  $('#install').style.display = 'none';
 
   if (!card) {
+    $('#tabs').style.display = 'none';
+    document.body.classList.remove('has-nav');
     $('#badLink').hidden = false;
     document.title = 'الرابط ده مش شغال | ' + C.svc;
     return;
   }
 
   $('#page').hidden = false;
-  $('#tab-card').hidden = false;
-  document.title = `كارت ${card.name} | ${C.svc}`;
+  $('#tabs').hidden = false;
+  document.body.classList.add('has-nav');
+  document.title = `حضوري · ${card.name}`;
   $('#hi').textContent = `أهلًا يا ${card.name.split(' ')[0]}`;
   $('#cardName').textContent = card.name;
   $('#qr').innerHTML = qrSvg(card.url);
+
+  // ---------- حضوري ----------
+  let type = 'all';
+  $('#since').textContent = me.registered_at ? `من ${fDate.format(new Date(me.registered_at.replace(' ', 'T')))}` : '';
+  function renderPct() {
+    const s = me.kinds[type];
+    $('#types').innerHTML = [['all', 'الكل'], ...Object.entries(KINDS)].map(([k, t]) => `<button type="button" data-t="${k}" aria-pressed="${k === type}">${t}</button>`).join('');
+    const ring = $('#ring');
+    ring.style.setProperty('--p', s.pct ?? 0);
+    ring.classList.toggle('low', s.pct !== null && s.pct < 60);
+    ring.setAttribute('aria-label', s.pct === null ? 'لسه مفيش جلسات' : `نسبة حضورك ${s.pct}%`);
+    $('#pct').textContent = s.pct === null ? '–' : s.pct + '%';
+    const tn = type === 'all' ? 'جلسة' : `جلسة ${KINDS[type]}`;
+    $('#facts').innerHTML = s.total
+      ? `<span>حضرت <b>${s.present}</b> من <b>${s.base}</b> ${tn}</span>${s.excused ? `<span>وغبت بعذر <b>${s.excused}</b> ${s.excused === 1 ? 'مرة' : 'مرات'}، ودول مابيتحسبوش</span>` : ''}`
+      : `<span>لسه مفيش ${tn} من ساعة ما اتسجّلت.</span>`;
+  }
+  $('#types').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { type = b.dataset.t; renderPct(); } });
+
+  // الشموع: شمعة لكل حضور ورا بعض (لحد 12)، وشمعة مطفية مستنية الجلسة الجاية
+  function renderStreak() {
+    const n = me.streak, show = Math.min(n, 12);
+    $('#candles').innerHTML = Array.from({ length: show }, () => '<i class="cd lit"></i>').join('') + (n > 12 ? `<span class="more-c">+${n - 12}</span>` : '') + '<i class="cd off"></i>';
+    $('#streakT').innerHTML = n
+      ? `<b>${n}</b> ${n === 1 ? 'جلسة' : n === 2 ? 'جلستين' : 'جلسات'} ورا بعض<small>الشمعة اللي جاية مستنياك الجلسة الجاية.</small>`
+      : 'لسه مفيش شموع مولّعة<small>احضر الجلسة الجاية وولّع أول شمعة.</small>';
+  }
+
+  // نسبة كل شهر من آخر 6 شهور (الحالي على اليمين)
+  function renderBars() {
+    $('#bars').innerHTML = me.months.map((x, k) => `<div class="bar${k === 0 ? ' now' : ''}${x.pct === null ? ' none' : ''}"><em>${x.pct === null ? '–' : x.pct + '%'}</em><i style="height:${x.pct === null ? 4 : Math.max(6, x.pct)}%"></i><span>${fMonth.format(toDay(x.month))}</span></div>`).join('');
+    $('#bars').setAttribute('aria-label', 'نسبة كل شهر: ' + me.months.map(x => `${fMonth.format(toDay(x.month))} ${x.pct === null ? 'مفيش جلسات' : x.pct + '%'}`).join('، '));
+  }
+
+  function renderLast() {
+    $('#last').innerHTML = me.last.length
+      ? me.last.map(x => `<div class="ls"><div><b>${esc(x.kind_name)}</b><small>${fDay.format(toDay(x.date))}</small></div><span class="badge ${ST[x.status][2]}">${icon(ST[x.status][1])}${ST[x.status][0]}</span></div>`).join('')
+      : '<p style="color:var(--on-glass-2);font-size:.9rem;padding:var(--s-2) 0">لسه مفيش جلسات خلصت من ساعة ما اتسجّلت.</p>';
+  }
+  renderPct(); renderStreak(); renderBars(); renderLast();
+
+  // ---------- التبويبين: حضوري وكارتي (#card في الرابط بيفتح الكارت على طول) ----------
+  const tabs = $$('#tabs [role=tab]');
+  function showTab(id) {
+    tabs.forEach(t => t.setAttribute('aria-selected', t.id === id));
+    $('#tab-me').style.display = id === 't-me' ? 'grid' : 'none';
+    $('#tab-card').hidden = id !== 't-card';
+    history.replaceState(null, '', id === 't-card' ? '#card' : location.pathname + location.search);
+    scrollTo(0, 0);
+  }
+  tabs.forEach(t => t.addEventListener('click', () => showTab(t.id)));
+  showTab(location.hash === '#card' ? 't-card' : 't-me');
 
   // احفظ الكارت: بنرسم نفس شكل الكارت على canvas بمقاس 1080×1920 (شاشة موبايل) وننزّله PNG.
   // الخلفية صورة الصلاة، والـ QR على مربع أبيض في نص شعاع النور، والاسم على زجاج خفيف تحت

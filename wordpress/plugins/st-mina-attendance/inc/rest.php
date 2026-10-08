@@ -66,7 +66,12 @@ add_action( 'rest_api_init', function () {
 					return $service;
 				}
 				$list = stmina_att_list_members( $service, $req['status'], trim( $req['search'] ) );
-				return array_map( 'stmina_att_member_json', $list );
+				// النسبة والغياب ورا بعض لكل مخدوم (دايرة النسبة في القايمة، وفلتر الافتقاد بعدين)
+				return array_map( function ( $m ) use ( $service ) {
+					$log = stmina_att_member_log( $m->id, $service->id );
+					$s   = stmina_att_stats( $log );
+					return stmina_att_member_json( $m ) + array( 'pct' => $s['pct'], 'away' => stmina_att_away( $log ) );
+				}, $list );
 			},
 		),
 		array(

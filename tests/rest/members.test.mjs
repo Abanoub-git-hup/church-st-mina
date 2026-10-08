@@ -527,3 +527,80 @@ describe('الجلسات المنسية والحذف (المهمة 15)', () => {
   });
 
 });
+
+describe('حضوري والنسب (المهمة 16)', () => {
+  const pastDay = () => { const d = new Date(); d.setDate(d.getDate() - 30 - Math.floor(Math.random() * 3000)); return d.toISOString().slice(0, 10); };
+  let m, sessions = [];
+
+  before(async () => {
+    m = (await call('servant', 'POST', '/members', { full_name: 'نسب حضوري ' + Date.now(), phone: phone() })).data;
+    // 4 جلسات النهارده (نوع لكل واحدة): قداس حضر، اجتماع غاب، نشاط بعذر، خدمة حضر. بالترتيب ده
+    const plan = [['mass', 'present'], ['meeting', 'absent'], ['activity', 'excused'], ['service', 'present']];
+    for (const [kind, status] of plan) {
+      const s = (await call('servant', 'POST', '/sessions', { kind, date: todayCairo() })).data;
+      assert.ok(s && s.id, `اتفتحت جلسة ${kind}`);
+      await call('servant', 'PUT', `/sessions/${s.id}/records/${m.id}`, { status });
+      await call('servant', 'POST', `/sessions/${s.id}/close`);
+      sessions.push(s);
+    }
+    // وجلسة قديمة قبل تسجيله: مالهاش دعوة بنسبته
+    const old = (await call('servant', 'POST', '/sessions', { kind: 'meeting', date: pastDay() })).data;
+    await call('servant', 'POST', `/sessions/${old.id}/close`);
+    sessions.push(old);
+  });
+
+  test('النسبة = حضر ÷ (الجلسات − بعذر)، والجلسة اللي قبل التسجيل مش محسوبة', async () => {
+    const r = await call('guest', 'GET', `/me/${m.qr_token}`);
+    assert.equal(r.status, 200);
+    const all = r.data.kinds.all;
+    assert.deepEqual([all.present, all.excused, all.total, all.base, all.pct], [2, 1, 4, 3, 67]);
+  });
+
+  test('النسبة لكل نوع نشاط', async () => {
+    const k = (await call('guest', 'GET', `/me/${m.qr_token}`)).data.kinds;
+    assert.equal(k.mass.pct, 100);
+    assert.equal(k.meeting.pct, 0);
+    assert.equal(k.activity.pct, null, 'كله بعذر: مفيش نسبة');
+    assert.equal(k.service.pct, 100);
+  });
+
+  test('ورا بعض: العذر مابيقطعش، والغياب بيقطع', async () => {
+    assert.equal((await call('guest', 'GET', `/me/${m.qr_token}`)).data.streak, 1);
+  });
+
+  test('آخر الجلسات والشهور موجودين', async () => {
+    const d = (await call('guest', 'GET', `/me/${m.qr_token}`)).data;
+    assert.equal(d.last.length, 4);
+    assert.equal(d.months.length, 6);
+    assert.equal(d.months[0].pct, 67);
+  });
+
+  test('صفحة المخدوم مافيهاش "يدوي" ولا ملاحظات ولا موبايل ولا بيانات حد تاني', async () => {
+    const d = (await call('guest', 'GET', `/me/${m.qr_token}`)).data;
+    const text = JSON.stringify(d);
+    assert.ok(!('manual' in d) && !('notes' in d) && !('phone' in d) && !('away' in d));
+    assert.ok(!text.includes('"method"'), 'مفيش طريقة تسجيل');
+    assert.ok(!text.includes(m.phone));
+    assert.deepEqual(Object.keys(d.last[0]).sort(), ['date', 'kind', 'kind_name', 'status']);
+  });
+
+  test('الخادم بيشوف نفس الأرقام، ومعاها اليدوي والغياب ورا بعض', async () => {
+    const s = (await call('servant', 'GET', `/members/${m.id}/stats`)).data;
+    const me = (await call('guest', 'GET', `/me/${m.qr_token}`)).data;
+    assert.deepEqual(s.kinds, me.kinds);
+    assert.equal(s.manual, 2, 'الحضور اليدوي');
+    assert.equal(s.away, 0);
+    const list = (await call('servant', 'GET', '/members')).data.find(x => x.id === m.id);
+    assert.equal(list.pct, 67, 'نفس النسبة في قايمة المخدومين');
+  });
+
+  test('غير الخدام مايشوفوش أرقام الخادم', async () => {
+    assert.equal((await call('guest', 'GET', `/members/${m.id}/stats`)).status, 401);
+    assert.equal((await call('subscriber', 'GET', `/members/${m.id}/stats`)).status, 403);
+    assert.equal((await call('guest', 'GET', '/me/' + 'z'.repeat(32))).status, 404);
+  });
+
+  test('تنضيف', async () => {
+    for (const s of sessions) assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}`)).status, 200);
+  });
+});

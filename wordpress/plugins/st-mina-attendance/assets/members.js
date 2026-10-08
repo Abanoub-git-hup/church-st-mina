@@ -1,5 +1,5 @@
 // شاشة المخدومين: القايمة من GET /members، والبحث والفلتر في المتصفح، والإضافة بـ POST /members.
-// نسبة الحضور و"محتاج افتقاد" هيبقوا ليهم بيانات من المهام 14 و18، فدلوقتي الدايرة فاضية والفلتر مش ظاهر.
+// دايرة النسبة من نفس حساب "حضوري". وفلتر "محتاج افتقاد" في المهمة 18.
 (() => {
   const { $, $$, api, toast, esc, initials, toDate, fDate, digits, waCard, C } = window.Attend;
   const body = document.body;
@@ -37,7 +37,7 @@
       return `<a class="m-row${off ? ' is-off' : ''}" href="${C.base}members/${m.id}/" aria-label="${esc(m.full_name)}${off ? '، موقوف' : ''}">
         <span class="av" aria-hidden="true">${esc(initials(m.full_name))}</span>
         <span><span class="m-name">${esc(m.full_name)}</span><span class="m-meta">${off ? '<span class="flag off">موقوف</span>' : 'في الخدمة من ' + fDate.format(toDate(m.registered_at))}</span></span>
-        <span class="ring" style="--p:0" aria-hidden="true"><span>–</span></span>
+        <span class="ring${!off && m.pct !== null && m.pct < 60 ? ' low' : ''}" style="--p:${off || m.pct === null ? 0 : m.pct}" aria-hidden="true"><span>${off || m.pct === null ? '–' : m.pct + '%'}</span></span>
       </a>`;
     }).join('') : `<p class="no-match">${term ? 'مفيش مخدوم بالاسم أو الرقم ده.' : 'مفيش حد هنا.'}</p>`;
   }

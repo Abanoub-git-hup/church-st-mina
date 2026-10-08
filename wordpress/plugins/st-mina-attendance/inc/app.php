@@ -90,6 +90,8 @@ function stmina_att_footer( $screen ) {
 		// الكارت: الاسم والرابط بس، أو null لو الكود غلط أو اتلغى
 		$m              = stmina_att_member_by_token( get_query_var( 'stmina_token' ) );
 		$config['card'] = $m ? array( 'name' => $m->full_name, 'url' => stmina_att_card_url( $m->qr_token ) ) : null;
+		// "حضوري": نفس رد /me/<الكود> (stats.php)، مع الصفحة نفسها علشان تفتح أسرع
+		$config['me']   = $m ? stmina_att_my_page( $m, stmina_att_member_service_id( $m->id ) ) : null;
 		unset( $config['nonce'], $config['user'] );
 	}
 	$url = STMINA_ATT_URL . 'assets/';
