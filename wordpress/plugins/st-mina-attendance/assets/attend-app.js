@@ -46,6 +46,24 @@
   // الأرقام العربي ← إنجليزي، وأي حاجة غير الأرقام بتتشال (لخانة الموبايل)
   const digits = s => s.replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\D/g, '');
 
+  // الـ QR كمصفوفة (true = مربع غامق)، من مكتبة qrcode-generator. وجواه رابط الكارت نفسه
+  const qrCells = text => {
+    const q = qrcode(0, 'M');
+    q.addData(text);
+    q.make();
+    const N = q.getModuleCount();
+    return Array.from({ length: N }, (_, y) => Array.from({ length: N }, (_, x) => q.isDark(y, x)));
+  };
+  // الـ QR كـ SVG بنفس شكل التصميم
+  const qrSvg = text => {
+    const g = qrCells(text), N = g.length;
+    let r = '';
+    g.forEach((row, y) => row.forEach((on, x) => { if (on) r += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }));
+    return `<svg viewBox="0 0 ${N} ${N}" shape-rendering="crispEdges"><g fill="#1E140D">${r}</g></svg>`;
+  };
+  // رابط واتساب برسالة الكارت جاهزة (الرقم بصيغة مصر الدولية: 2 + 01…)
+  const waCard = m => `https://wa.me/2${m.phone}?text=${encodeURIComponent(`سلام ومحبة يا ${m.full_name.split(' ')[0]}\nده كارت حضورك في خدمة ${C.svc}. افتحه من الرابط واحفظه صورة، وورّيه للخادم كل مرة علشان يتمسح:\n${m.card_url}`)}`;
+
   // زرار الخروج (من المزيد بعدين)، بيشتغل على أي عنصر عليه data-logout
   document.addEventListener('click', async e => {
     if (!e.target.closest('[data-logout]')) return;
@@ -53,5 +71,5 @@
     location.href = r ? r.redirect : C.base + 'login/';
   });
 
-  window.Attend = { C, $, $$, api, toast, esc, fmtMobile, initials, toDate, fDate, digits };
+  window.Attend = { C, $, $$, api, toast, esc, fmtMobile, initials, toDate, fDate, digits, qrCells, qrSvg, waCard };
 })();

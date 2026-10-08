@@ -190,3 +190,57 @@ describe('الدخول والشاشات', () => {
     assert.match(await res.text(), /دخول الخادم/);
   });
 });
+
+describe('الكارت (المهمة 09)', () => {
+  const SITE = env.STMINA_URL.replace(/\/$/, '');
+
+  test('رابط الكارت في بيانات المخدوم هو /me/الكود/', () => {
+    assert.equal(member.card_url, `${SITE}/me/${member.qr_token}/`);
+  });
+
+  test('الكارت العام بيرجّع الاسم والرابط بس، من غير دخول', async () => {
+    const r = await call('guest', 'GET', `/card/${member.qr_token}`);
+    assert.equal(r.status, 200);
+    assert.deepEqual(Object.keys(r.data).sort(), ['card_url', 'full_name']);
+  });
+
+  test('صفحة الكارت مفتوحة ومش متأرشفة، وفيها الاسم ومافيهاش الموبايل', async () => {
+    const m = (await call('servant', 'GET', `/members/${member.id}`)).data;
+    const res = await fetch(m.card_url);
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get('x-robots-tag') || '', /noindex/);
+    const html = await res.text();
+    assert.ok(html.includes(JSON.stringify(m.full_name).slice(1, -1)) || html.includes(m.full_name), 'الاسم في الصفحة');
+    assert.ok(!html.includes(m.phone), 'الموبايل مش في الصفحة');
+    assert.ok(!html.includes('"nonce"'), 'مفيش رمز nonce في صفحة المخدوم');
+  });
+
+  test('الكود مايدخّلش الخدام حتى بعد فتح الكارت', async () => {
+    await fetch(member.card_url);
+    const r = await call('guest', 'GET', `/members?c=${member.qr_token}`);
+    assert.equal(r.status, 401);
+  });
+
+  test('غير الخدام مايقدروش يعيدوا الإصدار', async () => {
+    assert.equal((await call('guest', 'POST', `/members/${member.id}/reissue`)).status, 401);
+    assert.equal((await call('subscriber', 'POST', `/members/${member.id}/reissue`)).status, 403);
+  });
+
+  test('إعادة الإصدار بتلغي الرابط القديم فورًا', async () => {
+    const old = (await call('servant', 'GET', `/members/${member.id}`)).data.qr_token;
+    const r = await call('servant', 'POST', `/members/${member.id}/reissue`);
+    assert.equal(r.status, 200);
+    assert.notEqual(r.data.qr_token, old);
+    assert.match(r.data.qr_token, /^[A-Za-z0-9_-]{32}$/);
+    assert.equal((await call('guest', 'GET', `/card/${old}`)).status, 404, 'القديم بطل');
+    assert.equal((await call('guest', 'GET', `/card/${r.data.qr_token}`)).status, 200, 'الجديد شغال');
+    const page = await (await fetch(`${SITE}/me/${old}/`)).text();
+    assert.match(page, /"card":null/, 'صفحة الرابط القديم بتقول إنه مش شغال');
+  });
+
+  test('كود بشكل غلط بيرجّع "الرابط ده مش شغال"', async () => {
+    const res = await fetch(`${SITE}/me/not-a-real-code/`);
+    assert.equal(res.status, 200);
+    assert.match(await res.text(), /"card":null/);
+  });
+});

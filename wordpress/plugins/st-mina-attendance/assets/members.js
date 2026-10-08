@@ -1,7 +1,7 @@
 // شاشة المخدومين: القايمة من GET /members، والبحث والفلتر في المتصفح، والإضافة بـ POST /members.
 // نسبة الحضور و"محتاج افتقاد" هيبقوا ليهم بيانات من المهام 14 و18، فدلوقتي الدايرة فاضية والفلتر مش ظاهر.
 (() => {
-  const { $, $$, api, toast, esc, initials, toDate, fDate, digits, C } = window.Attend;
+  const { $, $$, api, toast, esc, initials, toDate, fDate, digits, waCard, C } = window.Attend;
   const body = document.body;
   let members = [], filter = 'all';
 
@@ -62,10 +62,8 @@
   $('#addMore').addEventListener('click', () => $('#addStart').click());
   mobIn.addEventListener('input', () => { mobIn.value = digits(mobIn.value).slice(0, 11); });
 
-  // استيراد Excel (المهمة 20) والكارت على واتساب (المهمة 09) لسه ماتعملوش
+  // استيراد Excel (المهمة 20) لسه ماتعملش
   const alt = $('.add-alt'); if (alt) alt.style.display = 'none';
-  $('#addedWa').style.display = 'none'; // hidden مابيكفيش لأن .btn ليها display
-  $('#added p').textContent = 'هيظهر في القايمة دلوقتي. وإرسال الكارت على واتساب هيشتغل أول ما شاشة الكارت تخلص.';
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -86,8 +84,9 @@
       body.dataset.state = 'normal';
       render();
       $('#addedName').textContent = m.full_name;
+      $('#addedWa').href = waCard(m);
       setOpen('done');
-      $('#addMore').focus();
+      $('#addedWa').focus();
     } catch (x) {
       fieldErr('#fName', x.fields.full_name || '');
       fieldErr('#fMob', x.fields.phone || '');

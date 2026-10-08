@@ -1,7 +1,7 @@
 // ملف المخدوم: البيانات من GET /members/{id}، والتعديل والإيقاف بـ PATCH، والملاحظات من /notes.
-// الحضور (المهمة 14) والكارت (المهمة 09) لسه ماتعملوش، فقسم الحضور بيقول كده وقسم الكارت مستخبي.
+// الحضور (المهمة 14) لسه ماتعملش، فقسمه بيقول كده. والكارت وإعادة إصداره من /members/{id}/reissue.
 (() => {
-  const { $, $$, api, toast, esc, fmtMobile, initials, toDate, fDate, digits, C } = window.Attend;
+  const { $, $$, api, toast, esc, fmtMobile, initials, toDate, fDate, digits, qrSvg, waCard, C } = window.Attend;
   const body = document.body;
   let m, notes = [];
 
@@ -27,6 +27,11 @@
     $('#callBtn').href = `tel:${m.phone}`;
     $('#chatBtn').href = `https://wa.me/2${m.phone}`;
     $('#susName').textContent = m.full_name;
+    // الكارت: الـ QR فيه رابط الكارت، والإرسال برسالة جاهزة على واتساب
+    $('#cardVer').textContent = 'الكارت الحالي';
+    $('#qr').innerHTML = qrSvg(m.card_url);
+    $('#sendCard').href = waCard(m);
+    $('#viewCard').href = m.card_url;
     $('#notes').innerHTML = notes.length
       ? notes.map(n => `<div class="note">${esc(n.body)}<small>${esc(n.author)} · ${fDate.format(toDate(n.created_at))}</small></div>`).join('')
       : '<p class="no-notes">مفيش ملاحظات لسه.</p>';
@@ -37,8 +42,6 @@
   $('.c-h small', att).textContent = '';
   $('.att', att).innerHTML = '<p class="no-notes">الحضور هيظهر هنا أول ما الجلسات تبدأ.</p>';
   $('.last', att).style.display = 'none';
-  // الكارت: المهمة 09
-  $('#cardBox').style.display = 'none'; // hidden مابيكفيش لأن .card ليها display
 
   // ---------- تعديل البيانات ----------
   const who = $('#whoCard');
@@ -69,6 +72,20 @@
       fieldErr('#eMob', x.fields.phone || '');
       if (!x.fields.full_name && !x.fields.phone) toast(x.message);
     }
+  });
+
+  // ---------- إعادة إصدار الكارت: كود جديد، والرابط القديم بيبطل فورًا ----------
+  const cardBox = $('#cardBox');
+  $('#askReissue').addEventListener('click', () => { cardBox.classList.add('show-confirm'); $('#reissue').focus(); });
+  $('#keepCard').addEventListener('click', () => { cardBox.classList.remove('show-confirm'); $('#askReissue').focus(); });
+  $('#reissue').addEventListener('click', async () => {
+    try {
+      m = await api(`members/${m.id}/reissue`, { method: 'POST' });
+      cardBox.classList.remove('show-confirm');
+      render();
+      $('#sendCard').focus();
+      toast('اتعمل كارت جديد والقديم اتلغى. ابعته للمخدوم.');
+    } catch (x) { toast(x.message); }
   });
 
   // ---------- الملاحظات ----------

@@ -235,3 +235,34 @@ function stmina_att_add_note( $member_id, $body ) {
 	) );
 	return (int) $wpdb->insert_id;
 }
+
+/**
+ * رابط كارت المخدوم (صفحته العامة): /me/<الكود>/
+ * نفس الرابط ده هو اللي جوه الـ QR، فشاشة المسح بتاخد الكود من آخره.
+ */
+function stmina_att_card_url( $token ) {
+	return home_url( '/me/' . rawurlencode( $token ) . '/' );
+}
+
+/**
+ * المخدوم بكود الكارت، أو null. الكود بيتقارن بالظبط، وأي شكل غلط بيرجّع null من غير استعلام.
+ */
+function stmina_att_member_by_token( $token ) {
+	global $wpdb;
+	if ( ! is_string( $token ) || ! preg_match( '/^[A-Za-z0-9_-]{32}$/', $token ) ) {
+		return null;
+	}
+	return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . stmina_att_table( 'members' ) . ' WHERE qr_token = %s', $token ) );
+}
+
+/**
+ * إعادة إصدار الكارت: كود جديد مكان القديم، فالرابط القديم بيبطل فورًا.
+ *
+ * @return string الكود الجديد.
+ */
+function stmina_att_reissue( $member_id ) {
+	global $wpdb;
+	$token = stmina_att_new_token();
+	$wpdb->update( stmina_att_table( 'members' ), array( 'qr_token' => $token, 'updated_at' => current_time( 'mysql' ) ), array( 'id' => $member_id ) );
+	return $token;
+}

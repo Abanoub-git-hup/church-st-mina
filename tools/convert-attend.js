@@ -7,7 +7,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'wordpress/plugins/st-mina-attendance/screens');
-const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html' };
+const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html', card: 'attend-card.html' };
 
 // اسم الشاشة في التصميم ← رابطها في WordPress
 const link = name => `<?php echo esc_url( stmina_att_url( '${name}' ) ); ?>`;
@@ -24,6 +24,10 @@ for (const [key, file] of Object.entries(SCREENS)) {
   // ملفات التنسيق
   h = h.replace('href="assets/site.css"', () => 'href="<?php echo esc_url( get_template_directory_uri() . \'/assets/site.css\' ); ?>"');
   h = h.replace('href="assets/attend.css"', () => 'href="<?php echo esc_url( STMINA_ATT_URL . \'assets/attend.css?ver=\' . STMINA_ATT_VERSION ); ?>"');
+  // الصور من فولدر الـ theme (الشعار)
+  h = h.replace(/src="\.\.\/media\/([^"]+)"/g, (_, f) => `src="<?php echo esc_url( get_template_directory_uri() . '/assets/media/${f}' ); ?>"`);
+  // الصور جوه التنسيق الخاص بالشاشة (خلفية الكارت)
+  h = h.replace(/url\("\.\.\/media\/([^"]+)"\)/g, (_, f) => `url("<?php echo esc_url( get_template_directory_uri() . '/assets/media/${f}' ); ?>")`);
   // الروابط
   h = h.replace(/href="home\.html"/g, () => 'href="<?php echo esc_url( home_url( \'/\' ) ); ?>"');
   h = h.replace(/href="attend-([a-z]+)\.html"/g, (_, n) => `href="${link(n)}"`);

@@ -42,6 +42,7 @@ function stmina_att_member_json( $m ) {
 		'status'        => $m->status,
 		'registered_at' => $m->registered_at,
 		'qr_token'      => $m->qr_token,
+		'card_url'      => stmina_att_card_url( $m->qr_token ),
 	);
 }
 
@@ -149,6 +150,34 @@ add_action( 'rest_api_init', function () {
 				return $res;
 			},
 		),
+	) );
+
+	// إعادة إصدار الكارت (للخدام)
+	register_rest_route( $ns, '/members/(?P<id>\d+)/reissue', array(
+		'methods'             => 'POST',
+		'permission_callback' => 'stmina_att_can',
+		'args'                => $args,
+		'callback'            => function ( WP_REST_Request $req ) {
+			$m = stmina_att_req_member( $req );
+			if ( is_wp_error( $m ) ) {
+				return $m;
+			}
+			stmina_att_reissue( (int) $m->id );
+			return stmina_att_member_json( stmina_att_req_member( $req ) );
+		},
+	) );
+
+	// الكارت العام: مفتوح من غير دخول، وبيرجّع الاسم والرابط بس. ومابيدّيش أي صلاحية لأي مسار تاني
+	register_rest_route( $ns, '/card/(?P<token>[A-Za-z0-9_-]{32})', array(
+		'methods'             => 'GET',
+		'permission_callback' => '__return_true',
+		'callback'            => function ( WP_REST_Request $req ) {
+			$m = stmina_att_member_by_token( $req['token'] );
+			if ( ! $m ) {
+				return new WP_Error( 'stmina_bad_card', 'الرابط ده مش شغال.', array( 'status' => 404 ) );
+			}
+			return array( 'full_name' => $m->full_name, 'card_url' => stmina_att_card_url( $m->qr_token ) );
+		},
 	) );
 } );
 

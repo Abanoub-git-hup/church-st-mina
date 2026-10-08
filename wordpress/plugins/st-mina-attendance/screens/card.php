@@ -1,7 +1,16 @@
+<?php
+/**
+ * شاشة "card" في نظام الحضور. متولّدة من design/attend-card.html بأداة tools/convert-attend.js،
+ * فأي تعديل في الشكل يتعمل في التصميم وبعدين تتشغّل الأداة تاني.
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2a1c12">
 <meta name="robots" content="noindex, nofollow">
@@ -10,8 +19,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
-<link rel="stylesheet" href="assets/attend.css">
+<link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() . '/assets/site.css' ); ?>">
+<link rel="stylesheet" href="<?php echo esc_url( STMINA_ATT_URL . 'assets/attend.css?ver=' . STMINA_ATT_VERSION ); ?>">
 <style>
 /* صفحة المخدوم: "حضوري" و"كارتي". قراءة بس، ومفيهاش أي حاجة تخص مخدوم تاني */
 .wrap-c{flex:1;width:100%;max-width:480px;margin-inline:auto;padding:var(--s-6) var(--gut) 0;display:grid;gap:var(--s-4);align-content:start}
@@ -93,7 +102,7 @@
 /* كارتي: لوحة كريمي 9:16 */
 /* الكارت: صورة الصلاة في ضوء الشباك، والـ QR في نص شعاع النور على مربع أبيض علشان يتقري، والاسم على زجاج خفيف تحت */
 .my-card{position:relative;width:min(100%,340px);aspect-ratio:9/16;margin:0 auto;padding:22px 20px 18px;border-radius:28px;overflow:hidden;isolation:isolate;color:#F6ECDC;display:flex;flex-direction:column;align-items:center;text-align:center;box-shadow:0 30px 60px rgba(10,6,3,.5),0 0 0 1px rgba(243,201,135,.28)}
-.my-card::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(20,12,6,.62) 0%,rgba(20,12,6,.08) 26%,rgba(20,12,6,0) 46%,rgba(20,12,6,.18) 66%,rgba(20,12,6,.86) 100%),url("../media/church/bg-praying-light.jpg") center 30%/cover no-repeat}
+.my-card::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(20,12,6,.62) 0%,rgba(20,12,6,.08) 26%,rgba(20,12,6,0) 46%,rgba(20,12,6,.18) 66%,rgba(20,12,6,.86) 100%),url("<?php echo esc_url( get_template_directory_uri() . '/assets/media/church/bg-praying-light.jpg' ); ?>") center 30%/cover no-repeat}
 .my-card img{width:52px;height:52px;border-radius:50%;box-shadow:0 0 0 1px rgba(243,201,135,.7),0 6px 18px rgba(0,0,0,.45)}
 .my-card .ch{margin-top:8px;font-size:.72rem;line-height:1.5;color:rgba(246,236,220,.88);text-shadow:0 1px 8px rgba(0,0,0,.7)}
 .my-card .qr{width:64%;aspect-ratio:1;margin-top:auto;padding:5.5%;background:#fff;border-radius:18px;box-shadow:0 0 0 1px rgba(243,201,135,.9),0 0 46px 6px rgba(255,214,150,.42),0 14px 30px rgba(10,6,3,.35)}
@@ -135,13 +144,6 @@
   <symbol id="i-link-off" viewBox="0 0 24 24"><path d="M9 15l6-6M10 6l1-1a4.2 4.2 0 0 1 6 6l-1 1M14 18l-1 1a4.2 4.2 0 0 1-6-6l1-1M3 3l18 18"/></symbol>
 </svg>
 
-<!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس. البيانات وهمية -->
-<div class="review" role="group" aria-label="حالات الشاشة للمراجعة">
-  <span>نموذج للمراجعة (بيانات وهمية)، اختر مخدوم:</span>
-  <button class="chip" type="button" data-id="0" aria-pressed="false">منتظم</button>
-  <button class="chip" type="button" data-id="26" aria-pressed="false">غايب بقاله فترة</button>
-  <button class="chip" type="button" data-id="bad" aria-pressed="false">رابط غير صالح</button>
-</div>
 
 <main class="wrap-c" id="main">
   <!-- رابط غير صالح -->
@@ -153,7 +155,7 @@
 
   <div id="page" hidden>
     <header class="hello">
-      <img src="../media/brand/logo.png" alt="" width="44" height="44" id="logo">
+      <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/media/brand/logo.png' ); ?>" alt="" width="44" height="44" id="logo">
       <div><small>إعداد الخدام</small><h1 id="hi"></h1></div>
     </header>
 
@@ -199,7 +201,7 @@
     <!-- كارتي -->
     <div id="tab-card" role="tabpanel" aria-labelledby="t-card" hidden style="margin-top:var(--s-4)">
       <div class="my-card" id="myCard">
-        <img src="../media/brand/logo.png" alt="">
+        <img src="<?php echo esc_url( get_template_directory_uri() . '/assets/media/brand/logo.png' ); ?>" alt="">
         <p class="ch">كنيسة السيدة العذراء ومارمينا<br>والبابا كيرلس السادس · الجبل الأصفر</p>
         <div class="qr" id="qr" role="img" aria-label="كود الحضور"></div>
         <div class="who">
@@ -223,144 +225,6 @@
   </ul>
 </nav>
 
-<script src="assets/attend-demo.js"></script>
-<script>
-(() => {
-  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const D = window.AttendDemo;
-  const icon = id => `<svg class="icon"><use href="#${id}"/></svg>`;
-  const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
-  const fMonth = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { month: 'short' });
-  const fDate = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { day: 'numeric', month: 'long', year: 'numeric' });
-  // رسالة الخدام (في الموقع الحقيقي جاية من شاشة "المزيد")
-  const MSG = 'الاجتماع الجمعة الجاية بعد القداس على طول. مستنيينكم، وهاتوا صاحب معاكم.';
-
-  let m, type = 'all';
-  const ST = { h: ['حضر', 'i-check'], e: ['غاب بعذر', 'i-note'], a: ['غاب', 'i-x'] };
-
-  // النسبة = حضر ÷ (الجلسات المنتهية − الغياب بعذر)، لنوع نشاط معيّن أو الكل
-  function stats(t) {
-    const idx = m.log.map((x, k) => k).filter(k => t === 'all' || D.sessionTypes[k] === t);
-    const h = idx.filter(k => m.log[k] === 'h').length, e = idx.filter(k => m.log[k] === 'e').length;
-    const base = idx.length - e;
-    return { h, e, total: idx.length, base, pct: base ? Math.round(h / base * 100) : 0 };
-  }
-  // التتابع: حضور ورا بعض من الأحدث، والعذر بيتعدّى
-  const streak = () => { let n = 0; for (const x of m.log) { if (x === 'a') break; if (x === 'h') n++; } return n; };
-
-  function renderPct() {
-    const s = stats(type);
-    $('#types').innerHTML = [['all', 'الكل'], ...Object.entries(D.TYPES)].map(([k, t]) => `<button type="button" data-t="${k}" aria-pressed="${k === type}">${t}</button>`).join('');
-    const ring = $('#ring'); ring.style.setProperty('--p', s.pct);
-    ring.setAttribute('aria-label', `نسبة حضورك ${s.pct}%`);
-    $('#pct').textContent = s.total ? s.pct + '%' : '–';
-    const tn = type === 'all' ? 'جلسة' : `جلسة ${D.TYPES[type]}`;
-    $('#facts').innerHTML = s.total
-      ? `<span>حضرت <b>${s.h}</b> من <b>${s.base}</b> ${tn}</span>${s.e ? `<span>وغبت بعذر <b>${s.e}</b> ${s.e === 1 ? 'مرة' : 'مرات'}، ودول مابيتحسبوش</span>` : ''}`
-      : `<span>لسه مفيش ${tn} من ساعة ما اتسجّلت.</span>`;
-  }
-
-  function renderStreak() {
-    const n = streak(), show = Math.min(n, 12);
-    $('#candles').innerHTML = Array.from({ length: show }, () => '<i class="cd lit"></i>').join('') + (n > 12 ? `<span class="more-c">+${n - 12}</span>` : '') + '<i class="cd off"></i>';
-    $('#streakT').innerHTML = n
-      ? `<b>${n}</b> ${n === 1 ? 'جلسة' : n === 2 ? 'جلستين' : 'جلسات'} ورا بعض<small>الشمعة اللي جاية مستنياك الجلسة الجاية.</small>`
-      : `لسه مفيش شموع مولّعة<small>احضر الجلسة الجاية وولّع أول شمعة.</small>`;
-  }
-
-  function renderBars() {
-    // نسبة كل شهر من آخر 6 شهور (الحالي على اليمين)
-    const now = new Date(), months = [];
-    for (let k = 0; k < 6; k++) { const d = new Date(now.getFullYear(), now.getMonth() - k, 1); months.push(d); }
-    const data = months.map(d => {
-      const idx = D.sessionDates.map((x, k) => k).filter(k => D.sessionDates[k].getMonth() === d.getMonth() && D.sessionDates[k].getFullYear() === d.getFullYear());
-      const h = idx.filter(k => m.log[k] === 'h').length, base = idx.filter(k => m.log[k] !== 'e').length;
-      return { d, pct: base ? Math.round(h / base * 100) : null };
-    });
-    $('#bars').innerHTML = data.map((x, k) => `<div class="bar${k === 0 ? ' now' : ''}${x.pct === null ? ' none' : ''}"><em>${x.pct === null ? '–' : x.pct + '%'}</em><i style="height:${x.pct === null ? 4 : Math.max(6, x.pct)}%"></i><span>${fMonth.format(x.d)}</span></div>`).join('');
-    $('#bars').setAttribute('aria-label', 'نسبة كل شهر: ' + data.map(x => `${fMonth.format(x.d)} ${x.pct === null ? 'مفيش جلسات' : x.pct + '%'}`).join('، '));
-  }
-
-  function renderLast() {
-    $('#last').innerHTML = m.log.slice(0, 10).map((s, k) => `<div class="ls"><div><b>${D.TYPES[D.sessionTypes[k]]}</b><small>${fDay.format(D.sessionDates[k])}</small></div><span class="badge ${s}">${icon(ST[s][1])}${ST[s][0]}</span></div>`).join('');
-  }
-
-  // الكارت: نفس الـ QR الوهمي اللي في ملف المخدوم
-  const cells = () => D.qrCells(m.id * 31 + 1);
-  function renderCard() {
-    $('#cardName').textContent = m.name;
-    const g = cells(), N = g.length;
-    let r = ''; g.forEach((row, y) => row.forEach((on, x) => { if (on) r += `<rect x="${x}" y="${y}" width="1" height="1"/>`; }));
-    $('#qr').innerHTML = `<svg viewBox="0 0 ${N} ${N}" shape-rendering="crispEdges"><g fill="#1E140D">${r}</g></svg>`;
-  }
-
-  // احفظ الكارت: بنرسمه على canvas بمقاس 1080×1920 وننزّله PNG
-  $('#save').addEventListener('click', async () => {
-    await document.fonts.ready;
-    const W = 1080, H = 1920, c = document.createElement('canvas'); c.width = W; c.height = H;
-    const x = c.getContext('2d');
-    x.fillStyle = '#F6ECDC'; x.fillRect(0, 0, W, H);
-    const logo = $('#logo');
-    if (logo.complete && logo.naturalWidth) { x.save(); x.beginPath(); x.arc(W / 2, 230, 110, 0, Math.PI * 2); x.clip(); x.drawImage(logo, W / 2 - 110, 120, 220, 220); x.restore(); }
-    x.direction = 'rtl'; x.textAlign = 'center';
-    x.fillStyle = '#6B5845'; x.font = '300 40px Alexandria';
-    x.fillText('كنيسة السيدة العذراء ومارمينا', W / 2, 420); x.fillText('والبابا كيرلس السادس · الجبل الأصفر', W / 2, 480);
-    x.fillStyle = '#8A6A3E'; x.font = '500 46px Alexandria'; x.fillText('إعداد الخدام', W / 2, 700);
-    x.fillStyle = '#1E140D'; x.font = '500 84px Alexandria'; x.fillText(m.name, W / 2, 810);
-    const q = 720, qx = (W - q) / 2, qy = 900;
-    x.fillStyle = '#fff'; x.beginPath(); x.roundRect(qx, qy, q, q, 48); x.fill();
-    const g = cells(), N = g.length, pad = 56, cs = (q - pad * 2) / N;
-    x.fillStyle = '#1E140D'; g.forEach((row, yy) => row.forEach((on, xx) => { if (on) x.fillRect(qx + pad + xx * cs, qy + pad + yy * cs, Math.ceil(cs), Math.ceil(cs)); }));
-    x.fillStyle = '#6B5845'; x.font = '300 40px Alexandria'; x.fillText('ورّي الكارت ده للخادم في كل جلسة', W / 2, 1780);
-    const a = document.createElement('a'); a.download = `كارت-${m.name}.png`; a.href = c.toDataURL('image/png'); a.click();
-  });
-
-  // ---------- التبويبين ----------
-  const tabs = $$('#tabs [role=tab]');
-  function showTab(id) {
-    tabs.forEach(t => t.setAttribute('aria-selected', t.id === id));
-    $('#tab-me').hidden = id !== 't-me'; $('#tab-card').hidden = id !== 't-card';
-    history.replaceState(null, '', id === 't-card' ? '#card' : location.pathname + location.search);
-    scrollTo(0, 0);
-  }
-  tabs.forEach(t => t.addEventListener('click', () => showTab(t.id)));
-  $('#types').addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (b) { type = b.dataset.t; renderPct(); } });
-
-  // ---------- التثبيت على الموبايل ----------
-  let deferred = null;
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  $('#inSteps').textContent = isIOS
-    ? 'من سفاري: دوس زرار المشاركة تحت، وبعدين "Add to Home Screen". هتفتحها بعد كده بضغطة زي أي تطبيق.'
-    : 'من كروم: دوس ⋮ فوق، وبعدين "Add to Home screen" أو "تثبيت التطبيق". هتفتحها بعد كده بضغطة زي أي تطبيق.';
-  addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferred = e; $('#inBtn').hidden = false; });
-  $('#inBtn').addEventListener('click', async () => { if (!deferred) return; deferred.prompt(); await deferred.userChoice; deferred = null; $('#install').hidden = true; });
-  $('#inHide').addEventListener('click', () => { $('#install').hidden = true; try { localStorage.setItem('install-hidden', '1'); } catch {} });
-  try { if (localStorage.getItem('install-hidden') || matchMedia('(display-mode: standalone)').matches) $('#install').hidden = true; } catch {}
-
-  // ---------- تحميل المخدوم من الرابط ----------
-  function load(mem) {
-    $$('.review .chip').forEach(c => c.setAttribute('aria-pressed', mem ? +c.dataset.id === mem.id : c.dataset.id === 'bad'));
-    $('#badLink').hidden = !!mem; $('#page').hidden = !mem; $('#tabs').hidden = !mem;
-    document.body.classList.toggle('has-nav', !!mem);
-    if (!mem) { document.title = 'الرابط مش شغال | إعداد الخدام'; return; }
-    m = mem; type = 'all';
-    document.title = `حضوري · ${m.name}`;
-    $('#hi').textContent = `أهلًا يا ${m.name.split(' ')[0]}`;
-    $('#msgTxt').textContent = MSG;
-    $('#since').textContent = `من ${fDate.format(m.joined)}`;
-    renderPct(); renderStreak(); renderBars(); renderLast(); renderCard();
-  }
-  $$('.review .chip').forEach(c => c.addEventListener('click', () => {
-    const mem = c.dataset.id === 'bad' ? null : D.members[+c.dataset.id];
-    history.replaceState(null, '', mem ? `?c=${D.cardCode(mem)}` : '?c=xxxx');
-    load(mem); if (mem) showTab('t-me');
-  }));
-
-  const code = new URLSearchParams(location.search).get('c');
-  const mem = code ? D.fromCode(code) : D.members[0];
-  load(mem && !mem.suspended ? mem : null);
-  if (mem && location.hash === '#card') showTab('t-card');
-})();
-</script>
+<?php stmina_att_footer( 'card' ); ?>
 </body>
 </html>

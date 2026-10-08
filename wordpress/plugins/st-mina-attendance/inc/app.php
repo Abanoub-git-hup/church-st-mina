@@ -6,6 +6,7 @@
  *   /attend/ و/attend/members   المخدومين
  *   /attend/members/12   ملف مخدوم
  *   أي شاشة تانية (الجلسات، والمسح ...)   "الشاشة دي جاية قريب" لحد ما مهمتها تتعمل
+ *   /me/<الكود>/         كارت المخدوم (عام من غير دخول، ومابيدّيش أي صلاحية)
  *
  * الحماية: كل الشاشات من غير أرشفة ومن غير cache، والشاشات غير الدخول بتحوّل لصفحة الدخول
  * لو الزائر مش خادم. ودي راحة بس، والحماية الحقيقية في permission_callback بتاع كل مسار.
@@ -25,6 +26,8 @@ add_action( 'init', function () {
 	add_rewrite_rule( '^attend/?$', 'index.php?stmina_screen=members', 'top' );
 	add_rewrite_rule( '^attend/members/([0-9]+)/?$', 'index.php?stmina_screen=member&stmina_id=$matches[1]', 'top' );
 	add_rewrite_rule( '^attend/([a-z]+)/?$', 'index.php?stmina_screen=$matches[1]', 'top' );
+	// كارت المخدوم. أي حاجة بعد /me/ بتوصل للشاشة، والكود الغلط بيظهر "الرابط ده مش شغال"
+	add_rewrite_rule( '^me/([^/]+)/?$', 'index.php?stmina_screen=card&stmina_token=$matches[1]', 'top' );
 	// القايمة في site.js بتودّي لـ /attend-login/ (من اسم ملف التصميم)
 	add_rewrite_rule( '^attend-login/?$', 'index.php?stmina_screen=login', 'top' );
 } );
@@ -32,6 +35,7 @@ add_action( 'init', function () {
 add_filter( 'query_vars', function ( $vars ) {
 	$vars[] = 'stmina_screen';
 	$vars[] = 'stmina_id';
+	$vars[] = 'stmina_token';
 	return $vars;
 } );
 
@@ -48,7 +52,9 @@ add_action( 'template_redirect', function () {
 	}
 
 	$can = current_user_can( 'stmina_attend' );
-	if ( 'login' === $screen ) {
+	if ( 'card' === $screen ) {
+		// عامة: مفيش تحويل ولا فحص صلاحية، والصفحة نفسها مافيهاش غير الاسم والكارت
+	} elseif ( 'login' === $screen ) {
 		if ( $can ) {
 			wp_safe_redirect( stmina_att_url( 'members' ) );
 			exit;
@@ -76,11 +82,23 @@ function stmina_att_footer( $screen ) {
 		'screen' => $screen,
 		'id'     => (int) get_query_var( 'stmina_id' ),
 		'user'   => is_user_logged_in() ? wp_get_current_user()->display_name : '',
+		'svc'    => 'إعداد الخدام',
 	);
+	if ( 'card' === $screen ) {
+		// الكارت: الاسم والرابط بس، أو null لو الكود غلط أو اتلغى
+		$m              = stmina_att_member_by_token( get_query_var( 'stmina_token' ) );
+		$config['card'] = $m ? array( 'name' => $m->full_name, 'url' => stmina_att_card_url( $m->qr_token ) ) : null;
+		unset( $config['nonce'], $config['user'] );
+	}
 	$url = STMINA_ATT_URL . 'assets/';
 	$ver = STMINA_ATT_VERSION;
-	echo '<script>window.STMINA_ATT = ' . wp_json_encode( $config ) . ";</script>\n";
+	// العربي يفضل عربي في الصفحة، و< و> بيتحوّلوا لرموز علشان أي اسم مايقفلش وسم <script>
+	echo '<script>window.STMINA_ATT = ' . wp_json_encode( $config, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG ) . ";</script>\n";
 	echo '<script src="' . esc_url( $url . 'attend-app.js?ver=' . $ver ) . "\"></script>\n";
+	if ( in_array( $screen, array( 'card', 'member' ), true ) ) {
+		// مكتبة qrcode-generator لرسم الـ QR في المتصفح (من cdnjs زي GSAP في الـ theme)
+		echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>' . "\n";
+	}
 	echo '<script src="' . esc_url( $url . $screen . '.js?ver=' . $ver ) . "\"></script>\n";
 }
 
