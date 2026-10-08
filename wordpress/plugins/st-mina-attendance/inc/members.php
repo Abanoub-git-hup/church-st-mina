@@ -262,7 +262,12 @@ function stmina_att_member_by_token( $token ) {
  */
 function stmina_att_reissue( $member_id ) {
 	global $wpdb;
+	$old   = $wpdb->get_var( $wpdb->prepare( 'SELECT qr_token FROM ' . stmina_att_table( 'members' ) . ' WHERE id = %d', $member_id ) );
 	$token = stmina_att_new_token();
+	// الكود القديم بيتسجّل كملغي، علشان لو حد مسحه يظهر "الكارت ده ملغي" مش "كارت مش معروف"
+	if ( $old ) {
+		$wpdb->replace( stmina_att_table( 'revoked' ), array( 'token' => $old, 'member_id' => $member_id, 'revoked_at' => current_time( 'mysql' ) ) );
+	}
 	$wpdb->update( stmina_att_table( 'members' ), array( 'qr_token' => $token, 'updated_at' => current_time( 'mysql' ) ), array( 'id' => $member_id ) );
 	return $token;
 }

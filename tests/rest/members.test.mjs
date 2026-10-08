@@ -309,3 +309,84 @@ describe('الجلسات (المهمة 10)', () => {
     assert.equal((await call('servant', 'GET', `/sessions/${s.id}`)).status, 404);
   });
 });
+
+describe('المسح (المهام 11 و12)', () => {
+  const pastDay = () => { const d = new Date(); d.setDate(d.getDate() - 30 - Math.floor(Math.random() * 3000)); return d.toISOString().slice(0, 10); };
+  const newMember = async name => (await call('servant', 'POST', '/members', { full_name: name, phone: phone() })).data;
+  let s, a, b;
+
+  before(async () => {
+    s = (await call('servant', 'POST', '/sessions', { kind: 'meeting', date: pastDay() })).data;
+    a = await newMember('مخدوم مسح ' + Date.now());
+    b = await newMember('مخدوم تاني ' + Date.now());
+  });
+
+  test('غير الخدام مرفوضين من المسح والسجلات', async () => {
+    for (const [m, p, body] of [['POST', `/sessions/${s.id}/scan`, { code: a.qr_token }], ['GET', `/sessions/${s.id}/records`], ['DELETE', `/sessions/${s.id}/records/${a.id}`]]) {
+      assert.equal((await call('guest', m, p, body)).status, 401, `${m} ${p}`);
+      assert.equal((await call('subscriber', m, p, body)).status, 403, `${m} ${p}`);
+    }
+  });
+
+  test('مسح كارت صالح بيسجّل "حضر" بالطريقة والخادم والوقت', async () => {
+    const r = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: a.card_url }); // الـ QR فيه الرابط كامل
+    assert.equal(r.data.result, 'ok', JSON.stringify(r.data));
+    assert.equal(r.data.member.full_name, a.full_name);
+    assert.equal(r.data.present, 1);
+    const rec = (await call('servant', 'GET', `/sessions/${s.id}/records`)).data[0];
+    assert.equal(rec.member_id, a.id);
+    assert.equal(rec.status, 'present');
+    assert.equal(rec.method, 'scan');
+    assert.ok(rec.recorded_by, 'اسم الخادم');
+    assert.match(rec.recorded_at, /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/);
+  });
+
+  test('المسح مرة تانية مابيعملش سجل تاني', async () => {
+    const r = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: a.qr_token });
+    assert.equal(r.data.result, 'dup');
+    assert.ok(r.data.recorded_at);
+    assert.equal((await call('servant', 'GET', `/sessions/${s.id}/records`)).data.length, 1);
+  });
+
+  test('مسحتين في نفس اللحظة لنفس الكارت: سجل واحد بس (القيد في قاعدة البيانات)', async () => {
+    const both = await Promise.all([1, 2].map(() => call('servant', 'POST', `/sessions/${s.id}/scan`, { code: b.qr_token })));
+    assert.deepEqual(both.map(r => r.data.result).sort(), ['dup', 'ok']);
+    const recs = (await call('servant', 'GET', `/sessions/${s.id}/records`)).data.filter(r => r.member_id === b.id);
+    assert.equal(recs.length, 1);
+  });
+
+  test('الكارت الملغي والكارت المش معروف برسالتين مختلفتين ومن غير تسجيل', async () => {
+    const c = await newMember('مخدوم ملغي ' + Date.now());
+    await call('servant', 'POST', `/members/${c.id}/reissue`);
+    const before = (await call('servant', 'GET', `/sessions/${s.id}/records`)).data.length;
+    const rv = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: c.qr_token });
+    assert.equal(rv.data.result, 'revoked');
+    assert.equal(rv.data.member.full_name, c.full_name);
+    const un = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: 'x'.repeat(32) });
+    assert.equal(un.data.result, 'unknown');
+    const junk = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: 'https://example.com/hello' });
+    assert.equal(junk.data.result, 'unknown');
+    assert.equal((await call('servant', 'GET', `/sessions/${s.id}/records`)).data.length, before);
+  });
+
+  test('المخدوم الموقوف مابيتسجّلش', async () => {
+    const d = await newMember('مخدوم موقوف ' + Date.now());
+    await call('servant', 'PATCH', `/members/${d.id}`, { status: 'stopped' });
+    const r = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: d.qr_token });
+    assert.equal(r.data.result, 'stopped');
+  });
+
+  test('التراجع بيشيل التسجيل', async () => {
+    const r = await call('servant', 'DELETE', `/sessions/${s.id}/records/${a.id}`);
+    assert.equal(r.status, 200);
+    assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}/records/${a.id}`)).status, 404);
+    const again = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: a.qr_token });
+    assert.equal(again.data.result, 'ok', 'بعد التراجع يتسجّل تاني عادي');
+  });
+
+  test('المسح من غير جلسة مفتوحة مرفوض', async () => {
+    await call('servant', 'DELETE', `/sessions/${s.id}`);
+    const r = await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: a.qr_token });
+    assert.equal(r.data.result, 'nosession');
+  });
+});

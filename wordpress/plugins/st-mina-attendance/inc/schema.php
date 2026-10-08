@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // رقم نسخة الجداول. أي تغيير في شكل جدول يزوّده، والتحديث بيشتغل لوحده
-define( 'STMINA_ATT_DB_VERSION', 4 ); // 2: روابط شاشات /attend/، و3: رابط الكارت /me/، و4: جدول الجلسات
+define( 'STMINA_ATT_DB_VERSION', 5 ); // 2: روابط شاشات /attend/، و3: رابط الكارت /me/، و4: الجلسات، و5: السجلات والأكواد الملغية
 
 /**
  * أسماء الجداول بالبادئة بتاعة الموقع (wp_ أو غيرها).
@@ -85,6 +85,29 @@ function stmina_att_install() {
   PRIMARY KEY  (id),
   UNIQUE KEY one_per_day (service_id,kind,session_date),
   KEY status (status)
+) $charset;" );
+
+	// سجل الحضور: مخدوم واحد في الجلسة الواحدة (UNIQUE)، والحالة (present أو excused أو absent)،
+	// والطريقة (scan أو manual أو auto)، ومين سجّله وإمتى
+	dbDelta( 'CREATE TABLE ' . stmina_att_table( 'records' ) . " (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  session_id bigint(20) unsigned NOT NULL,
+  member_id bigint(20) unsigned NOT NULL,
+  status varchar(10) NOT NULL DEFAULT 'present',
+  method varchar(10) NOT NULL DEFAULT 'scan',
+  recorded_by bigint(20) unsigned NOT NULL DEFAULT 0,
+  recorded_at datetime NOT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY one_per_session (session_id,member_id),
+  KEY member_id (member_id)
+) $charset;" );
+
+	// الأكواد القديمة بعد إعادة الإصدار، علشان المسح يفرّق بين "الكارت ده ملغي" و"كارت مش معروف"
+	dbDelta( 'CREATE TABLE ' . stmina_att_table( 'revoked' ) . " (
+  token char(32) NOT NULL,
+  member_id bigint(20) unsigned NOT NULL,
+  revoked_at datetime NOT NULL,
+  PRIMARY KEY  (token)
 ) $charset;" );
 
 	// الخدمات: "إعداد الخدام" الظاهرة، و"اختبار" المستخبية لبيانات الاختبارات

@@ -1,0 +1,215 @@
+<?php
+/**
+ * شاشة "scan" في نظام الحضور. متولّدة من design/attend-scan.html بأداة tools/convert-attend.js،
+ * فأي تعديل في الشكل يتعمل في التصميم وبعدين تتشغّل الأداة تاني.
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>المسح | إعداد الخدام</title>
+<meta name="description" content="مسح كروت المخدومين بالكاميرا لتسجيل الحضور في الجلسة المفتوحة.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() . '/assets/site.css' ); ?>">
+<link rel="stylesheet" href="<?php echo esc_url( STMINA_ATT_URL . 'assets/attend.css?ver=' . STMINA_ATT_VERSION ); ?>">
+<style>
+/* خاص بشاشة المسح: الكاميرا مالية الشاشة، والزجاج فوقها أغمق شوية علشان يتقري فوق أي صورة */
+body.scan{height:100svh;overflow:hidden;background:#000}
+body.scan::before{display:none}
+.stage{position:relative;flex:1;overflow:hidden;--glass:rgba(24,16,10,.5);
+  /* نص المساحة الفاضية بين الشريط اللي فوق (حوالي 74px) واللوح اللي تحت (حوالي 300px) */
+  --mid:calc(50% - 113px)}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+/* لو الكاميرا مش شغالة: صورة الخلفية متموّهة مكانها */
+.cam-off{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:var(--s-3);padding:84px var(--s-8) 310px;text-align:center;
+  background:linear-gradient(rgba(10,6,3,.55),rgba(10,6,3,.7)),url("<?php echo esc_url( get_template_directory_uri() . '/assets/media/church/bg-praying-light.jpg' ); ?>") center/cover}
+.cam-off[hidden]{display:none}
+.cam-off p{max-width:30ch;font-size:.92rem;line-height:1.8;color:var(--on-glass-2)}
+.cam-off .btn{width:auto;padding-inline:var(--s-6)}
+
+/* الشريط العلوي */
+.s-top{position:absolute;top:var(--s-3);inset-inline:var(--s-3);z-index:5;display:flex;align-items:center;gap:var(--s-2);padding:var(--s-2);border-radius:20px}
+.s-title{flex:1;min-width:0;line-height:1.35}
+.s-title b{display:block;font-size:.95rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-title span{font-size:.8rem;color:var(--on-glass-2)}
+.s-title strong{font-weight:500;color:var(--on-glass);font-variant-numeric:tabular-nums}
+.ibtn{width:44px;height:44px;flex:none;display:grid;place-items:center;border:0;border-radius:14px;background:var(--glass-2);color:var(--on-glass);cursor:pointer;transition:background var(--t-fast)}
+.ibtn:hover{background:var(--glass-3)}
+.ibtn .icon{width:20px;height:20px}
+.ibtn[aria-pressed=true]{background:var(--btn-light);color:var(--ink)}
+.ibtn:disabled{opacity:.35;cursor:not-allowed}
+.ibtn .off{display:none}
+#sound[aria-pressed=false] .on{display:none}
+#sound[aria-pressed=false] .off{display:block}
+.pend{display:none;align-items:center;gap:6px;margin-top:2px;font-size:.76rem;color:var(--warn)}
+[data-state=offline] .pend{display:flex}
+
+/* إطار المسح: زوايا، والباقي معتّم */
+.finder{position:absolute;left:50%;top:var(--mid);width:min(66vw,270px);aspect-ratio:1;translate:-50% -50%;border-radius:22px;box-shadow:0 0 0 200vmax rgba(0,0,0,.42);pointer-events:none}
+.finder i{position:absolute;width:38px;height:38px;border:3px solid #fff;border-radius:4px}
+.finder i:nth-child(1){top:-2px;right:-2px;border-width:3px 3px 0 0;border-top-right-radius:22px}
+.finder i:nth-child(2){top:-2px;left:-2px;border-width:3px 0 0 3px;border-top-left-radius:22px}
+.finder i:nth-child(3){bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-bottom-right-radius:22px}
+.finder i:nth-child(4){bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-bottom-left-radius:22px}
+.finder .line{position:absolute;inset-inline:10%;top:50%;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.85),transparent);animation:sweep 2.4s ease-in-out infinite}
+@keyframes sweep{0%,100%{translate:0 -90px;opacity:.2}50%{translate:0 90px;opacity:1}}
+.finder.hit i{border-color:var(--ok)}
+.finder.miss i{border-color:var(--bad-text)}
+.hint{position:absolute;left:50%;top:calc(var(--mid) + min(33vw,135px) + var(--s-3));translate:-50% 0;z-index:3;width:max-content;max-width:90%;padding:6px 14px;border-radius:999px;font-size:.84rem;color:var(--on-glass);background:rgba(0,0,0,.35);text-align:center}
+.cam-off:not([hidden]) ~ .finder,.cam-off:not([hidden]) ~ .hint{display:none}
+
+/* اللوح السفلي: آخر 3 + تسجيل يدوي */
+.dock{position:absolute;bottom:calc(var(--s-3) + env(safe-area-inset-bottom));inset-inline:var(--s-3);z-index:5;padding:var(--s-3);border-radius:22px}
+.dock h2{display:flex;justify-content:space-between;align-items:baseline;padding:0 var(--s-2) var(--s-2);font-size:.8rem;font-weight:500;color:var(--on-glass-2)}
+.recent{display:grid;gap:2px;margin-bottom:var(--s-3)}
+.rec{display:grid;grid-template-columns:32px 1fr auto;align-items:center;gap:var(--s-3);min-height:44px;padding:4px var(--s-2);border-radius:12px}
+.rec:first-child{background:var(--glass-2)}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--glass-3);font-size:.75rem;font-weight:500}
+.rec b{display:block;font-size:.9rem;font-weight:400;line-height:1.3}
+.rec small{font-size:.76rem;color:var(--on-glass-2)}
+.tag{display:inline-block;margin-inline-start:6px;padding:0 8px;border-radius:999px;background:var(--glass-3);font-size:.75rem;line-height:1.7;color:var(--on-glass)}
+.tag.excuse{background:rgba(127,166,191,.35)}
+.rec .textlink{font-size:.8rem;min-height:44px}
+.rec-empty{padding:var(--s-2);font-size:.85rem;color:var(--on-glass-2)}
+
+/* نتيجة المسح: لوح من تحت لمدة ثانيتين */
+.result{position:absolute;bottom:calc(var(--s-3) + env(safe-area-inset-bottom));inset-inline:var(--s-3);z-index:8;display:grid;grid-template-columns:56px 1fr;gap:var(--s-4);align-items:center;padding:var(--s-5);border-radius:22px;
+  translate:0 130%;transition:translate .35s var(--ease)}
+.result.show{translate:0 0}
+.result .r-ic{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.result .r-ic .icon{width:28px;height:28px;stroke-width:2.2}
+.result b{display:block;font-size:1.15rem;font-weight:500;line-height:1.4}
+.result p{font-size:.86rem;line-height:1.7;color:var(--on-glass-2);margin-top:2px}
+.result .r-act{grid-column:1/-1;display:flex;gap:var(--s-2)}
+.result .r-act:empty{display:none}
+.result .r-act .btn{height:46px;font-size:.92rem}
+.result[data-kind=ok]{border-color:rgba(155,208,127,.6)}
+.result[data-kind=ok] .r-ic{background:#4E8A3A}
+.result[data-kind=dup] .r-ic{background:#4F7C99}
+.result[data-kind=dup]{border-color:rgba(127,166,191,.6)}
+.result[data-kind=revoked] .r-ic,.result[data-kind=unknown] .r-ic{background:#B4443A}
+.result[data-kind=revoked],.result[data-kind=unknown]{border-color:rgba(255,180,163,.55)}
+.result[data-kind=nosession] .r-ic{background:#9A6A22}
+.result[data-kind=nosession]{border-color:rgba(242,179,90,.6)}
+
+/* لوح التسجيل اليدوي */
+.manual{position:absolute;inset-inline:0;bottom:0;z-index:10;display:flex;flex-direction:column;max-height:86%;padding:var(--s-3) var(--s-4) calc(var(--s-4) + env(safe-area-inset-bottom));border-radius:26px 26px 0 0;--glass:rgba(30,20,13,.86);
+  translate:0 105%;transition:translate .4s var(--ease);visibility:hidden}
+.manual.open{translate:0 0;visibility:visible}
+.manual::before{content:"";display:block;width:40px;height:4px;margin:0 auto var(--s-3);border-radius:2px;background:var(--glass-line)}
+.m-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--s-3)}
+.m-head h2{font-size:1.2rem;font-weight:400}
+.m-search .icon{width:20px;height:20px}
+.m-list{flex:1;overflow-y:auto;margin-top:var(--s-3);padding-bottom:var(--s-2)}
+.m-row{border-radius:14px}
+.m-row + .m-row{margin-top:2px}
+.m-pick{display:grid;grid-template-columns:36px 1fr auto;align-items:center;gap:var(--s-3);width:100%;min-height:52px;padding:6px var(--s-2);border:0;border-radius:14px;background:none;color:var(--on-glass);font:inherit;text-align:start;cursor:pointer}
+.m-pick:hover{background:var(--glass-2)}
+.m-pick .av{width:36px;height:36px}
+.m-pick span{font-size:.95rem}
+.m-pick small{font-size:.76rem;color:var(--on-glass-2)}
+.m-pick small.here{color:var(--ok)}
+.m-row.open{background:var(--glass-2)}
+.m-choose{display:none;grid-template-columns:repeat(3,1fr);gap:var(--s-2);padding:0 var(--s-2) var(--s-3)}
+.m-row.open .m-choose{display:grid}
+.m-choose button{min-height:48px;border-radius:12px;border:1px solid var(--glass-line-soft);background:var(--glass-2);color:var(--on-glass);font:inherit;font-size:.88rem;cursor:pointer}
+.m-choose button:first-child{background:var(--btn-light);color:var(--ink);border-color:transparent}
+.m-empty{padding:var(--s-6) var(--s-2);text-align:center;font-size:.9rem;color:var(--on-glass-2)}
+.scrim{position:absolute;inset:0;z-index:9;background:rgba(0,0,0,.45);opacity:0;visibility:hidden;transition:opacity .3s}
+.scrim.show{opacity:1;visibility:visible}
+
+/* الموبايلات القصيرة (زي آيفون SE): نخبّي جملة الإرشاد ونعرض آخر 2 بس */
+@media (max-height:720px){.hint{display:none}.rec:nth-child(3){display:none}}
+
+/* مفيش جلسة مفتوحة: الإطار والتحت بيتقفلوا، والنتيجة تفضل ظاهرة */
+[data-state=nosession] .finder .line{display:none}
+[data-state=nosession] .dock{display:none}
+</style>
+</head>
+<body class="scan" data-state="normal">
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-flash" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7l1-8Z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M19 5a10 10 0 0 1 0 14"/></symbol>
+  <symbol id="i-mute" viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-repeat" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m5.7 5.7 12.6 12.6"/></symbol>
+  <symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6M12 17h.01"/></symbol>
+  <symbol id="i-cal-x" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M10 14l4 4M14 14l-4 4"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 24 24"><path d="M18 11V6a2 2 0 0 0-4 0v5M14 10V4a2 2 0 0 0-4 0v6M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 20h16"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.4a5 5 0 0 1 7 0M5 12.8a10 10 0 0 1 4.4-2.5M14.6 10.3A10 10 0 0 1 19 12.8M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M12 20h.01"/></symbol>
+  <symbol id="i-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2Z"/><circle cx="12" cy="13" r="4"/></symbol>
+</svg>
+
+
+<div class="offline" role="status">
+  <svg class="icon"><use href="#i-wifi-off"/></svg>
+  <span>أنت بدون إنترنت، المسح شغال والعمليات تُحفظ على جهازك (<span id="pendN">3</span>)</span>
+</div>
+
+<main class="stage" id="main">
+  <video id="cam" playsinline muted autoplay aria-hidden="true"></video>
+  <div class="cam-off" id="camOff" hidden>
+    <svg class="icon" style="width:40px;height:40px"><use href="#i-camera"/></svg>
+    <p id="camMsg">الكاميرا مقفولة. اسمح للموقع يستخدمها من إعدادات المتصفح، أو سجّل الحضور يدوي.</p>
+    <button class="btn btn-light" type="button" id="camRetry">جرّب تاني</button>
+  </div>
+  <div class="finder" id="finder" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="line"></span></div>
+  <p class="hint" id="hint">وجّه الكاميرا على كارت المخدوم</p>
+
+  <header class="glass s-top">
+    <a class="ibtn" href="<?php echo esc_url( stmina_att_url( 'sessions' ) ); ?>" aria-label="رجوع للجلسات"><svg class="icon"><use href="#i-right"/></svg></a>
+    <div class="s-title">
+      <b id="sessName">اجتماع · النهاردة</b>
+      <span>حضر <strong id="cnt">23</strong> من <strong>41</strong></span>
+      <span class="pend"><svg class="icon" style="width:14px;height:14px"><use href="#i-upload"/></svg><span id="pendTxt">3 لم تُزامَن</span></span>
+    </div>
+    <button class="ibtn" type="button" id="sound" aria-pressed="true" aria-label="الصوت شغال، اضغط لقفله">
+      <svg class="icon on"><use href="#i-sound"/></svg><svg class="icon off"><use href="#i-mute"/></svg>
+    </button>
+    <button class="ibtn" type="button" id="torch" aria-pressed="false" aria-label="الكشاف" disabled><svg class="icon"><use href="#i-flash"/></svg></button>
+  </header>
+
+  <section class="glass dock" aria-labelledby="recentH">
+    <h2 id="recentH"><span>آخر اللي اتسجّلوا</span></h2>
+    <div class="recent" id="recent" aria-live="polite"></div>
+    <button class="btn btn-glass" type="button" id="openManual"><svg class="icon"><use href="#i-hand"/></svg>تسجيل يدوي</button>
+  </section>
+
+  <div class="glass result" id="result" role="status" aria-live="assertive">
+    <span class="r-ic" id="rIc"></span>
+    <div><b id="rTitle"></b><p id="rText"></p></div>
+    <div class="r-act" id="rAct"></div>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+  <section class="glass manual" id="manual" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="m-head">
+      <h2 id="mTitle">تسجيل يدوي</h2>
+      <button class="ibtn" type="button" id="closeManual" aria-label="قفل التسجيل اليدوي"><svg class="icon"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="g-input has-end m-search">
+      <input type="search" id="q" placeholder="اكتب اسم المخدوم" aria-label="ابحث باسم المخدوم" autocomplete="off">
+      <span class="end" aria-hidden="true"><svg class="icon"><use href="#i-search"/></svg></span>
+    </div>
+    <div class="m-list" id="mList"></div>
+  </section>
+</main>
+
+<?php stmina_att_footer( 'scan' ); ?>
+</body>
+</html>

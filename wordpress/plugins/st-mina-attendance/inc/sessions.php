@@ -31,6 +31,7 @@ function stmina_att_session_json( $s ) {
 		'status'    => $s->status,
 		'opened_at' => $s->opened_at,
 		'closed_at' => $s->closed_at,
+		'present'   => stmina_att_present_count( $s->id ),
 	);
 }
 
@@ -110,6 +111,7 @@ function stmina_att_delete_session( $session ) {
 	if ( 'open' !== $session->status ) {
 		return new WP_Error( 'stmina_closed', 'الجلسة دي خلصت ومينفعش تتمسح.', array( 'status' => 409 ) );
 	}
+	$wpdb->delete( stmina_att_table( 'records' ), array( 'session_id' => $session->id ) ); // التسجيلات اللي اتعملت فيها بالغلط
 	$wpdb->delete( stmina_att_table( 'sessions' ), array( 'id' => $session->id ) );
 	return true;
 }

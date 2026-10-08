@@ -44,7 +44,7 @@
   function renderCurrent() {
     const open = sessions.filter(s => s.status === 'open');
     $('#current').innerHTML = open.map(s => {
-      const d = toDay(s.date), r = rel(d), present = 0;
+      const d = toDay(s.date), r = rel(d), present = s.present;
       return `
       <article class="glass cur" data-id="${s.id}">
         <div class="cur-top"><span class="live">مفتوحة الآن</span><span class="cur-date">${r ? r + ' · ' : ''}${fFull.format(d)}</span></div>
@@ -52,7 +52,7 @@
         <p class="count"><strong>${present}</strong><span>حضروا من ${total}</span></p>
         ${tally(present, true)}
         <div class="cur-actions">
-          <a class="btn btn-light" href="${C.base}scan/">${icon('i-scan')}ابدأ المسح</a>
+          <a class="btn btn-light" href="${C.base}scan/?session=${s.id}">${icon('i-scan')}ابدأ المسح</a>
           <div class="cur-foot">
             <a class="textlink" href="${C.base}session/">تفاصيل الجلسة</a>
             <button class="textlink" type="button" data-ask-del>حذف الجلسة</button>
@@ -99,7 +99,7 @@
         const d = toDay(s.date);
         return `<a class="row" href="${C.base}session/" aria-label="${esc(s.kind_name)}، ${fFull.format(d)}">
           <span class="dtile"><b>${d.getDate()}</b><small>${rel(d) || fWd.format(d)}</small></span>
-          <span><span class="row-head"><span>${esc(s.kind_name)}</span><em dir="ltr">0 / ${total}</em></span>${tally(0)}</span>
+          <span><span class="row-head"><span>${esc(s.kind_name)}</span><em dir="ltr">${s.present} / ${total}</em></span>${tally(s.present)}</span>
         </a>`;
       }).join('')}</div>`).join('');
   }

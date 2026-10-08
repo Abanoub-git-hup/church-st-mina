@@ -100,6 +100,10 @@ function stmina_att_footer( $screen ) {
 		// مكتبة qrcode-generator لرسم الـ QR في المتصفح (من cdnjs زي GSAP في الـ theme)
 		echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>' . "\n";
 	}
+	if ( 'scan' === $screen ) {
+		// قراية الـ QR من الكاميرا في المتصفحات اللي مافيهاش BarcodeDetector (آيفون). مش موجودة على cdnjs
+		echo '<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>' . "\n";
+	}
 	echo '<script src="' . esc_url( $url . $screen . '.js?ver=' . $ver ) . "\"></script>\n";
 }
 
