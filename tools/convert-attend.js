@@ -7,7 +7,7 @@ const path = require('path');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, 'wordpress/plugins/st-mina-attendance/screens');
-const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html', card: 'attend-card.html', sessions: 'attend-sessions.html', scan: 'attend-scan.html', session: 'attend-session.html' };
+const SCREENS = { login: 'attend-login.html', members: 'attend-members.html', member: 'attend-member.html', card: 'attend-card.html', sessions: 'attend-sessions.html', scan: 'attend-scan.html', session: 'attend-session.html', import: 'attend-import.html' };
 
 // اسم الشاشة في التصميم ← رابطها في WordPress
 const link = name => `<?php echo esc_url( stmina_att_url( '${name}' ) ); ?>`;

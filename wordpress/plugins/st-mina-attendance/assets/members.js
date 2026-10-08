@@ -17,9 +17,12 @@
 
   function renderFilters() {
     const active = members.filter(m => m.status === 'active').length, off = members.length - active;
+    // "لسه مااتبعتلوش كارت": علشان الخادم يكمّل البعت من مكان واحد مهما كانت طريقة التسجيل
+    const nocard = members.filter(m => m.status === 'active' && !m.card_sent).length;
     const F = [['all', 'الكل', active]];
+    if (nocard) F.push(['nocard', 'لسه مااتبعتلوش كارت', nocard]);
     if (off) F.push(['off', 'موقوف', off]);
-    if (filter === 'off' && !off) filter = 'all';
+    if ((filter === 'off' && !off) || (filter === 'nocard' && !nocard)) filter = 'all';
     $('#filters').innerHTML = F.length > 1
       ? F.map(([k, t, n]) => `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${t} <b>${n}</b></button>`).join('')
       : '';
@@ -29,7 +32,7 @@
   function renderList() {
     const term = $('#q').value.trim().replace(/\s/g, ''), num = digits(term);
     const L = members
-      .filter(m => filter === 'off' ? m.status === 'stopped' : m.status === 'active')
+      .filter(m => filter === 'off' ? m.status === 'stopped' : m.status === 'active' && (filter !== 'nocard' || !m.card_sent))
       .filter(m => !term || m.full_name.replace(/\s/g, '').includes(term) || (num && m.phone.includes(num)))
       .sort((a, b) => a.full_name.localeCompare(b.full_name, 'ar'));
     $('#list').innerHTML = L.length ? L.map(m => {
@@ -62,8 +65,6 @@
   $('#addMore').addEventListener('click', () => $('#addStart').click());
   mobIn.addEventListener('input', () => { mobIn.value = digits(mobIn.value).slice(0, 11); });
 
-  // استيراد Excel (المهمة 20) لسه ماتعملش
-  const alt = $('.add-alt'); if (alt) alt.style.display = 'none';
 
   form.addEventListener('submit', async e => {
     e.preventDefault();
@@ -85,6 +86,7 @@
       render();
       $('#addedName').textContent = m.full_name;
       $('#addedWa').href = waCard(m);
+      $('#addedWa').dataset.id = m.id;
       setOpen('done');
       $('#addedWa').focus();
     } catch (x) {
@@ -96,5 +98,13 @@
     }
   });
 
+  // "ابعتله الكارت على واتساب" بعد الإضافة: الرابط بيفتح عادي، وبنعلّم إن الكارت اتبعت
+  $('#addedWa').addEventListener('click', () => {
+    const id = +$('#addedWa').dataset.id, m = members.find(x => x.id === id);
+    if (m) m.card_sent = true;
+    api(`members/${id}/card-sent`, { method: 'POST' }).then(renderFilters).catch(() => {});
+  });
+
   load();
 })();
+

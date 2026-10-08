@@ -43,6 +43,9 @@ function stmina_att_member_json( $m ) {
 		'registered_at' => $m->registered_at,
 		'qr_token'      => $m->qr_token,
 		'card_url'      => stmina_att_card_url( $m->qr_token ),
+		'card_sent'     => ! empty( $m->card_sent_at ), // الخادم داس "ابعت الكارت" للكارت الحالي
+		// ينفع يتمسح نهائيًا: مالوش أي حضور (والمسح نفسه للمدير بس)
+		'can_delete'    => 0 === stmina_att_member_records_count( $m->id ),
 	);
 }
 
@@ -108,7 +111,7 @@ add_action( 'rest_api_init', function () {
 			},
 		),
 		array(
-			// التعديل والإيقاف: { full_name?, phone?, status? }. مفيش DELETE خالص
+			// التعديل والإيقاف: { full_name?, phone?, status? }
 			'methods'             => 'PATCH',
 			'permission_callback' => 'stmina_att_can',
 			'args'                => $args,
@@ -125,6 +128,27 @@ add_action( 'rest_api_init', function () {
 				return stmina_att_member_json( stmina_att_req_member( $req ) );
 			},
 		),
+	) );
+
+	// الحذف النهائي: للمدير بس، وللي مالوش حضور (الاستثناء الوحيد من "الإيقاف بدل الحذف")
+	register_rest_route( $ns, '/members/(?P<id>\d+)', array(
+		'methods'             => 'DELETE',
+		'permission_callback' => function () {
+			$can = stmina_att_can();
+			if ( true !== $can ) {
+				return $can;
+			}
+			return current_user_can( 'manage_options' ) ? true : new WP_Error( 'rest_forbidden', 'المسح النهائي للمدير بس.', array( 'status' => 403 ) );
+		},
+		'args'                => $args,
+		'callback'            => function ( WP_REST_Request $req ) {
+			$m = stmina_att_req_member( $req );
+			if ( is_wp_error( $m ) ) {
+				return $m;
+			}
+			$done = stmina_att_delete_member( (int) $m->id );
+			return is_wp_error( $done ) ? $done : array( 'deleted' => true );
+		},
 	) );
 
 	register_rest_route( $ns, '/members/(?P<id>\d+)/notes', array(

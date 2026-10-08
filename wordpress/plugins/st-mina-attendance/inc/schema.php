@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // رقم نسخة الجداول. أي تغيير في شكل جدول يزوّده، والتحديث بيشتغل لوحده
-define( 'STMINA_ATT_DB_VERSION', 6 ); // 2: روابط /attend/، و3: رابط الكارت /me/، و4: الجلسات، و5: السجلات والأكواد الملغية، و6: مين صحّح السجل
+define( 'STMINA_ATT_DB_VERSION', 7 ); // 7: الكارت اتبعت إمتى // 2: روابط /attend/، و3: رابط الكارت /me/، و4: الجلسات، و5: السجلات والأكواد الملغية، و6: مين صحّح السجل
 
 /**
  * أسماء الجداول بالبادئة بتاعة الموقع (wp_ أو غيرها).
@@ -48,6 +48,7 @@ function stmina_att_install() {
   registered_at datetime NOT NULL,
   created_by bigint(20) unsigned NOT NULL DEFAULT 0,
   updated_at datetime NOT NULL,
+  card_sent_at datetime DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY phone (phone),
   UNIQUE KEY qr_token (qr_token),

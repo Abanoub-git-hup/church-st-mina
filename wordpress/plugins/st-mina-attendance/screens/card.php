@@ -43,6 +43,8 @@ defined( 'ABSPATH' ) || exit;
 /* النسبة + فلتر نوع النشاط */
 .types{display:flex;gap:var(--s-2);overflow-x:auto;padding-bottom:4px;margin-bottom:var(--s-5);scrollbar-width:none}
 .types::-webkit-scrollbar{display:none}
+/* الشاشات الضيقة: الأنواع تنزل سطر تاني بدل ما آخر واحد يتقص ومايبانش إنه بيتسحب */
+@media (max-width:420px){.types{flex-wrap:wrap;overflow-x:visible}}
 .types button{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--glass-line-soft);background:var(--glass-2);color:var(--on-glass-2);font:inherit;font-size:.86rem;cursor:pointer}
 .types button[aria-pressed=true]{background:var(--btn-light);color:var(--ink);border-color:transparent}
 .pct-row{display:grid;grid-template-columns:132px 1fr;gap:var(--s-5);align-items:center}
@@ -160,7 +162,7 @@ defined( 'ABSPATH' ) || exit;
     </header>
 
     <!-- حضوري -->
-    <div id="tab-me" role="tabpanel" aria-labelledby="t-me" style="display:grid;gap:var(--s-4);margin-top:var(--s-4)">
+    <div id="tab-me" role="tabpanel" aria-labelledby="t-me" style="display:grid;grid-template-columns:minmax(0,1fr);gap:var(--s-4);margin-top:var(--s-4)">
       <div class="msg-strip" id="msg"><svg class="icon"><use href="#i-heart-s"/></svg><div><span id="msgTxt"></span><small>من خدام إعداد الخدام</small></div></div>
 
       <section class="glass card" aria-labelledby="pctH">

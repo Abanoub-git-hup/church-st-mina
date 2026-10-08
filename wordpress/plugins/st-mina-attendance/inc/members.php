@@ -268,6 +268,34 @@ function stmina_att_reissue( $member_id ) {
 	if ( $old ) {
 		$wpdb->replace( stmina_att_table( 'revoked' ), array( 'token' => $old, 'member_id' => $member_id, 'revoked_at' => current_time( 'mysql' ) ) );
 	}
-	$wpdb->update( stmina_att_table( 'members' ), array( 'qr_token' => $token, 'updated_at' => current_time( 'mysql' ) ), array( 'id' => $member_id ) );
+	// والكارت الجديد لسه مااتبعتش
+	$wpdb->update( stmina_att_table( 'members' ), array( 'qr_token' => $token, 'card_sent_at' => null, 'updated_at' => current_time( 'mysql' ) ), array( 'id' => $member_id ) );
 	return $token;
+}
+
+/**
+ * عدد سجلات الحضور للمخدوم في كل الجلسات.
+ */
+function stmina_att_member_records_count( $member_id ) {
+	global $wpdb;
+	return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM ' . stmina_att_table( 'records' ) . ' WHERE member_id = %d', $member_id ) );
+}
+
+/**
+ * حذف نهائي لمخدوم اتضاف بالغلط. للمدير بس، وبشرط إن مالوش أي حضور متسجّل:
+ * القاعدة لسه "الإيقاف بدل الحذف"، والاستثناء ده للغلطات بس (زي تسجيل تجربة).
+ * بيتمسح معاه كل اللي يخصه: الربط بالخدمات، والملاحظات، وأكواده القديمة.
+ *
+ * @return true|WP_Error
+ */
+function stmina_att_delete_member( $member_id ) {
+	global $wpdb;
+	if ( stmina_att_member_records_count( $member_id ) ) {
+		return new WP_Error( 'stmina_has_records', 'المخدوم ده ليه حضور متسجّل، فمينفعش يتمسح. أوقفه بدل كده.', array( 'status' => 409 ) );
+	}
+	$wpdb->delete( stmina_att_table( 'member_service' ), array( 'member_id' => $member_id ) );
+	$wpdb->delete( stmina_att_table( 'notes' ), array( 'member_id' => $member_id ) );
+	$wpdb->delete( stmina_att_table( 'revoked' ), array( 'member_id' => $member_id ) );
+	$wpdb->delete( stmina_att_table( 'members' ), array( 'id' => $member_id ) );
+	return true;
 }

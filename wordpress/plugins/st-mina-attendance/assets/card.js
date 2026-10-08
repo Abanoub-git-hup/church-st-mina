@@ -88,7 +88,8 @@
   // احفظ الكارت: بنرسم نفس شكل الكارت على canvas بمقاس 1080×1920 (شاشة موبايل) وننزّله PNG.
   // الخلفية صورة الصلاة، والـ QR على مربع أبيض في نص شعاع النور، والاسم على زجاج خفيف تحت
   const loadImg = src => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
-  $('#save').addEventListener('click', async () => {
+  // الرسمة بتتعمل أول ما الصفحة تفتح (مش مع الضغطة)، لأن الموبايل بيسمح بقايمة المشاركة بس على طول بعد الضغط
+  async function drawCard() {
     await document.fonts.ready;
     const W = 1080, H = 1920, c = document.createElement('canvas');
     c.width = W; c.height = H;
@@ -145,9 +146,36 @@
     x.shadowBlur = 0;
     x.fillStyle = 'rgba(246,236,220,.8)'; x.font = '300 36px Alexandria'; x.fillText('ورّي الكارت ده للخادم في كل جلسة', W / 2, py + 262);
 
+    return new Promise(ok => c.toBlob(ok, 'image/png'));
+  }
+  let pngReady = null;
+  const getPng = () => pngReady || (pngReady = drawCard());
+  // نجهّزها بعد ما الصفحة تهدى، علشان ماتبطّأش الفتح
+  addEventListener('load', () => setTimeout(getPng, 300));
+
+  $('#save').addEventListener('click', async () => {
+    // الحفظ: على الموبايل قايمة المشاركة بتاعة الموبايل نفسه (فيها "حفظ الصورة" اللي بتنزّلها في المعرض)،
+    // لأن متصفحات الموبايل (خصوصًا آيفون) كتير بتتجاهل download. وعلى اللابتوب تنزيل عادي.
+    const name = `كارت-${card.name}.png`;
+    const blob = await getPng();
+    const file = new File([blob], name, { type: 'image/png' });
+    if (navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: `كارت ${card.name}` });
+        return;
+      } catch (e) {
+        if (e.name === 'AbortError') return; // المخدوم قفل القايمة بنفسه
+      }
+    }
+    const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.download = `كارت-${card.name}.png`;
-    a.href = c.toDataURL('image/png');
+    a.download = name;
+    a.href = url;
+    document.body.append(a);
     a.click();
+    a.remove();
+    // آيفون قديم مابيدعمش ده كله: الصورة بتفتح في تاب، والمخدوم يضغط عليها مطوّل ويختار "حفظ"
+    if (/iphone|ipad|ipod/i.test(navigator.userAgent) && !navigator.canShare) window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
   });
 })();

@@ -143,9 +143,17 @@ describe('التعديل والإيقاف', () => {
     assert.ok(list.data.some(m => m.id === member.id), 'بيظهر في فلتر الموقوفين');
   });
 
-  test('مفيش مسار حذف', async () => {
+  test('المسح النهائي للمدير بس: الخادم العادي والزائر مرفوضين', async () => {
+    assert.equal((await call('guest', 'DELETE', `/members/${member.id}`)).status, 401);
+    assert.equal((await call('subscriber', 'DELETE', `/members/${member.id}`)).status, 403);
     const r = await call('servant', 'DELETE', `/members/${member.id}`);
-    assert.equal(r.status, 404);
+    assert.equal(r.status, 403, 'حساب الخادم في الاختبارات مش مدير');
+    assert.equal((await call('servant', 'GET', `/members/${member.id}`)).status, 200, 'لسه موجود');
+  });
+
+  test('بيانات المخدوم بتقول إذا كان ينفع يتمسح (مالوش حضور)', async () => {
+    const r = await call('servant', 'GET', `/members/${member.id}`);
+    assert.equal(typeof r.data.can_delete, 'boolean');
   });
 
   test('المخدوم مش ظاهر في خدمة تانية', async () => {
@@ -602,5 +610,63 @@ describe('حضوري والنسب (المهمة 16)', () => {
 
   test('تنضيف', async () => {
     for (const s of sessions) assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}`)).status, 200);
+  });
+});
+
+describe('الاستيراد من Excel وحالة الكارت (المهمة 20)', () => {
+  const p1 = phone(), p2 = phone(), p3 = phone();
+  const rows = () => [
+    { line: 2, name: 'مستورد أول ' + Date.now(), phone: p1.slice(1) },          // الصفر اللي Excel شاله
+    { line: 3, name: 'مستورد تاني ' + Date.now(), phone: '+2' + p2 },             // +20
+    { line: 4, name: '', phone: phone() },                                        // من غير اسم
+    { line: 5, name: 'مستورد من غير موبايل', phone: '' },
+    { line: 6, name: 'كلمة', phone: phone() },                                    // الاسم كلمة واحدة
+    { line: 7, name: 'رقم غلط خالص', phone: '12345' },
+    { line: 8, name: 'مكرر في الملف', phone: p1 },                                // نفس رقم صف 2
+    { line: 9, name: 'متسجّل قبل كده', phone: member.phone },                     // موجود في النظام
+    { line: 10, name: 'مستورد تالت ' + Date.now(), phone: p3 },
+  ];
+  let preview;
+
+  test('غير الخدام مايقدروش يستوردوا', async () => {
+    assert.equal((await call('guest', 'POST', '/members/import', { rows: rows() })).status, 401);
+    assert.equal((await call('subscriber', 'POST', '/members/import', { rows: rows() })).status, 403);
+  });
+
+  test('المعاينة بتفحص كل صف وماتضيفش حاجة', async () => {
+    const before = (await call('servant', 'GET', '/members')).data.length;
+    preview = (await call('servant', 'POST', '/members/import', { rows: rows(), commit: false })).data;
+    assert.equal((await call('servant', 'GET', '/members')).data.length, before);
+    const by = Object.fromEntries(preview.rows.map(r => [r.line, r]));
+    assert.ok(by[2].ok && by[2].fixed && by[2].phone === p1, 'الصفر رجع');
+    assert.ok(by[3].ok && by[3].phone === p2, '+20 اتشال');
+    assert.match(by[4].why, /من غير اسم/);
+    assert.match(by[5].why, /من غير موبايل/);
+    assert.match(by[6].why, /كلمة واحدة/);
+    assert.match(by[7].why, /مش رقم موبايل/);
+    assert.match(by[8].why, /مكرر، نفس رقم صف 2/);
+    assert.match(by[9].why, /متسجّل قبل كده/);
+    assert.ok(by[10].ok);
+    assert.equal(preview.added.length, 0);
+  });
+
+  test('الإضافة بتعمل الصفوف السليمة بس، كل واحد بكوده', async () => {
+    const r = (await call('servant', 'POST', '/members/import', { rows: rows(), commit: true })).data;
+    assert.equal(r.added.length, 3);
+    for (const m of r.added) {
+      assert.match(m.qr_token, /^[A-Za-z0-9_-]{32}$/);
+      assert.equal(m.card_sent, false);
+    }
+    const again = (await call('servant', 'POST', '/members/import', { rows: rows(), commit: true })).data;
+    assert.equal(again.added.length, 0, 'الاستيراد مرة تانية مابيكررش حد');
+  });
+
+  test('"الكارت اتبعت" بيتعلّم، وإعادة الإصدار بتلغيه', async () => {
+    const m = (await call('servant', 'GET', '/members')).data.find(x => x.phone === p3);
+    assert.equal((await call('guest', 'POST', `/members/${m.id}/card-sent`)).status, 401);
+    const r = await call('servant', 'POST', `/members/${m.id}/card-sent`);
+    assert.equal(r.data.card_sent, true);
+    const re = await call('servant', 'POST', `/members/${m.id}/reissue`);
+    assert.equal(re.data.card_sent, false, 'الكارت الجديد لسه مااتبعتش');
   });
 });

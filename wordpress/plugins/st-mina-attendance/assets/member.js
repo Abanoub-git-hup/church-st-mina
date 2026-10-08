@@ -32,6 +32,7 @@
     $('#qr').innerHTML = qrSvg(m.card_url);
     $('#sendCard').href = waCard(m);
     $('#viewCard').href = m.card_url;
+    renderDelete();
     $('#notes').innerHTML = notes.length
       ? notes.map(n => `<div class="note">${esc(n.body)}<small>${esc(n.author)} · ${fDate.format(toDate(n.created_at))}</small></div>`).join('')
       : '<p class="no-notes">مفيش ملاحظات لسه.</p>';
@@ -101,6 +102,40 @@
       if (!x.fields.full_name && !x.fields.phone) toast(x.message);
     }
   });
+
+  // "أرسل الكارت على واتساب": بيتعلّم إن الكارت اتبعت
+  $('#sendCard').addEventListener('click', () => { api(`members/${m.id}/card-sent`, { method: 'POST' }).then(x => { m = x; }).catch(() => {}); });
+
+
+  // ---------- المسح النهائي: للمدير بس، وللمخدوم اللي مالوش أي حضور (اتضاف بالغلط) ----------
+  // بنفس شكل قسم الإيقاف: كارت، وزرار، وتأكيد في نفس المكان
+  function renderDelete() {
+    const old = $('#delCard');
+    if (old) old.remove();
+    if (!C.admin || !m.can_delete) return;
+    $('.suspend').insertAdjacentHTML('afterend', `
+      <section class="glass card suspend" id="delCard" aria-labelledby="delH">
+        <div class="c-h"><h2 id="delH">مسح نهائي</h2></div>
+        <p>للي اتضاف بالغلط بس، زي تسجيل تجربة أو اسم مكرر. المخدوم ده مالوش أي حضور، فمسحه مش هيأثر على أي نسبة. ومفيش رجوع بعد المسح.</p>
+        <button class="btn btn-out" type="button" id="askDel">امسح المخدوم نهائيًا</button>
+        <div class="confirm" role="group" aria-label="تأكيد المسح">
+          <p>هيتمسح <b>${esc(m.full_name)}</b> وكارته وملاحظاته خالص.</p>
+          <div class="row2">
+            <button class="btn-del" type="button" id="doDel">امسحه</button>
+            <button class="textlink" type="button" id="keepDel">رجوع</button>
+          </div>
+        </div>
+      </section>`);
+    const card = $('#delCard');
+    $('#askDel').addEventListener('click', () => { card.classList.add('show-confirm'); $('#doDel').focus(); });
+    $('#keepDel').addEventListener('click', () => { card.classList.remove('show-confirm'); $('#askDel').focus(); });
+    $('#doDel').addEventListener('click', async () => {
+      try {
+        await api(`members/${m.id}`, { method: 'DELETE' });
+        location.href = `${C.base}members/`;
+      } catch (x) { toast(x.message); }
+    });
+  }
 
   // ---------- إعادة إصدار الكارت: كود جديد، والرابط القديم بيبطل فورًا ----------
   const cardBox = $('#cardBox');
