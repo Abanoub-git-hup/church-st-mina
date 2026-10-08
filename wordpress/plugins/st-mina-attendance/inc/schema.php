@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // رقم نسخة الجداول. أي تغيير في شكل جدول يزوّده، والتحديث بيشتغل لوحده
-define( 'STMINA_ATT_DB_VERSION', 5 ); // 2: روابط شاشات /attend/، و3: رابط الكارت /me/، و4: الجلسات، و5: السجلات والأكواد الملغية
+define( 'STMINA_ATT_DB_VERSION', 6 ); // 2: روابط /attend/، و3: رابط الكارت /me/، و4: الجلسات، و5: السجلات والأكواد الملغية، و6: مين صحّح السجل
 
 /**
  * أسماء الجداول بالبادئة بتاعة الموقع (wp_ أو غيرها).
@@ -97,6 +97,8 @@ function stmina_att_install() {
   method varchar(10) NOT NULL DEFAULT 'scan',
   recorded_by bigint(20) unsigned NOT NULL DEFAULT 0,
   recorded_at datetime NOT NULL,
+  updated_by bigint(20) unsigned NOT NULL DEFAULT 0,
+  updated_at datetime DEFAULT NULL,
   PRIMARY KEY  (id),
   UNIQUE KEY one_per_session (session_id,member_id),
   KEY member_id (member_id)

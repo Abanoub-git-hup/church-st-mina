@@ -26,6 +26,7 @@ function stmina_att_url( $screen = '', $id = 0 ) {
 add_action( 'init', function () {
 	add_rewrite_rule( '^attend/?$', 'index.php?stmina_screen=sessions', 'top' );
 	add_rewrite_rule( '^attend/members/([0-9]+)/?$', 'index.php?stmina_screen=member&stmina_id=$matches[1]', 'top' );
+	add_rewrite_rule( '^attend/session/([0-9]+)/?$', 'index.php?stmina_screen=session&stmina_id=$matches[1]', 'top' );
 	add_rewrite_rule( '^attend/([a-z]+)/?$', 'index.php?stmina_screen=$matches[1]', 'top' );
 	// كارت المخدوم. أي حاجة بعد /me/ بتوصل للشاشة، والكود الغلط بيظهر "الرابط ده مش شغال"
 	add_rewrite_rule( '^me/([^/]+)/?$', 'index.php?stmina_screen=card&stmina_token=$matches[1]', 'top' );

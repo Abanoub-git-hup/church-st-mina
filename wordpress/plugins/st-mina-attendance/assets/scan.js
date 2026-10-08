@@ -1,7 +1,7 @@
 // شاشة المسح: الكاميرا الخلفية، وقراية الـ QR، وبعت الكود لـ POST /sessions/{id}/scan، وعرض النتيجة
 // بلون وأيقونة واهتزاز وصوت. والجلسة من ?session= (من كارت الجلسة)، وإلا آخر جلسة مفتوحة.
 // القراية: BarcodeDetector المدمج في المتصفح لو موجود (كروم أندرويد)، وإلا مكتبة jsQR (آيفون).
-// التسجيل اليدوي في المهمة 13، والمسح من غير نت في المهام 21 لـ 23.
+// والتسجيل اليدوي بالبحث بالاسم (المهمة 13). والمسح من غير نت في المهام 21 لـ 23.
 (() => {
   const { $, api, esc, C } = window.Attend;
   const body = document.body;
@@ -15,8 +15,60 @@
 
   let session = null, open = [], total = 0, recent = [];
 
-  // التسجيل اليدوي لسه جاي (المهمة 13)
-  $('#openManual').style.display = 'none';
+  // ---------- التسجيل اليدوي: البحث بالاسم، وبعدين حضر أو غاب بعذر أو غاب (PUT على سجل المخدوم) ----------
+  const manual = $('#manual'), scrim = $('#scrim'), q = $('#q');
+  let roster = [], opener = null;
+  const statusText = p => p.status === 'present' ? `<small class="here">حاضر · ${clock(p.recorded_at)}</small>` : p.status === 'excused' ? '<small>غاب بعذر</small>' : p.status === 'absent' ? '<small>غاب</small>' : '<small>مش متسجّل</small>';
+  function renderManual() {
+    const term = q.value.trim();
+    const list = roster.filter(p => !term || p.full_name.includes(term))
+      .sort((a, b) => (a.status === 'present') - (b.status === 'present') || a.full_name.localeCompare(b.full_name, 'ar'));
+    $('#mList').innerHTML = list.length ? list.map(p => `
+      <div class="m-row" data-id="${p.member_id}">
+        <button class="m-pick" type="button" aria-expanded="false"><span class="av" aria-hidden="true">${esc(p.full_name.slice(0, 2))}</span><span>${esc(p.full_name)}</span>${statusText(p)}</button>
+        <div class="m-choose" role="group" aria-label="تسجيل ${esc(p.full_name)}">
+          <button type="button" data-set="present">حضر</button>
+          <button type="button" data-set="excused">غاب بعذر</button>
+          <button type="button" data-set="absent">غاب</button>
+        </div>
+      </div>`).join('') : '<p class="m-empty">مفيش مخدوم بالاسم ده في الخدمة.</p>';
+  }
+  $('#mList').addEventListener('click', async e => {
+    const row = e.target.closest('.m-row');
+    if (!row) return;
+    if (e.target.closest('.m-pick')) {
+      const isOpen = !row.classList.contains('open');
+      document.querySelectorAll('.m-row.open').forEach(r => { r.classList.remove('open'); $('.m-pick', r).setAttribute('aria-expanded', 'false'); });
+      row.classList.toggle('open', isOpen);
+      $('.m-pick', row).setAttribute('aria-expanded', isOpen);
+      return;
+    }
+    const set = e.target.closest('[data-set]');
+    if (!set || !session) return;
+    try {
+      const r = await api(`sessions/${session.id}/records/${row.dataset.id}`, { method: 'PUT', body: { status: set.dataset.set } });
+      recent = recent.filter(x => x.member_id !== r.member_id);
+      recent.unshift(r);
+      renderCount(); renderRecent(); closeManual();
+      if (r.status === 'present') show('ok', r.full_name, clock(r.updated_at || r.recorded_at));
+    } catch (x) { closeManual(); show('error', '', x.message); }
+  });
+  q.addEventListener('input', renderManual);
+  async function openManual() {
+    if (!session) return show('nosession');
+    opener = document.activeElement;
+    q.value = '';
+    $('#mList').innerHTML = '';
+    manual.classList.add('open');
+    scrim.classList.add('show');
+    setTimeout(() => q.focus(), 50);
+    try { roster = await api(`sessions/${session.id}/roster`); renderManual(); } catch (x) { $('#mList').innerHTML = `<p class="m-empty">${esc(x.message)}</p>`; }
+  }
+  function closeManual() { manual.classList.remove('open'); scrim.classList.remove('show'); opener?.focus?.(); }
+  $('#openManual').addEventListener('click', openManual);
+  $('#closeManual').addEventListener('click', closeManual);
+  scrim.addEventListener('click', closeManual);
+  addEventListener('keydown', e => { if (e.key === 'Escape' && manual.classList.contains('open')) closeManual(); });
 
   // ---------- الجلسة ----------
   async function load() {

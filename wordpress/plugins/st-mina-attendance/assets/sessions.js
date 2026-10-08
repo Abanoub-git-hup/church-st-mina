@@ -54,7 +54,7 @@
         <div class="cur-actions">
           <a class="btn btn-light" href="${C.base}scan/?session=${s.id}">${icon('i-scan')}ابدأ المسح</a>
           <div class="cur-foot">
-            <a class="textlink" href="${C.base}session/">تفاصيل الجلسة</a>
+            <a class="textlink" href="${C.base}session/${s.id}/">تفاصيل الجلسة</a>
             <button class="textlink" type="button" data-ask-del>حذف الجلسة</button>
           </div>
         </div>
@@ -97,7 +97,7 @@
       <h2 class="month">${m}</h2>
       <div class="glass list">${list.map(s => {
         const d = toDay(s.date);
-        return `<a class="row" href="${C.base}session/" aria-label="${esc(s.kind_name)}، ${fFull.format(d)}">
+        return `<a class="row" href="${C.base}session/${s.id}/" aria-label="${esc(s.kind_name)}، ${fFull.format(d)}">
           <span class="dtile"><b>${d.getDate()}</b><small>${rel(d) || fWd.format(d)}</small></span>
           <span><span class="row-head"><span>${esc(s.kind_name)}</span><em dir="ltr">${s.present} / ${total}</em></span>${tally(s.present)}</span>
         </a>`;

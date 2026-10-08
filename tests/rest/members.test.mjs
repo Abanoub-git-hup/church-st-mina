@@ -390,3 +390,97 @@ describe('المسح (المهام 11 و12)', () => {
     assert.equal(r.data.result, 'nosession');
   });
 });
+
+describe('اليدوي والتصحيح والإنهاء (المهام 13 و14)', () => {
+  const pastDay = () => { const d = new Date(); d.setDate(d.getDate() - 30 - Math.floor(Math.random() * 3000)); return d.toISOString().slice(0, 10); };
+  const newMember = async name => (await call('servant', 'POST', '/members', { full_name: name, phone: phone() })).data;
+  const recordOf = async (sid, mid) => (await call('servant', 'GET', `/sessions/${sid}/roster`)).data.find(r => r.member_id === mid);
+  let today, past, a, b, c, d;
+
+  before(async () => {
+    a = await newMember('يدوي أول ' + Date.now());
+    b = await newMember('يدوي تاني ' + Date.now());
+    c = await newMember('يدوي تالت ' + Date.now());
+    d = await newMember('يدوي موقوف ' + Date.now());
+    await call('servant', 'PATCH', `/members/${d.id}`, { status: 'stopped' });
+    // جلسة النهارده (علشان المخدومين الجداد يبقوا متسجّلين يومها). لو نوع اتعمل النهارده قبل كده، نجرّب اللي بعده
+    const date = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(new Date()); // النهارده بتوقيت القاهرة زي الموقع
+    for (const kind of ['activity', 'service', 'meeting', 'mass']) {
+      const r = await call('servant', 'POST', '/sessions', { kind, date });
+      if (r.status === 201) { today = r.data; break; }
+    }
+    assert.ok(today, 'اتفتحت جلسة النهارده');
+    past = (await call('servant', 'POST', '/sessions', { kind: 'meeting', date: pastDay() })).data;
+  });
+
+  test('غير الخدام مرفوضين', async () => {
+    for (const [m, p, body] of [['GET', `/sessions/${today.id}/roster`], ['PUT', `/sessions/${today.id}/records/${a.id}`, { status: 'present' }], ['POST', `/sessions/${today.id}/close`]]) {
+      assert.equal((await call('guest', m, p, body)).status, 401, `${m} ${p}`);
+      assert.equal((await call('subscriber', m, p, body)).status, 403, `${m} ${p}`);
+    }
+  });
+
+  test('التسجيل اليدوي بيتحفظ بعلامة "يدوي" واسم الخادم', async () => {
+    const r = await call('servant', 'PUT', `/sessions/${today.id}/records/${a.id}`, { status: 'present' });
+    assert.equal(r.status, 200, JSON.stringify(r.data));
+    assert.equal(r.data.status, 'present');
+    assert.equal(r.data.method, 'manual');
+    assert.ok(r.data.recorded_by);
+  });
+
+  test('الغياب بعذر حالة مستقلة', async () => {
+    const r = await call('servant', 'PUT', `/sessions/${today.id}/records/${b.id}`, { status: 'excused' });
+    assert.equal(r.data.status, 'excused');
+    assert.equal((await call('servant', 'PUT', `/sessions/${today.id}/records/${b.id}`, { status: 'late' })).status, 400);
+  });
+
+  test('القايمة فيها اللي لسه ماتسجّلش، ومافيهاش الموقوف', async () => {
+    assert.equal((await recordOf(today.id, c.id)).status, null);
+    assert.equal(await recordOf(today.id, d.id), undefined);
+    assert.equal((await call('servant', 'PUT', `/sessions/${today.id}/records/${d.id}`, { status: 'present' })).status, 409, 'الموقوف مايتسجّلش');
+  });
+
+  test('التصحيح بيغيّر الحالة ويحفظ مين عدّل', async () => {
+    const r = await call('servant', 'PUT', `/sessions/${today.id}/records/${a.id}`, { status: 'absent' });
+    assert.equal(r.data.status, 'absent');
+    assert.ok(r.data.updated_by);
+    assert.ok(r.data.updated_at);
+    assert.equal(r.data.method, 'manual', 'الطريقة الأصلية مابتتغيّرش');
+  });
+
+  test('الإنهاء بيسجّل "غاب" للي ماتسجّلوش بس، والجلسة بتبقى منتهية', async () => {
+    const r = await call('servant', 'POST', `/sessions/${today.id}/close`);
+    assert.equal(r.status, 200);
+    assert.equal(r.data.status, 'closed');
+    assert.ok(r.data.absent_created >= 1);
+    const cRec = await recordOf(today.id, c.id);
+    assert.equal(cRec.status, 'absent');
+    assert.equal(cRec.method, 'auto');
+    assert.equal((await recordOf(today.id, b.id)).status, 'excused', 'اللي ليه سجل مابيتغيّرش');
+    assert.equal(await recordOf(today.id, d.id), undefined, 'الموقوف مايتحسبش غايب');
+  });
+
+  test('الإنهاء مرة تانية مابيعملش سجلات', async () => {
+    const before = (await call('servant', 'GET', `/sessions/${today.id}/records`)).data.length;
+    const r = await call('servant', 'POST', `/sessions/${today.id}/close`);
+    assert.equal(r.data.absent_created, 0);
+    assert.equal((await call('servant', 'GET', `/sessions/${today.id}/records`)).data.length, before);
+  });
+
+  test('بعد الإنهاء: المسح مقفول، والتصحيح شغال للي ليهم سجل بس', async () => {
+    assert.equal((await call('servant', 'POST', `/sessions/${today.id}/scan`, { code: a.qr_token })).data.result, 'nosession');
+    assert.equal((await call('servant', 'PUT', `/sessions/${today.id}/records/${c.id}`, { status: 'excused' })).data.status, 'excused');
+    const e = await newMember('اتسجّل بعد الإنهاء ' + Date.now());
+    assert.equal((await call('servant', 'PUT', `/sessions/${today.id}/records/${e.id}`, { status: 'present' })).status, 409);
+  });
+
+  test('اللي اتسجّل في الخدمة بعد يوم الجلسة مايتحسبش غايب', async () => {
+    await call('servant', 'POST', `/sessions/${past.id}/close`);
+    for (const m of [a, b, c]) assert.equal(await recordOf(past.id, m.id), undefined, m.full_name);
+  });
+
+  test('تنضيف: جلسات خدمة الاختبار المنتهية بتتمسح', async () => {
+    assert.equal((await call('servant', 'DELETE', `/sessions/${today.id}`)).status, 200);
+    assert.equal((await call('servant', 'DELETE', `/sessions/${past.id}`)).status, 200);
+  });
+});

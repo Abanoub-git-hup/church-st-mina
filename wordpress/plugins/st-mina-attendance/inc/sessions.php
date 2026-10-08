@@ -32,6 +32,8 @@ function stmina_att_session_json( $s ) {
 		'opened_at' => $s->opened_at,
 		'closed_at' => $s->closed_at,
 		'present'   => stmina_att_present_count( $s->id ),
+		'excused'   => stmina_att_status_count( $s->id, 'excused' ),
+		'absent'    => stmina_att_status_count( $s->id, 'absent' ),
 	);
 }
 
@@ -108,7 +110,9 @@ function stmina_att_open_session( $service, $kind, $date ) {
  */
 function stmina_att_delete_session( $session ) {
 	global $wpdb;
-	if ( 'open' !== $session->status ) {
+	// المنتهية مابتتمسحش، إلا في خدمة مستخبية (خدمة "اختبار")، علشان بيانات الاختبارات ماتتراكمش
+	$hidden = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT is_hidden FROM ' . stmina_att_table( 'services' ) . ' WHERE id = %d', $session->service_id ) );
+	if ( 'open' !== $session->status && ! $hidden ) {
 		return new WP_Error( 'stmina_closed', 'الجلسة دي خلصت ومينفعش تتمسح.', array( 'status' => 409 ) );
 	}
 	$wpdb->delete( stmina_att_table( 'records' ), array( 'session_id' => $session->id ) ); // التسجيلات اللي اتعملت فيها بالغلط
