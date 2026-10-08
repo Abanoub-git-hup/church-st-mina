@@ -1,0 +1,152 @@
+<?php
+/**
+ * شاشة "login" في نظام الحضور. متولّدة من design/attend-login.html بأداة tools/convert-attend.js،
+ * فأي تعديل في الشكل يتعمل في التصميم وبعدين تتشغّل الأداة تاني.
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a1c12">
+<title>دخول الخادم | إعداد الخدام</title>
+<meta name="description" content="دخول الخدام لنظام حضور خدمة إعداد الخدام بكنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() . '/assets/site.css' ); ?>">
+<link rel="stylesheet" href="<?php echo esc_url( STMINA_ATT_URL . 'assets/attend.css?ver=' . STMINA_ATT_VERSION ); ?>">
+<style>
+/* خاص بشاشة الدخول: لوح زجاج واحد في نص الشاشة (زي المرجع) */
+.login{flex:1;width:100%;max-width:420px;margin-inline:auto;padding:var(--s-10) var(--gut) var(--s-6);display:flex;flex-direction:column;justify-content:center}
+.panel{padding:var(--s-8) var(--s-5) var(--s-6)}
+.panel-head{margin-bottom:var(--s-6)}
+.panel-head small{display:block;font-size:.82rem;font-weight:500;color:var(--gold-soft);margin-bottom:var(--s-1)}
+.panel-head h1{font-size:1.9rem;font-weight:300;line-height:1.3}
+.panel-head p{font-size:.88rem;color:var(--on-glass-2);margin-top:var(--s-2);line-height:1.7}
+
+/* زر العين داخل خانة كلمة السر (الأيقونة هنا زر حقيقي) */
+.g-input .eye{pointer-events:auto;border:0;background:none;border-radius:10px;cursor:pointer}
+.g-input .eye:hover{color:var(--on-glass)}
+.eye .off{display:none}
+.eye[aria-pressed=true] .on{display:none}
+.eye[aria-pressed=true] .off{display:block}
+/* الخانات LTR (موبايل وبريد) داخل صفحة RTL */
+.g-input input[dir=ltr]{text-align:right}
+.g-input input[dir=ltr]:not(:placeholder-shown){text-align:left}
+.g-input.has-end input[dir=ltr]{padding-left:52px;padding-right:var(--s-4)}
+.g-input.has-end .end{inset-inline-end:auto;left:var(--s-1)}
+
+.remember{display:flex;align-items:center;gap:var(--s-3);min-height:48px;margin-bottom:var(--s-4);cursor:pointer;font-size:.9rem;color:var(--on-glass-2)}
+.remember input{appearance:none;-webkit-appearance:none;margin:0;width:20px;height:20px;flex:none;border-radius:6px;border:1px solid var(--glass-line);background:var(--glass-2);display:grid;place-items:center;cursor:pointer}
+.remember input::after{content:"";width:5px;height:10px;border:solid var(--ink);border-width:0 2px 2px 0;rotate:45deg;translate:0 -1px;opacity:0}
+.remember input:checked{background:var(--btn-light);border-color:var(--btn-light)}
+.remember input:checked::after{opacity:1}
+.remember small{display:block;font-size:.78rem;color:var(--on-glass-3);line-height:1.5}
+
+.error{display:none;gap:var(--s-2);align-items:flex-start;margin-bottom:var(--s-4);padding:var(--s-3);border-radius:12px;background:rgba(217,96,79,.2);border:1px solid rgba(255,180,163,.35);color:var(--bad-text);font-size:.86rem;line-height:1.7}
+.error .icon{width:18px;height:18px;margin-top:3px}
+[data-state=error] .error{display:flex}
+[data-state=error] .g-input input{border-color:rgba(255,180,163,.6)}
+
+.submit .busy{display:none}
+.spinner{width:18px;height:18px;border-radius:50%;border:2px solid rgba(30,20,13,.25);border-top-color:var(--ink);animation:spin .8s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+[data-state=loading] .submit{cursor:progress}
+[data-state=loading] .submit .idle{display:none}
+[data-state=loading] .submit .busy{display:flex;align-items:center;gap:var(--s-3)}
+[data-state=loading] .g-field,[data-state=loading] .remember{opacity:.5;pointer-events:none}
+.submit-note{display:none;text-align:center;font-size:.8rem;color:var(--on-glass-2);margin-top:var(--s-3)}
+[data-state=offline] .submit-note{display:block}
+
+.forgot{margin-top:var(--s-2);text-align:center}
+.forgot-note{margin-top:var(--s-2);padding:var(--s-3) var(--s-4);border-radius:12px;background:var(--glass-2);font-size:.86rem;line-height:1.8;color:var(--on-glass-2);text-align:start}
+.forgot-note b{color:var(--on-glass);font-weight:500}
+
+.back{padding-top:var(--s-6);text-align:center}
+.back a{display:inline-flex;align-items:center;gap:var(--s-2);min-height:44px;padding-inline:var(--s-4);border-radius:999px;font-size:.84rem;color:var(--on-glass-2)}
+.back a:hover{color:var(--on-glass);background:var(--glass-2)}
+.back .icon{width:16px;height:16px}
+</style>
+</head>
+<body data-state="normal">
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M9.9 5.2A9.6 9.6 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-2.6 3.5M6.6 6.6A16.6 16.6 0 0 0 2 12s3.5 7 10 7a9.4 9.4 0 0 0 5.4-1.6M3 3l18 18M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 7v6M12 16.5h.01"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.4a5 5 0 0 1 7 0M5 12.8a10 10 0 0 1 4.4-2.5M14.6 10.3A10 10 0 0 1 19 12.8M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M12 20h.01"/></symbol>
+</svg>
+
+
+<div class="offline" role="status">
+  <svg class="icon"><use href="#i-wifi-off"/></svg>
+  <span>أنت بدون إنترنت. الدخول يحتاج اتصالًا، وبعدها تقدر تسجّل الحضور حتى بدون إنترنت.</span>
+</div>
+
+<main class="login" id="main">
+  <div class="glass panel">
+    <header class="panel-head">
+      <small>إعداد الخدام</small>
+      <h1>دخول الخادم</h1>
+      <p>ادخل بحسابك علشان تفتح الجلسات وتسجّل الحضور.</p>
+    </header>
+
+    <form id="login" novalidate>
+      <p class="error" role="alert">
+        <svg class="icon"><use href="#i-alert"/></svg>
+        <span>البريد أو رقم الموبايل أو كلمة السر غير صحيحة. راجعها وحاول تاني.</span>
+      </p>
+
+      <div class="g-field">
+        <label for="who">البريد أو رقم الموبايل</label>
+        <div class="g-input has-end">
+          <input id="who" name="who" type="text" dir="ltr" autocomplete="username" placeholder="01001234567" required>
+          <span class="end" aria-hidden="true"><svg class="icon"><use href="#i-user"/></svg></span>
+        </div>
+      </div>
+
+      <div class="g-field">
+        <label for="pw">كلمة السر</label>
+        <div class="g-input has-end">
+          <input id="pw" name="pw" type="password" dir="ltr" autocomplete="current-password" required>
+          <button class="end eye" type="button" aria-pressed="false" aria-label="إظهار كلمة السر">
+            <svg class="icon on"><use href="#i-eye"/></svg>
+            <svg class="icon off"><use href="#i-eye-off"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <label class="remember">
+        <input type="checkbox" name="remember" checked>
+        <span>خليك مسجّل على الجهاز ده<small>اقفلها لو الموبايل مش بتاعك</small></span>
+      </label>
+
+      <button class="btn btn-light submit" type="submit">
+        <span class="idle">دخول</span>
+        <span class="busy"><span class="spinner" aria-hidden="true"></span>جاري الدخول…</span>
+      </button>
+      <p class="submit-note">الدخول يحتاج إنترنت. الزر يرجع يشتغل أول ما يرجع.</p>
+    </form>
+
+    <div class="forgot">
+      <button class="textlink" type="button" aria-expanded="false" aria-controls="forgot-note">نسيت كلمة السر؟</button>
+      <p class="forgot-note" id="forgot-note" hidden>
+        كلّم <b>مسؤول الخدمة</b>، وهو يعيّن لك كلمة سر جديدة من حسابه.
+      </p>
+    </div>
+  </div>
+
+  <p class="back"><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><svg class="icon"><use href="#i-right"/></svg>العودة إلى موقع الكنيسة</a></p>
+</main>
+
+<?php stmina_att_footer( 'login' ); ?>
+</body>
+</html>

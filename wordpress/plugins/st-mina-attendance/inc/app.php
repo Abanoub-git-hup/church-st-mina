@@ -1,0 +1,201 @@
+<?php
+/**
+ * شاشات الخدام على /attend/: صفحة لكل شاشة، والبيانات كلها من REST (rest.php) بسكريبت كل شاشة.
+ *
+ *   /attend/login        الدخول (بالبريد أو الموبايل)
+ *   /attend/ و/attend/members   المخدومين
+ *   /attend/members/12   ملف مخدوم
+ *   أي شاشة تانية (الجلسات، والمسح ...)   "الشاشة دي جاية قريب" لحد ما مهمتها تتعمل
+ *
+ * الحماية: كل الشاشات من غير أرشفة ومن غير cache، والشاشات غير الدخول بتحوّل لصفحة الدخول
+ * لو الزائر مش خادم. ودي راحة بس، والحماية الحقيقية في permission_callback بتاع كل مسار.
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * رابط شاشة: stmina_att_url( 'members' ) ← https://…/attend/members/
+ */
+function stmina_att_url( $screen = '', $id = 0 ) {
+	$path = 'attend/' . ( $screen ? $screen . '/' : '' ) . ( $id ? (int) $id . '/' : '' );
+	return home_url( '/' . $path );
+}
+
+add_action( 'init', function () {
+	add_rewrite_rule( '^attend/?$', 'index.php?stmina_screen=members', 'top' );
+	add_rewrite_rule( '^attend/members/([0-9]+)/?$', 'index.php?stmina_screen=member&stmina_id=$matches[1]', 'top' );
+	add_rewrite_rule( '^attend/([a-z]+)/?$', 'index.php?stmina_screen=$matches[1]', 'top' );
+	// القايمة في site.js بتودّي لـ /attend-login/ (من اسم ملف التصميم)
+	add_rewrite_rule( '^attend-login/?$', 'index.php?stmina_screen=login', 'top' );
+} );
+
+add_filter( 'query_vars', function ( $vars ) {
+	$vars[] = 'stmina_screen';
+	$vars[] = 'stmina_id';
+	return $vars;
+} );
+
+add_action( 'template_redirect', function () {
+	$screen = get_query_var( 'stmina_screen' );
+	if ( ! $screen ) {
+		return;
+	}
+	nocache_headers();
+	header( 'X-Robots-Tag: noindex, nofollow', true );
+	if ( ! is_ssl() && wp_is_using_https() ) {
+		wp_safe_redirect( set_url_scheme( home_url( add_query_arg( array() ) ), 'https' ), 301 );
+		exit;
+	}
+
+	$can = current_user_can( 'stmina_attend' );
+	if ( 'login' === $screen ) {
+		if ( $can ) {
+			wp_safe_redirect( stmina_att_url( 'members' ) );
+			exit;
+		}
+	} elseif ( ! $can ) {
+		wp_safe_redirect( stmina_att_url( 'login' ) );
+		exit;
+	}
+
+	$file = STMINA_ATT_DIR . 'screens/' . sanitize_key( $screen ) . '.php';
+	status_header( 200 );
+	include is_file( $file ) ? $file : STMINA_ATT_DIR . 'screens/soon.php';
+	exit;
+} );
+
+/**
+ * آخر كل شاشة: الإعدادات اللي السكريبت محتاجها، والسكريبت المشترك، وسكريبت الشاشة.
+ * رمز nonce هو اللي بيخلّي طلبات REST من المتصفح تتحسب باسم الخادم الداخل (حماية من CSRF).
+ */
+function stmina_att_footer( $screen ) {
+	$config = array(
+		'rest'   => esc_url_raw( rest_url( 'stmina/v1/' ) ),
+		'nonce'  => wp_create_nonce( 'wp_rest' ),
+		'base'   => stmina_att_url(),
+		'screen' => $screen,
+		'id'     => (int) get_query_var( 'stmina_id' ),
+		'user'   => is_user_logged_in() ? wp_get_current_user()->display_name : '',
+	);
+	$url = STMINA_ATT_URL . 'assets/';
+	$ver = STMINA_ATT_VERSION;
+	echo '<script>window.STMINA_ATT = ' . wp_json_encode( $config ) . ";</script>\n";
+	echo '<script src="' . esc_url( $url . 'attend-app.js?ver=' . $ver ) . "\"></script>\n";
+	echo '<script src="' . esc_url( $url . $screen . '.js?ver=' . $ver ) . "\"></script>\n";
+}
+
+// ---------------------------------------------------------------- الدخول
+
+/**
+ * الحساب من البريد أو الموبايل أو اسم المستخدم.
+ * الموبايل متخزّن في usermeta باسم stmina_phone، بالشكل الموحّد 01xxxxxxxxx.
+ */
+function stmina_att_find_user( $who ) {
+	$who = trim( (string) $who );
+	if ( is_email( $who ) ) {
+		return get_user_by( 'email', $who );
+	}
+	$phone = stmina_att_phone( $who );
+	if ( $phone ) {
+		$found = get_users( array( 'meta_key' => 'stmina_phone', 'meta_value' => $phone, 'number' => 1 ) );
+		if ( $found ) {
+			return $found[0];
+		}
+	}
+	return get_user_by( 'login', $who );
+}
+
+/**
+ * حد المحاولات: 5 محاولات غلط في 15 دقيقة لكل IP. العدّاد في transient بيتمسح لوحده.
+ */
+function stmina_att_login_key() {
+	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
+	return 'stmina_login_' . md5( $ip );
+}
+
+add_action( 'rest_api_init', function () {
+	register_rest_route( 'stmina/v1', '/login', array(
+		'methods'             => 'POST',
+		'permission_callback' => '__return_true', // الدخول نفسه مفتوح، والحماية بحد المحاولات
+		'args'                => array(
+			'who'      => array( 'type' => 'string', 'required' => true ),
+			'password' => array( 'type' => 'string', 'required' => true ),
+			'remember' => array( 'type' => 'boolean', 'default' => true ),
+		),
+		'callback'            => function ( WP_REST_Request $req ) {
+			$key   = stmina_att_login_key();
+			$fails = (int) get_transient( $key );
+			if ( $fails >= 5 ) {
+				return new WP_Error( 'stmina_too_many', 'محاولات غلط كتير. استنى ربع ساعة وجرّب تاني.', array( 'status' => 429 ) );
+			}
+			$user = stmina_att_find_user( $req['who'] );
+			$ok   = $user ? wp_signon( array(
+				'user_login'    => $user->user_login,
+				'user_password' => $req['password'],
+				'remember'      => (bool) $req['remember'],
+			), is_ssl() ) : null;
+
+			if ( ! $ok || is_wp_error( $ok ) ) {
+				set_transient( $key, $fails + 1, 15 * MINUTE_IN_SECONDS );
+				// نفس الرسالة في كل الحالات، علشان محدش يعرف إذا كان الحساب موجود ولا لأ
+				return new WP_Error( 'stmina_bad_login', 'البريد أو رقم الموبايل أو كلمة السر غير صحيحة. راجعها وحاول تاني.', array( 'status' => 401 ) );
+			}
+			if ( ! user_can( $ok, 'stmina_attend' ) ) {
+				wp_logout();
+				return new WP_Error( 'stmina_not_servant', 'الحساب ده مالوش صلاحية الخدام. كلّم مسؤول الخدمة.', array( 'status' => 403 ) );
+			}
+			delete_transient( $key );
+			return array( 'redirect' => stmina_att_url( 'members' ) );
+		},
+	) );
+
+	register_rest_route( 'stmina/v1', '/logout', array(
+		'methods'             => 'POST',
+		'permission_callback' => 'is_user_logged_in',
+		'callback'            => function () {
+			wp_logout();
+			return array( 'redirect' => stmina_att_url( 'login' ) );
+		},
+	) );
+} );
+
+// ---------------------------------------------------------------- موبايل الخادم في صفحة حسابه
+
+/**
+ * خانة "موبايل الخادم" في صفحة الحساب في dashboard، علشان يقدر يدخل بيه.
+ */
+function stmina_att_phone_field( $user ) {
+	if ( ! user_can( $user, 'stmina_attend' ) ) {
+		return;
+	}
+	?>
+	<h2>نظام الحضور</h2>
+	<table class="form-table" role="presentation">
+		<tr>
+			<th><label for="stmina_phone">موبايل الخادم</label></th>
+			<td>
+				<input type="tel" name="stmina_phone" id="stmina_phone" dir="ltr" class="regular-text" value="<?php echo esc_attr( get_user_meta( $user->ID, 'stmina_phone', true ) ); ?>">
+				<p class="description">علشان يدخل شاشات الحضور بالموبايل بدل البريد. مثال: 01012345678</p>
+			</td>
+		</tr>
+	</table>
+	<?php
+}
+add_action( 'show_user_profile', 'stmina_att_phone_field' );
+add_action( 'edit_user_profile', 'stmina_att_phone_field' );
+
+/**
+ * حفظ الموبايل. WordPress بيفحص nonce الصفحة قبل النقطة دي، وإحنا بنفحص الصلاحية.
+ */
+function stmina_att_save_phone( $user_id ) {
+	if ( ! current_user_can( 'edit_user', $user_id ) || ! isset( $_POST['stmina_phone'] ) ) {
+		return;
+	}
+	$phone = stmina_att_phone( wp_unslash( $_POST['stmina_phone'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput -- بيتنضّف في stmina_att_phone
+	$taken = $phone ? get_users( array( 'meta_key' => 'stmina_phone', 'meta_value' => $phone, 'exclude' => array( $user_id ), 'fields' => 'ids' ) ) : array();
+	if ( ! $taken ) {
+		update_user_meta( $user_id, 'stmina_phone', $phone );
+	}
+}
+add_action( 'personal_options_update', 'stmina_att_save_phone' );
+add_action( 'edit_user_profile_update', 'stmina_att_save_phone' );

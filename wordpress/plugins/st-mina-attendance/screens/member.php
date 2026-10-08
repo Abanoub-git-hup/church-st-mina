@@ -1,0 +1,263 @@
+<?php
+/**
+ * شاشة "member" في نظام الحضور. متولّدة من design/attend-member.html بأداة tools/convert-attend.js،
+ * فأي تعديل في الشكل يتعمل في التصميم وبعدين تتشغّل الأداة تاني.
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a1c12">
+<title>ملف المخدوم | إعداد الخدام</title>
+<meta name="description" content="ملف مخدوم في خدمة إعداد الخدام: بياناته، وحضوره، وكارته، وملاحظات الخدام.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() . '/assets/site.css' ); ?>">
+<link rel="stylesheet" href="<?php echo esc_url( STMINA_ATT_URL . 'assets/attend.css?ver=' . STMINA_ATT_VERSION ); ?>">
+<style>
+/* خاص بملف المخدوم */
+.wrap-p{flex:1;width:100%;max-width:520px;margin-inline:auto;padding:var(--s-3) var(--gut) 0;display:grid;gap:var(--s-4);align-content:start}
+.p-top{position:sticky;top:var(--s-3);z-index:20;display:flex;align-items:center;gap:var(--s-2);padding:var(--s-2);border-radius:20px}
+.p-top b{flex:1;font-size:1rem;font-weight:500}
+.ibtn{width:44px;height:44px;flex:none;display:grid;place-items:center;border:0;border-radius:14px;background:var(--glass-2);color:var(--on-glass);cursor:pointer}
+.ibtn:hover{background:var(--glass-3)}
+.ibtn .icon{width:20px;height:20px}
+.card{padding:var(--s-5)}
+.c-h{display:flex;align-items:center;justify-content:space-between;gap:var(--s-3);margin-bottom:var(--s-4)}
+.c-h h2{font-size:1.05rem;font-weight:500}
+.c-h small{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;color:var(--on-glass-2)}
+.c-h small .icon{width:14px;height:14px}
+
+/* الموقوف */
+.off-banner{display:none;gap:var(--s-3);align-items:center;justify-content:space-between;padding:var(--s-3) var(--s-4);border-radius:18px;background:rgba(255,248,238,.1);border:1px solid var(--glass-line-soft);font-size:.88rem;line-height:1.7;color:var(--on-glass-2)}
+.off-banner b{color:var(--on-glass);font-weight:500}
+.is-off .off-banner{display:flex}
+.off-banner .btn{width:auto;height:44px;padding-inline:var(--s-4);flex:none;font-size:.88rem}
+
+/* البيانات */
+.who{display:grid;grid-template-columns:64px 1fr;gap:var(--s-4);align-items:center}
+.av{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--glass-3);font-size:1.2rem;font-weight:500}
+.who h1{font-size:1.45rem;font-weight:400;line-height:1.35}
+.who .mob{display:block;font-size:.95rem;color:var(--on-glass-2);font-variant-numeric:tabular-nums;text-align:right}
+.status{display:inline-flex;align-items:center;gap:6px;margin-top:var(--s-1);padding:2px 10px;border-radius:999px;background:var(--glass-2);font-size:.76rem}
+.status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ok)}
+.is-off .status::before{background:rgba(255,248,238,.45)}
+.who-meta{grid-column:1/-1;font-size:.8rem;color:var(--on-glass-3)}
+.acts{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s-2);margin-top:var(--s-4)}
+.act{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:64px;border:1px solid var(--glass-line-soft);border-radius:16px;background:var(--glass-2);color:var(--on-glass);font:inherit;font-size:.82rem;cursor:pointer}
+.act:hover{background:var(--glass-3)}
+.act .icon{width:20px;height:20px}
+.edit{display:none;margin-top:var(--s-4);padding-top:var(--s-4);border-top:1px solid var(--glass-line-soft)}
+.editing .edit{display:block}
+.g-input input[dir=ltr]{text-align:left}
+.f-err{display:none;margin-top:var(--s-2);font-size:.84rem;color:var(--bad-text)}
+.g-field.bad .f-err{display:block}
+.row2{display:flex;gap:var(--s-2);align-items:center}
+.row2 .btn{flex:1}
+.row2 .textlink{flex:none;padding-inline:var(--s-3)}
+
+/* الحضور: الدايرة + أرقام + آخر 10 جلسات */
+.att{display:grid;grid-template-columns:104px 1fr;gap:var(--s-5);align-items:center}
+.ring{--p:0;position:relative;width:104px;height:104px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--on-glass) calc(var(--p) * 1%),rgba(255,248,238,.14) 0)}
+.ring::before{content:"";position:absolute;inset:5px;border-radius:50%;background:rgba(40,27,18,.72)}
+.ring div{position:relative;text-align:center;line-height:1.1}
+.ring strong{display:block;font-size:2rem;font-weight:200;font-variant-numeric:tabular-nums}
+.ring span{font-size:.75rem;color:var(--on-glass-2)}
+.ring.low{background:conic-gradient(var(--warn) calc(var(--p) * 1%),rgba(255,248,238,.14) 0)}
+.facts{display:grid;gap:var(--s-2);font-size:.88rem;color:var(--on-glass-2)}
+.facts b{color:var(--on-glass);font-weight:500;font-variant-numeric:tabular-nums}
+.facts .warn{color:#FFD9A0}
+.facts .warn b{color:#FFE2B8}
+.last{margin-top:var(--s-5)}
+.last-h{display:flex;justify-content:space-between;font-size:.78rem;color:var(--on-glass-2);margin-bottom:var(--s-2)}
+.dots{display:grid;grid-template-columns:repeat(10,1fr);gap:6px}
+.dots i{aspect-ratio:1;border-radius:50%;display:grid;place-items:center}
+.dots i.h{background:var(--on-glass)}
+.dots i.e{background:var(--excuse)}
+.dots i.a{background:transparent;box-shadow:inset 0 0 0 2px rgba(217,96,79,.85)}
+.dots i.n{background:rgba(255,248,238,.08)}
+.ends{display:flex;justify-content:space-between;margin-top:6px;font-size:.75rem;color:var(--on-glass-3)}
+.legend{display:flex;flex-wrap:wrap;gap:var(--s-3);margin-top:var(--s-3);font-size:.76rem;color:var(--on-glass-2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%}
+
+/* الكارت */
+.qr-row{display:grid;grid-template-columns:96px 1fr;gap:var(--s-4);align-items:center;margin-bottom:var(--s-4)}
+.qr{width:96px;height:96px;padding:8px;border-radius:14px;background:#F6ECDC}
+.qr svg{width:100%;height:100%;display:block}
+.qr-row p{font-size:.86rem;line-height:1.75;color:var(--on-glass-2)}
+.qr-row p b{color:var(--on-glass);font-weight:500}
+.btn-wa{background:#1F7A4D;color:#fff}
+.btn-wa:hover{background:#238a57}
+.links{display:flex;justify-content:space-between;margin-top:var(--s-1)}
+.confirm{display:none;margin-top:var(--s-3);padding:var(--s-4);border-radius:16px;background:rgba(217,96,79,.16);border:1px solid rgba(255,180,163,.35)}
+.confirm p{font-size:.88rem;line-height:1.8;color:var(--on-glass-2);margin-bottom:var(--s-3)}
+.confirm p b{color:var(--on-glass);font-weight:500}
+.show-confirm .confirm{display:block}
+.btn-del{flex:1;height:48px;border:0;border-radius:14px;background:#B4443A;color:#fff;font:inherit;font-size:.92rem;font-weight:500;cursor:pointer}
+
+/* الملاحظات */
+.notes{display:grid;gap:var(--s-2);margin-bottom:var(--s-4)}
+.note{padding:var(--s-3) var(--s-4);border-radius:14px;background:var(--glass-2);font-size:.9rem;line-height:1.8}
+.note small{display:block;margin-top:2px;font-size:.76rem;color:var(--on-glass-3)}
+.no-notes{font-size:.86rem;color:var(--on-glass-2);margin-bottom:var(--s-3)}
+textarea.n-in{width:100%;min-height:88px;padding:var(--s-3) var(--s-4);border:1px solid transparent;border-radius:14px;background:var(--glass-2);color:var(--on-glass);font:inherit;font-size:1rem;line-height:1.7;resize:vertical}
+textarea.n-in::placeholder{color:var(--on-glass-3)}
+textarea.n-in:focus{outline:none;background:var(--glass-3);border-color:rgba(255,244,228,.55)}
+.notes-card .btn{margin-top:var(--s-2)}
+
+/* الإيقاف */
+.suspend p{font-size:.86rem;line-height:1.8;color:var(--on-glass-2);margin-bottom:var(--s-3)}
+.btn-out{background:transparent;color:var(--bad-text);border:1px solid rgba(255,180,163,.4)}
+.btn-out:hover{background:rgba(217,96,79,.12)}
+.is-off .suspend{display:none}
+</style>
+</head>
+<body class="has-nav">
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="13" width="4" height="4" rx=".5"/><path d="M13 7h4v4M7 13v4h4"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M3 21l1.65-3.8A9 9 0 1 1 7.8 20.3L3 21Z"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></symbol>
+  <symbol id="i-pen" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+</svg>
+
+
+<main class="wrap-p" id="main">
+  <header class="glass p-top">
+    <a class="ibtn" href="<?php echo esc_url( stmina_att_url( 'members' ) ); ?>" aria-label="رجوع للمخدومين"><svg class="icon"><use href="#i-right"/></svg></a>
+    <b>ملف المخدوم</b>
+  </header>
+
+  <div class="off-banner" role="status">
+    <span><b>المخدوم ده موقوف.</b> مش بيتحسب في الحضور ولا الغياب، وكارته مش بيتقري في المسح.</span>
+    <button class="btn btn-light" type="button" id="unsuspend">رجّعه نشط</button>
+  </div>
+
+  <!-- البيانات -->
+  <section class="glass card" id="whoCard" aria-labelledby="mName">
+    <div class="who">
+      <span class="av" id="mAv" aria-hidden="true"></span>
+      <div>
+        <h1 id="mName"></h1>
+        <span class="mob" dir="ltr" id="mMob"></span>
+        <span class="status" id="mStatus"></span>
+      </div>
+      <p class="who-meta" id="mJoined"></p>
+    </div>
+    <div class="acts">
+      <a class="act" id="callBtn" href="#"><svg class="icon"><use href="#i-phone"/></svg>اتصال</a>
+      <a class="act" id="chatBtn" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-wa"/></svg>واتساب</a>
+      <button class="act" type="button" id="editBtn" aria-expanded="false" aria-controls="editForm"><svg class="icon"><use href="#i-pen"/></svg>تعديل</button>
+    </div>
+    <form class="edit" id="editForm" novalidate>
+      <div class="g-field" id="eName">
+        <label for="eNameIn">الاسم بالكامل</label>
+        <div class="g-input"><input id="eNameIn" type="text" autocomplete="off"></div>
+        <p class="f-err" role="alert">اكتب الاسم بالكامل (اسمين على الأقل).</p>
+      </div>
+      <div class="g-field" id="eMob">
+        <label for="eMobIn">رقم الموبايل</label>
+        <div class="g-input"><input id="eMobIn" type="tel" inputmode="numeric" dir="ltr" maxlength="11" autocomplete="off"></div>
+        <p class="f-err" role="alert">رقم الموبايل لازم يكون 11 رقم ويبدأ بـ 010 أو 011 أو 012 أو 015.</p>
+      </div>
+      <div class="row2">
+        <button class="btn btn-light" type="submit">احفظ التعديل</button>
+        <button class="textlink" type="button" id="editCancel">إلغاء</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- الحضور -->
+  <section class="glass card" aria-labelledby="attH">
+    <div class="c-h"><h2 id="attH">الحضور</h2><small>آخر <span id="nSess"></span> جلسة</small></div>
+    <div class="att">
+      <div class="ring" id="ring"><div><strong id="pct"></strong><span>حضور</span></div></div>
+      <div class="facts" id="facts"></div>
+    </div>
+    <div class="last">
+      <div class="last-h"><span>آخر 10 جلسات</span></div>
+      <div class="dots" id="dots"></div>
+      <div class="ends" aria-hidden="true"><span>الأحدث</span><span>الأقدم</span></div>
+      <div class="legend" aria-hidden="true">
+        <span><i style="background:var(--on-glass)"></i>حضر</span>
+        <span><i style="background:var(--excuse)"></i>بعذر</span>
+        <span><i style="box-shadow:inset 0 0 0 2px rgba(217,96,79,.85)"></i>غاب</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- الكارت -->
+  <section class="glass card" id="cardBox" aria-labelledby="cardH">
+    <div class="c-h"><h2 id="cardH">الكارت</h2><small id="cardVer"></small></div>
+    <div class="qr-row">
+      <div class="qr" id="qr" aria-hidden="true"></div>
+      <p>المخدوم بيورّي الكارت ده للخادم كل جلسة علشان يتمسح. <b>ابعتهوله على واتساب</b> يفتحه ويحفظه صورة.</p>
+    </div>
+    <a class="btn btn-wa" id="sendCard" href="#" target="_blank" rel="noopener"><svg class="icon"><use href="#i-wa"/></svg>أرسل الكارت على واتساب</a>
+    <div class="links">
+      <a class="textlink" id="viewCard" href="#" target="_blank" rel="noopener">اعرض الكارت</a>
+      <button class="textlink" type="button" id="askReissue">إعادة إصدار الكارت</button>
+    </div>
+    <div class="confirm" role="group" aria-label="تأكيد إعادة الإصدار">
+      <p>الكارت الحالي <b>هيتلغى فورًا</b>. لو حد مسحه بعد كده هيظهر للخادم "الكارت ده ملغي". بعدها لازم تبعت الكارت الجديد للمخدوم.</p>
+      <div class="row2">
+        <button class="btn-del" type="button" id="reissue">اعمل كارت جديد</button>
+        <button class="textlink" type="button" id="keepCard">رجوع</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ملاحظات الخدام -->
+  <section class="glass card notes-card" aria-labelledby="notesH">
+    <div class="c-h"><h2 id="notesH">ملاحظات الخدام</h2><small><svg class="icon"><use href="#i-lock"/></svg>مش بتظهر للمخدوم</small></div>
+    <div class="notes" id="notes"></div>
+    <label for="noteIn" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">ملاحظة جديدة</label>
+    <textarea class="n-in" id="noteIn" placeholder="مثلًا: عنده امتحانات الشهر ده، أو اتكلمت معاه بعد غيابه"></textarea>
+    <button class="btn btn-glass" type="button" id="addNote"><svg class="icon"><use href="#i-plus"/></svg>احفظ الملاحظة</button>
+  </section>
+
+  <!-- الإيقاف -->
+  <section class="glass card suspend" aria-labelledby="susH">
+    <div class="c-h"><h2 id="susH">إيقاف المخدوم</h2></div>
+    <p>لو المخدوم ساب الخدمة أو مسافر لفترة طويلة. مش هيتحسب في الحضور ولا الغياب، وسجله القديم بيفضل محفوظ، وتقدر ترجّعه في أي وقت.</p>
+    <button class="btn btn-out" type="button" id="askSuspend">أوقف المخدوم</button>
+    <div class="confirm" role="group" aria-label="تأكيد الإيقاف">
+      <p>هيتوقف <b id="susName"></b>، وكارته مش هيتقري في المسح لحد ما ترجّعه.</p>
+      <div class="row2">
+        <button class="btn-del" type="button" id="suspend">أوقفه</button>
+        <button class="textlink" type="button" id="keepActive">رجوع</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="glass g-nav" aria-label="التنقل في نظام الحضور">
+  <ul>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'sessions' ) ); ?>"><svg class="icon"><use href="#i-calendar"/></svg>الجلسات</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'members' ) ); ?>" aria-current="page"><svg class="icon"><use href="#i-users"/></svg>المخدومون</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'scan' ) ); ?>"><svg class="icon"><use href="#i-scan"/></svg>المسح</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'followup' ) ); ?>"><svg class="icon"><use href="#i-heart"/></svg>الافتقاد</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'more' ) ); ?>"><svg class="icon"><use href="#i-more"/></svg>المزيد</a></li>
+  </ul>
+</nav>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<?php stmina_att_footer( 'member' ); ?>
+</body>
+</html>

@@ -164,3 +164,29 @@ describe('الملاحظات للخدام بس', () => {
     assert.equal(r.data.notes, undefined);
   });
 });
+
+describe('الدخول والشاشات', () => {
+  const SITE = env.STMINA_URL.replace(/\/$/, '');
+
+  test('كلمة سر غلط: 401 برسالة واحدة مابتقولش الحساب موجود ولا لأ', async () => {
+    // محاولة واحدة بس، علشان حد المحاولات (5 في ربع ساعة) مايقفلش الجهاز
+    const res = await fetch(BASE + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ who: 'no-such-user-' + Date.now(), password: 'x' }) });
+    assert.equal(res.status, 401);
+    assert.match((await res.json()).message, /غير صحيحة/);
+  });
+
+  test('شاشات الخدام بتحوّل الزائر لصفحة الدخول', async () => {
+    for (const p of ['/attend/', '/attend/members/', `/attend/members/${member.id}/`, '/attend/scan/']) {
+      const res = await fetch(SITE + p, { redirect: 'manual' });
+      assert.equal(res.status, 302, p);
+      assert.match(res.headers.get('location'), /\/attend\/login\/$/, p);
+    }
+  });
+
+  test('صفحة الدخول مفتوحة ومش متأرشفة', async () => {
+    const res = await fetch(SITE + '/attend/login/');
+    assert.equal(res.status, 200);
+    assert.match(res.headers.get('x-robots-tag') || '', /noindex/);
+    assert.match(await res.text(), /دخول الخادم/);
+  });
+});

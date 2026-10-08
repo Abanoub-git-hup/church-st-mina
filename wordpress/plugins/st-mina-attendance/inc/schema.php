@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // رقم نسخة الجداول. أي تغيير في شكل جدول يزوّده، والتحديث بيشتغل لوحده
-define( 'STMINA_ATT_DB_VERSION', 1 );
+define( 'STMINA_ATT_DB_VERSION', 2 ); // 2: روابط شاشات /attend/
 
 /**
  * أسماء الجداول بالبادئة بتاعة الموقع (wp_ أو غيرها).
@@ -91,6 +91,7 @@ function stmina_att_install() {
 
 	stmina_att_roles();
 	update_option( 'stmina_att_db_version', STMINA_ATT_DB_VERSION );
+	update_option( 'stmina_att_flush', 1 ); // الروابط تتحدّث على init بعد ما كل القواعد تتسجّل (تحت)
 }
 
 /**
@@ -116,3 +117,14 @@ add_action( 'init', function () {
 		stmina_att_install();
 	}
 }, 5 );
+
+/**
+ * تحديث الروابط مرة واحدة بعد التثبيت أو التحديث، بعد ما قواعد /attend/ تتسجّل على init.
+ * نفس طريقة st-mina-content: جوه التفعيل نفسه القواعد لسه ماتسجّلتش.
+ */
+add_action( 'init', function () {
+	if ( get_option( 'stmina_att_flush' ) ) {
+		delete_option( 'stmina_att_flush' );
+		flush_rewrite_rules();
+	}
+}, 99 );
