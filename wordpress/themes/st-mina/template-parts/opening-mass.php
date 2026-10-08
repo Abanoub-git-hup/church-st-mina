@@ -33,13 +33,13 @@ $parts = array(
 		</div>
 		<div class="yt" data-yt data-clip>
 			<div class="yt-frame">
-				<img class="grade" src="https://i.ytimg.com/vi/3oN42iWOHGY/hqdefault.jpg" alt="" loading="lazy">
-				<button class="yt-play" aria-label="تشغيل الجزء 1"><svg class="icon"><use href="#i-play"/></svg></button>
-				<span class="yt-cap">الجزء 1 · 1:32:01</span>
+				<img class="grade" src="https://i.ytimg.com/vi/848eJp9_nbI/hqdefault.jpg" alt="" loading="lazy">
+				<button class="yt-play" aria-label="تشغيل الجزء 3"><svg class="icon"><use href="#i-play"/></svg></button>
+				<span class="yt-cap">الجزء 3 · 48:27</span>
 			</div>
 			<div class="yt-parts" role="group" aria-label="أجزاء القداس">
 				<?php foreach ( $parts as $i => $part ) : $n = $i + 1; ?>
-					<button class="yt-part" data-id="<?php echo esc_attr( $part[0] ); ?>" data-title="<?php echo esc_attr( 'قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر ' . $n ); ?>" data-thumb="<?php echo esc_url( 'https://i.ytimg.com/vi/' . $part[0] . '/hqdefault.jpg' ); ?>" aria-pressed="<?php echo 0 === $i ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( 'الجزء ' . $n . '، ' . $part[1] ); ?>"><span class="yc" style="--h:<?php echo (int) $part[2]; ?>px" aria-hidden="true"><span class="glow"></span></span><b>الجزء <?php echo (int) $n; ?></b><small><?php echo esc_html( $part[1] ); ?></small></button>
+					<button class="yt-part" data-id="<?php echo esc_attr( $part[0] ); ?>" data-title="<?php echo esc_attr( 'قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر ' . $n ); ?>" data-thumb="<?php echo esc_url( 'https://i.ytimg.com/vi/' . $part[0] . '/hqdefault.jpg' ); ?>" aria-pressed="<?php echo 2 === $i ? 'true' : 'false'; ?>" aria-label="<?php echo esc_attr( 'الجزء ' . $n . '، ' . $part[1] ); ?>"><span class="yc" style="--h:<?php echo (int) $part[2]; ?>px" aria-hidden="true"><span class="glow"></span></span><b>الجزء <?php echo (int) $n; ?></b><small><?php echo esc_html( $part[1] ); ?></small></button>
 				<?php endforeach; ?>
 			</div>
 		</div>

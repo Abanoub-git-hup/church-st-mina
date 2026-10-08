@@ -1,23 +1,24 @@
-/* خاص بالرئيسية: الواجهة الكبيرة، والدوائر الأربعة، ومجموعة صور الكنيسة */
-.hero-center{flex:1;display:grid;place-items:center;text-align:center;padding:var(--s-16) var(--gut) var(--s-24)}
-.hero-center > div{max-width:980px}
+/* خاص بالرئيسية: الواجهة الكبيرة وفقاعاتها، ومجموعة صور الكنيسة */
+.hero-center{flex:1;display:grid;text-align:center;padding:var(--s-8) var(--gut) var(--s-16)}
+/* الآية بتتوسّط المساحة الفاضية، والفقاعات بتقعد تحت */
+.hero-center > div{width:100%;max-width:1080px;margin-inline:auto;display:flex;flex-direction:column;align-items:center}
+.hero-verse{margin-block:auto;padding-block:var(--s-8)}
+.hero .hello{margin-bottom:var(--s-8)}
 .hello{position:relative;display:inline-flex;align-items:center;gap:var(--s-2);padding:6px 18px;border-radius:var(--r-full);color:#FFF8EE;background:linear-gradient(180deg,rgba(255,244,228,.12),rgba(255,244,228,.05));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4)}
 .hello::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--gild);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
 .hello .icon{width:16px;height:16px}
-.hero h1{font-family:var(--f-verse);font-weight:700;font-size:clamp(2rem,5.4vw,4.3rem);line-height:1.6;color:#FFF3E0;text-shadow:0 4px 30px rgba(0,0,0,.55)}
+.hero h1{font-family:var(--f-verse);font-weight:700;font-size:clamp(1.7rem,4.2vw,3.2rem);line-height:1.55;max-width:860px;margin-inline:auto;color:#FFF3E0;text-shadow:0 4px 30px rgba(0,0,0,.55)}
 .hero h1 em{font-style:normal;color:var(--gold-soft)}
 .hero .ref{display:block;margin-top:var(--s-4);color:var(--gold);font-size:.95rem}
 .hero .sub{margin:var(--s-8) auto 0;max-width:620px;color:var(--cream-2);font-size:1.02rem;line-height:2}
-.hero-ctas{display:flex;align-items:center;justify-content:center;gap:var(--s-4);flex-wrap:wrap;margin-top:var(--s-12)}
-@media (max-width:600px){.hero-ctas{justify-content:flex-start}.hero-ctas .pill{min-height:44px;gap:var(--s-2);padding:4px 16px 4px 4px;font-size:.88rem}.hero-ctas .pill .dot{width:36px;height:36px}.hero-center{padding:var(--s-12) var(--gut) var(--s-20)}.hero .sub{margin-top:var(--s-6)}.hero-ctas{margin-top:var(--s-10);gap:var(--s-3)}}
-/* الدوائر الأربعة أسفل الواجهة */
-.hero-cards{position:relative;z-index:2;margin-top:var(--s-8)}
-.hcirc{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:var(--s-6)}
+/* الفقاعات الخمسة تحت الآية: أحجام ومستويات مختلفة، وكل واحدة بتطفو على مهلها (حركة float في site.css) */
+.hcirc{display:flex;justify-content:center;align-items:flex-start;flex-wrap:wrap;gap:var(--s-5) var(--s-6);margin-top:var(--s-6)}
 .hc{position:relative;flex:none;width:var(--w);aspect-ratio:1;display:block;color:inherit}
-.hc.next{--w:clamp(200px,20vw,270px)}
-.hc.live{--w:clamp(160px,16vw,210px);margin-top:70px}
-.hc.fathers{--w:clamp(170px,17vw,220px);margin-top:-30px}
-.hc.quote{--w:clamp(160px,15.5vw,205px);margin-top:90px}
+.hc.next{--w:clamp(128px,10.6vw,150px)}
+.hc.live{--w:clamp(116px,9.8vw,140px);margin-top:-8px}
+.hc.fathers{--w:clamp(124px,10.6vw,150px);margin-top:46px}
+.hc.youth{--w:clamp(110px,9.2vw,132px);margin-top:-14px}
+.hc.quote{--w:clamp(124px,10.2vw,146px);margin-top:40px}
 .hc .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 1px rgba(243,201,135,.3)}
 .hc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
 .hc:hover img{transform:scale(1.08)}
@@ -26,39 +27,52 @@
 a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold-soft)}
 .hc-tx{position:relative;z-index:1;text-align:center;padding:15%;display:grid;justify-items:center;gap:4px}
 .hc-tx small{color:var(--gold-soft);font-size:.75rem}
-.hc-tx b{font-weight:400;font-size:clamp(.95rem,1.3vw,1.15rem);line-height:1.45}
+.hc-tx b{font-weight:400;font-size:clamp(.82rem,1vw,.98rem);line-height:1.45}
 .hc.next .bi{background:radial-gradient(circle at 35% 25%,#FFF8EC,var(--cream) 60%,#EAD9BE)}
 .hc.next .hc-tx{color:var(--ink)}
 .hc.next small{color:var(--gold-deep);font-weight:500}
-.hc.next h3{font-size:clamp(1.2rem,2vw,1.65rem);font-weight:300;line-height:1.3}
-.hc.next p{color:#6B533E;font-size:.82rem}
-.hc.next .link{margin-top:6px;color:var(--ink);font-weight:500;font-size:.85rem}
-.hc.next .mark{width:26px;height:26px;color:var(--gold-deep);margin-bottom:2px}
-.hc.quote .bi{background:radial-gradient(circle at 35% 25%,var(--umber-600),var(--umber-950) 75%)}
-.hc.quote .qm{font-family:var(--f-verse);font-size:2.4rem;line-height:1;height:22px;color:var(--gold)}
-.hc.quote b{font-family:var(--f-verse);font-size:clamp(.9rem,1.15vw,1.05rem);line-height:1.65;color:var(--cream-2)}
-.hc .play{position:relative;width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center;margin-bottom:6px;transition:transform var(--t-base) var(--ease)}
+.hc.next .h{font-size:clamp(.95rem,1.3vw,1.18rem);font-weight:300;line-height:1.3}
+.hc.next .t{color:#6B533E;font-size:.7rem}
+.hc.next .mark{width:18px;height:18px;color:var(--gold-deep);margin-bottom:2px}
+/* الزجاج الخفيف بإطار فضي: فقاعة المقولة */
+.hc.glass .bi{background:linear-gradient(160deg,rgba(255,244,228,.16),rgba(255,244,228,.05));-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 24px 50px -24px rgba(0,0,0,.6),0 0 0 1px rgba(226,226,234,.4)}
+a.hc.glass:hover .bi{box-shadow:inset 0 1px 0 rgba(255,255,255,.26),0 24px 50px -24px rgba(0,0,0,.6),0 0 0 1.5px rgba(238,238,244,.75)}
+.hc.glass .hc-tx{color:#FFF8EE;text-shadow:0 1px 10px rgba(0,0,0,.45)}
+.hc.quote .qm{font-family:var(--f-verse);font-size:1.7rem;line-height:1;height:15px;color:var(--gold)}
+.hc.quote b{font-family:var(--f-verse);font-size:clamp(.72rem,.85vw,.82rem);line-height:1.55;color:var(--cream-2)}
+/* تبديل المقولة: بتختفي، يتغيّر النص، وترجع */
+#heroQuote,#heroQuoteBy{transition:opacity .5s var(--ease)}
+.hc.quote .fade{opacity:0}
+.hc .play{position:relative;width:44px;height:44px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center;margin-bottom:4px;transition:transform var(--t-base) var(--ease)}
 .hc .play .icon{fill:currentColor;width:20px;height:20px;margin-inline-end:-3px}
 .hc .play::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:1px solid var(--gold);animation:pulse 2.4s ease-out infinite}
 @keyframes pulse{from{transform:scale(.9);opacity:.9}to{transform:scale(1.4);opacity:0}}
 .hc:hover .play{transform:scale(1.08)}
-.hc .lbl{display:inline-flex;align-items:center;gap:6px;font-size:.92rem}
-.hc .play.book .icon{fill:none;margin:0;width:22px;height:22px}
+.hc .lbl{display:inline-flex;align-items:center;gap:6px;font-size:.84rem}
+.hc .play.book .icon{fill:none;margin:0;width:20px;height:20px}
 .hc .play.book::after{animation:none;opacity:.5}
 .hc .lbl.read::before{display:none}
 .hc .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:#E5634F;box-shadow:0 0 0 4px rgba(229,99,79,.25)}
+/* الموبايل: صفين، القداس والمقولة فوق، والصور التلاتة تحت */
 @media (max-width:600px){
-  .hero-cards{margin-top:var(--s-6)}
-  .hcirc{gap:var(--s-3)}
-  .hc.next{--w:52vw;margin-top:0}
-  .hc.live{--w:36vw;margin-top:44px}
-  .hc.fathers{--w:40vw;margin-top:0}
-  .hc.quote{--w:46vw;margin-top:34px}
+  .hero-center{padding:var(--s-6) var(--gut) var(--s-12)}
+  .hero .hello{margin-bottom:var(--s-6)}
+  .hcirc{gap:var(--s-3);margin-top:var(--s-8)}
+  .hc.next{--w:36vw;margin-top:0}
+  .hc.quote{order:1}
+  .hc.photo{order:2}
+  .hc.live{--w:25vw;margin-top:4px}
+  .hc.fathers{--w:27vw;margin-top:-8px}
+  .hc.youth{--w:25vw;margin-top:10px}
+  .hc.quote{--w:40vw;margin-top:22px}
   .hc-tx{padding:12%}
-  .hc-tx b{font-size:.85rem}
-  .hc.quote b{font-size:.8rem}
-  .hc .play{width:42px;height:42px}
-  .hc.next .link{display:none}
+  .hc-tx b{font-size:.74rem}
+  .hc.quote b{font-size:.68rem}
+  .hc-tx small{font-size:.64rem}
+  .hc.fathers small,.hc.youth small{display:none}
+  .hc.next .h{font-size:1.05rem}
+  .hc .play{width:34px;height:34px}
+  .hc .lbl{font-size:.72rem}
 }
 /* صور الكنيسة: دائرة كبيرة وحولها دوائر */
 .gal{display:grid;gap:var(--s-12);align-items:center}
@@ -77,3 +91,21 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
   .gcl .g .cap{display:none}
   .ring-btn{width:120px;height:120px}
 }
+
+/* كروت أقوال الآباء: زجاج خفيف شفاف بإطار فضي بدل اللوح البني */
+.qslider .qs{background:linear-gradient(160deg,rgba(255,244,228,.15),rgba(255,244,228,.04));-webkit-backdrop-filter:blur(18px) saturate(1.4);backdrop-filter:blur(18px) saturate(1.4);border-color:rgba(226,226,234,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 30px 70px -25px rgba(0,0,0,.6)}
+.qslider .qs .qs-q,.qslider .qs .qs-by{text-shadow:0 1px 12px rgba(0,0,0,.5)}
+
+/* انتقال ناعم من صورة الواجهة لغلاف الموقع اللي تحتها: التلاشي بيبدأ بدري وبيمشي على منحنى متدرّج بدل خط مستقيم */
+.hero-bg,.rays,#dust{-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,.92) 56%,rgba(0,0,0,.76) 66%,rgba(0,0,0,.54) 76%,rgba(0,0,0,.3) 85%,rgba(0,0,0,.12) 93%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 46%,rgba(0,0,0,.92) 56%,rgba(0,0,0,.76) 66%,rgba(0,0,0,.54) 76%,rgba(0,0,0,.3) 85%,rgba(0,0,0,.12) 93%,transparent 100%)}
+.hero::before{-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,rgba(0,0,0,.7) 75%,rgba(0,0,0,.3) 90%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 55%,rgba(0,0,0,.7) 75%,rgba(0,0,0,.3) 90%,transparent 100%)}
+/* طبقة التعتيم فوق الغلاف كان فيها blur بيتقطع عند آخر الواجهة ويعمل خط واضح.
+   من غيره الانتقال بقى ناعم، والتعتيم أغمق شوية بداله */
+.site-cover .veil{-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(36,24,16,.6)}
+/* فقاعة القداس القادم: زجاج فضي شفاف بدل الكريمي، والكلام فاتح زي باقي الفقاعات */
+.hc.next.glass .bi{background:linear-gradient(160deg,rgba(242,242,248,.26),rgba(200,200,214,.08));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 24px 50px -24px rgba(0,0,0,.6),0 0 0 1px rgba(232,232,240,.5)}
+a.hc.next.glass:hover .bi{box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 24px 50px -24px rgba(0,0,0,.6),0 0 0 1.5px rgba(244,244,250,.85)}
+.hc.next.glass .hc-tx{color:#FFF8EE}
+.hc.next.glass small{color:var(--gold-soft)}
+.hc.next.glass .t{color:var(--cream-2)}
+.hc.next.glass .mark{color:var(--gold-soft)}

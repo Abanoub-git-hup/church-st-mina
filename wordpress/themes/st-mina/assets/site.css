@@ -701,3 +701,17 @@ section[id],h2[id],h3[id]{scroll-margin-top:96px}
 /* الشاشات الصغيرة: "الجبل الأصفر" بتنزل سطر لوحدها، فالنقطة اللي قبلها تختفي */
 .brand .sep{font:inherit}
 @media (max-width:380px){.brand .sep{display:none}}
+
+/* ===== الهيدر فضي شفاف، من غير إطار (طلب المستخدم 8 أكتوبر) =====
+   الصفحة الحالية في القايمة بقت فضي بدل الدهبي، والزجاج بلون فضي محايد بدل الدافي،
+   والإطار الرفيع اتشال من القايمة والشريط العائم والأيقونات */
+@media (min-width:1100px){
+  .top-nav::before{background:linear-gradient(180deg,rgba(240,242,248,.13),rgba(226,230,238,.05))}
+}
+.float-nav::before{background:linear-gradient(180deg,rgba(240,242,248,.13),rgba(226,230,238,.05)),rgba(30,20,13,.18)}
+.top-nav::after,.float-nav::after{display:none}
+.top-nav a:hover,.top-nav .has-dd:hover > a,.top-nav .has-dd.open > a,.float-nav nav .has-dd:hover > a,.float-nav nav .has-dd.open > a{background:rgba(236,238,244,.12)}
+.top-nav a[aria-current=page],.float-nav nav a[aria-current=page],.top-nav .dd a[aria-current=page]{color:#F6F7FA;background:rgba(236,238,244,.16)}
+.dd-title{color:rgba(236,238,244,.72)}
+.hero-top .socials .circle,.has-dd > .login-btn,.menu-btn{border-color:transparent;background:rgba(240,242,248,.12)}
+.brand img{box-shadow:0 0 0 1px rgba(236,238,244,.35)}

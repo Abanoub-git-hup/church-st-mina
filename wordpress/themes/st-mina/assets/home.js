@@ -16,6 +16,22 @@
 
   $("#allPhotos").addEventListener("click", () => $(".gcl .g").click());
 
+  // ---------- فقاعة المقولة: بتلف على أقوال الآباء من قسمها كل 6 ثواني ----------
+  // النص القصير في data-short على كل قول، والاسم في data-cap. ولو الصفحة مستخبية بتقف
+  const hq = $("#heroQuote"), hb = $("#heroQuoteBy");
+  const sayings = [...document.querySelectorAll(".qs[data-short]")].map(q => ({ t: "«" + q.dataset.short + "»", by: q.dataset.cap }));
+  if (hq && sayings.length) {
+    let i = 0, timer = null;
+    const put = () => { hq.textContent = sayings[i].t; hb.textContent = sayings[i].by; };
+    const next = () => {
+      hq.classList.add("fade"); hb.classList.add("fade");
+      setTimeout(() => { i = (i + 1) % sayings.length; put(); hq.classList.remove("fade"); hb.classList.remove("fade"); }, 500);
+    };
+    const run = () => { clearInterval(timer); timer = document.hidden ? null : setInterval(next, 6000); };
+    put(); run();
+    document.addEventListener("visibilitychange", run);
+  }
+
   if (!animate) return;
 
   // الواجهة: الضوء يدخل ثم يظهر النص

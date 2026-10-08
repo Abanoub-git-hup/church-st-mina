@@ -6,7 +6,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.7.0' );
+define( 'STMINA_THEME_VERSION', '0.7.5' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
 

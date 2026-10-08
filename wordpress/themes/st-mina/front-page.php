@@ -7,6 +7,12 @@
 defined( 'ABSPATH' ) || exit;
 
 get_header();
+
+// رابط صفحة خدمة بعنوانها، ولو مش موجودة يروح لصفحة الخدمات مع المجموعة
+$stmina_service_link = function ( $title, $group ) {
+	$ids = get_posts( array( 'post_type' => 'stmina_service', 'title' => $title, 'numberposts' => 1, 'fields' => 'ids' ) );
+	return $ids ? get_permalink( $ids[0] ) : home_url( '/services/#' . $group );
+};
 ?>
 
 <!-- ===== الواجهة ===== -->
@@ -32,45 +38,43 @@ get_header();
 
   <div class="hero-center">
     <div>
-      <span class="hello" data-intro><svg class="icon"><use href="#i-cross"/></svg>آية اليوم</span>
-      <h1 data-split><?php echo esc_html( stmina_home( 'hero_verse' ) ); ?> <em><?php echo esc_html( stmina_home( 'hero_highlight' ) ); ?></em></h1>
-      <span class="ref" data-intro>(<?php echo esc_html( stmina_home( 'hero_ref' ) ); ?>)</span>
-      <div class="hero-ctas" data-intro>
-        <a class="pill" href="#schedule">مواعيد القداسات <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
-        <a class="pill ghost" href="#about">تعرّف على الكنيسة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+      <div class="hero-verse">
+        <span class="hello" data-intro><svg class="icon"><use href="#i-cross"/></svg>آية اليوم</span>
+        <h1 data-split><?php echo esc_html( stmina_home( 'hero_verse' ) ); ?> <em><?php echo esc_html( stmina_home( 'hero_highlight' ) ); ?></em></h1>
+        <span class="ref" data-intro>(<?php echo esc_html( stmina_home( 'hero_ref' ) ); ?>)</span>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== الدوائر الأربعة أسفل الواجهة ===== -->
-<section class="hero-cards" aria-label="وصول سريع">
-  <div class="wrap hcirc">
-    <a class="hc next" href="<?php stmina_link( 'worship' ); ?>" data-tile>
-      <span class="bi"><span class="hc-tx">
-        <svg class="icon mark" aria-hidden="true"><use href="#i-cross"/></svg>
-        <small>القداس القادم</small>
-        <h3 id="nextMass">الأحد</h3>
-        <p id="nextMassTime">7:00 – 10:00 صباحًا</p>
-        <span class="link">كل المواعيد <svg class="icon"><use href="#i-nw"/></svg></span>
-      </span></span>
-    </a>
-    <a class="hc photo live" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener" data-tile aria-label="القراءات اليومية على موقع الأنبا تكلا هيمانوت">
-      <span class="bi"><img class="grade" src="<?php stmina_media( 'worship/youth-night-liturgy-2.jpeg' ); ?>" alt="">
-        <span class="hc-tx"><span class="play book"><svg class="icon"><use href="#i-book"/></svg></span><span class="lbl read">القراءات اليومية</span></span>
-      </span>
-    </a>
-    <a class="hc photo fathers" href="<?php stmina_link( 'church-fathers' ); ?>" data-tile>
-      <span class="bi"><img class="grade" src="<?php stmina_media( 'worship/deacons.jpeg' ); ?>" alt="آباء الكنيسة مع الشمامسة أمام الهيكل">
-        <span class="hc-tx"><small>كنيستنا</small><b>آباء الكنيسة<br>والشمامسة</b></span>
-      </span>
-    </a>
-    <div class="hc quote" data-tile>
-      <span class="bi"><span class="hc-tx">
-        <span class="qm" aria-hidden="true">”</span>
-        <b><?php echo esc_html( stmina_home( 'quote_text' ) ); ?></b>
-        <small><?php echo esc_html( stmina_home( 'quote_author' ) ); ?></small>
-      </span></span>
+      <div class="hcirc" aria-label="وصول سريع">
+        <a class="hc next glass" href="<?php stmina_link( 'worship' ); ?>" data-tile>
+          <span class="bi"><span class="hc-tx">
+            <svg class="icon mark" aria-hidden="true"><use href="#i-cross"/></svg>
+            <small>القداس القادم</small>
+            <b class="h" id="nextMass">الأحد</b>
+            <span class="t" id="nextMassTime">7:00 – 10:00 صباحًا</span>
+          </span></span>
+        </a>
+        <a class="hc photo live" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener" data-tile aria-label="القراءات اليومية على موقع الأنبا تكلا هيمانوت">
+          <span class="bi"><img class="grade" src="<?php stmina_media( 'worship/youth-night-liturgy-2.jpeg' ); ?>" alt="">
+            <span class="hc-tx"><span class="play book"><svg class="icon"><use href="#i-book"/></svg></span><span class="lbl read">القراءات اليومية</span></span>
+          </span>
+        </a>
+        <a class="hc photo fathers" href="<?php stmina_link( 'church-fathers' ); ?>" data-tile>
+          <span class="bi"><img class="grade" src="<?php stmina_media( 'worship/deacons.jpeg' ); ?>" alt="آباء الكنيسة مع الشمامسة أمام الهيكل">
+            <span class="hc-tx"><small>كنيستنا</small><b>آباء الكنيسة<br>والشمامسة</b></span>
+          </span>
+        </a>
+        <a class="hc photo youth" href="<?php echo esc_url( $stmina_service_link( 'اجتماع الشباب', 'meet' ) ); ?>" data-tile>
+          <span class="bi"><img class="grade" src="<?php stmina_media( 'services/youth/youth-meeting-2026.jpeg' ); ?>" alt="اجتماع الشباب">
+            <span class="hc-tx"><small>كل جمعة</small><b>اجتماع<br>الشباب</b></span>
+          </span>
+        </a>
+        <a class="hc glass quote" href="#quotes" data-tile aria-label="من أقوال آباء الكنيسة">
+          <span class="bi"><span class="hc-tx">
+            <span class="qm" aria-hidden="true">”</span>
+            <b id="heroQuote"><?php echo esc_html( stmina_home( 'quote_text' ) ); ?></b>
+            <small id="heroQuoteBy"><?php echo esc_html( stmina_home( 'quote_author' ) ); ?></small>
+          </span></span>
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -135,14 +139,14 @@ get_header();
     </div>
     <div class="yt" data-yt data-clip>
       <div class="yt-frame">
-        <img class="grade" src="https://i.ytimg.com/vi/3oN42iWOHGY/hqdefault.jpg" alt="" loading="lazy">
-        <button class="yt-play" aria-label="تشغيل الجزء 1"><svg class="icon"><use href="#i-play"/></svg></button>
-        <span class="yt-cap">الجزء 1 · 1:32:01</span>
+        <img class="grade" src="https://i.ytimg.com/vi/848eJp9_nbI/hqdefault.jpg" alt="" loading="lazy">
+        <button class="yt-play" aria-label="تشغيل الجزء 3"><svg class="icon"><use href="#i-play"/></svg></button>
+        <span class="yt-cap">الجزء 3 · 48:27</span>
       </div>
       <div class="yt-parts" role="group" aria-label="أجزاء القداس">
-        <button class="yt-part" data-id="3oN42iWOHGY" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 1" data-thumb="https://i.ytimg.com/vi/3oN42iWOHGY/hqdefault.jpg" aria-pressed="true" aria-label="الجزء 1، 1:32:01"><span class="yc" style="--h:64px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 1</b><small>1:32:01</small></button>
+        <button class="yt-part" data-id="3oN42iWOHGY" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 1" data-thumb="https://i.ytimg.com/vi/3oN42iWOHGY/hqdefault.jpg" aria-pressed="false" aria-label="الجزء 1، 1:32:01"><span class="yc" style="--h:64px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 1</b><small>1:32:01</small></button>
         <button class="yt-part" data-id="S-1k0WgHzNA" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 2" data-thumb="https://i.ytimg.com/vi/S-1k0WgHzNA/hqdefault.jpg" aria-pressed="false" aria-label="الجزء 2، 1:28:36"><span class="yc" style="--h:62px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 2</b><small>1:28:36</small></button>
-        <button class="yt-part" data-id="848eJp9_nbI" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 3" data-thumb="https://i.ytimg.com/vi/848eJp9_nbI/hqdefault.jpg" aria-pressed="false" aria-label="الجزء 3، 48:27"><span class="yc" style="--h:34px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 3</b><small>48:27</small></button>
+        <button class="yt-part" data-id="848eJp9_nbI" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 3" data-thumb="https://i.ytimg.com/vi/848eJp9_nbI/hqdefault.jpg" aria-pressed="true" aria-label="الجزء 3، 48:27"><span class="yc" style="--h:34px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 3</b><small>48:27</small></button>
       </div>
     </div>
   </div>
@@ -167,7 +171,7 @@ get_header();
 </section>
 
 <!-- ===== أقوال الآباء ===== -->
-<section class="has-bg sec deep pool" aria-labelledby="t-quotes">
+<section class="has-bg sec deep pool" id="quotes" aria-labelledby="t-quotes">
   <div class="sec-bg" aria-hidden="true"><img src="<?php stmina_media( 'church/bg-praying-light.jpg' ); ?>" alt="" loading="lazy"></div>
   <div class="wrap">
     <div class="head-row">
@@ -181,12 +185,12 @@ get_header();
       </div>
     </div>
     <div class="qslider" id="qslider" aria-roledescription="carousel" aria-label="أقوال الآباء" data-rise>
-      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-kyrillos-3.jpg' ); ?>');background-size:336.7% auto;background-position:13.1% 77.6%" aria-hidden="true"></span><span class="qs-q long">«قف أمام الله وصلِّ قائلًا: اضبطني يا ضابط الكل، ولا تتركني لذاتي لئلا أهلك. يا رب إن كنت أنا عاجزًا عن ضبط نفسي فلا تتركني، وإن لزم الأمر أن تقودني بالعصا أو التأديب فلا تسمح أن أحيد عن طريقك. خلّصني بكل وسيلة.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-kyrillos-3.jpg' ); ?>" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-arsanios-1.jpg' ); ?>');background-size:341.3% auto;background-position:24.9% 25.9%" aria-hidden="true"></span><span class="qs-q">«خادم مش مصلي.. غصنه ناشف. خادم مش صايم ولا بيقدّم ذبيحة حب.. غصنه ناشف. خادم مش بيقرأ في الكتاب المقدس بروح الشبع.. غصنه ناشف.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-arsanios-1.jpg' ); ?>" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القس فام عبد المسيح"><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-fam.jpg' ); ?>');background-size:408.7% auto;background-position:0.4% 63.6%" aria-hidden="true"></span><span class="qs-q">«الوصية مش قيد.. الوصية أمان لينا. ربنا ما بيمنعشي الفرح، ربنا بيحمي الفرح من إنه يتحول إلى وجع.»</span><span class="qs-by">القس فام عبد المسيح</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-fam.jpg' ); ?>" alt="ملصق قول القس فام عبد المسيح" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-kyrillos-1.jpg' ); ?>');background-size:348.1% auto;background-position:93.6% 55.0%" aria-hidden="true"></span><span class="qs-q">«كل مؤمن في المسيح يستطيع أن يغادر القبر وبستان الأشواك، ويقول: مكاني ليس في القبور، بل في المسيح.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-kyrillos-1.jpg' ); ?>" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-arsanios-2.jpg' ); ?>');background-size:447.6% auto;background-position:8.9% 37.5%" aria-hidden="true"></span><span class="qs-q">«المخدوع من سلطان هذا العالم يجري ولا يأخذ.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-arsanios-2.jpg' ); ?>" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
-      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-kyrillos-2.jpg' ); ?>');background-size:408.7% auto;background-position:88.3% 68.6%" aria-hidden="true"></span><span class="qs-q">«احترس من الشفقة التي تضيّع أبديتك، فحتى المشاعر النبيلة إن لم توزن بميزان الإرادة الإلهية قد تقودنا إلى الخطأ والهلاك.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-kyrillos-2.jpg' ); ?>" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني" data-short="اضبطني يا ضابط الكل، ولا تتركني لذاتي."><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-kyrillos-3.jpg' ); ?>');background-size:336.7% auto;background-position:13.1% 77.6%" aria-hidden="true"></span><span class="qs-q long">«قف أمام الله وصلِّ قائلًا: اضبطني يا ضابط الكل، ولا تتركني لذاتي لئلا أهلك. يا رب إن كنت أنا عاجزًا عن ضبط نفسي فلا تتركني، وإن لزم الأمر أن تقودني بالعصا أو التأديب فلا تسمح أن أحيد عن طريقك. خلّصني بكل وسيلة.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-kyrillos-3.jpg' ); ?>" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس أرسانيوس عزت" data-short="خادم مش مصلي.. غصنه ناشف."><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-arsanios-1.jpg' ); ?>');background-size:341.3% auto;background-position:24.9% 25.9%" aria-hidden="true"></span><span class="qs-q">«خادم مش مصلي.. غصنه ناشف. خادم مش صايم ولا بيقدّم ذبيحة حب.. غصنه ناشف. خادم مش بيقرأ في الكتاب المقدس بروح الشبع.. غصنه ناشف.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-arsanios-1.jpg' ); ?>" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس فام عبد المسيح" data-short="الوصية مش قيد.. الوصية أمان لينا."><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-fam.jpg' ); ?>');background-size:408.7% auto;background-position:0.4% 63.6%" aria-hidden="true"></span><span class="qs-q">«الوصية مش قيد.. الوصية أمان لينا. ربنا ما بيمنعشي الفرح، ربنا بيحمي الفرح من إنه يتحول إلى وجع.»</span><span class="qs-by">القس فام عبد المسيح</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-fam.jpg' ); ?>" alt="ملصق قول القس فام عبد المسيح" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني" data-short="مكاني ليس في القبور، بل في المسيح."><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-kyrillos-1.jpg' ); ?>');background-size:348.1% auto;background-position:93.6% 55.0%" aria-hidden="true"></span><span class="qs-q">«كل مؤمن في المسيح يستطيع أن يغادر القبر وبستان الأشواك، ويقول: مكاني ليس في القبور، بل في المسيح.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-kyrillos-1.jpg' ); ?>" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس أرسانيوس عزت" data-short="المخدوع من سلطان هذا العالم يجري ولا يأخذ."><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-arsanios-2.jpg' ); ?>');background-size:447.6% auto;background-position:8.9% 37.5%" aria-hidden="true"></span><span class="qs-q">«المخدوع من سلطان هذا العالم يجري ولا يأخذ.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-arsanios-2.jpg' ); ?>" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني" data-short="احترس من الشفقة التي تضيّع أبديتك."><span class="qs-face" style="background-image:url('<?php stmina_media( 'priests/quote-kyrillos-2.jpg' ); ?>');background-size:408.7% auto;background-position:88.3% 68.6%" aria-hidden="true"></span><span class="qs-q">«احترس من الشفقة التي تضيّع أبديتك، فحتى المشاعر النبيلة إن لم توزن بميزان الإرادة الإلهية قد تقودنا إلى الخطأ والهلاك.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="<?php stmina_media( 'priests/quote-kyrillos-2.jpg' ); ?>" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
       <div class="qs-dots" role="tablist" aria-label="اختر القول"></div>
     </div>
   </div>

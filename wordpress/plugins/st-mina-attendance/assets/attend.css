@@ -84,3 +84,16 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 /* تنبيه قصير */
 .toast{position:fixed;inset-inline:var(--gut);bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + var(--s-6));z-index:40;max-width:480px;margin-inline:auto;padding:var(--s-3) var(--s-4);border-radius:14px;background:var(--btn-light);color:var(--ink);font-size:.88rem;font-weight:500;text-align:center;opacity:0;translate:0 10px;pointer-events:none;transition:opacity var(--t-base),translate var(--t-base) var(--ease)}
 .toast.show{opacity:1;translate:0 0}
+
+/* الحجم الهادي: هوامش أوسع، ومحتوى أصغر بحوالي 10% مايملاش الشاشة.
+   الخطوط كلها بالـ rem فبتصغر من html، والمسافات بالـ px فبتتصغّر هنا بإيدنا.
+   الأزرار الأساسية بتفضل 52px علشان اللمس. التحديد body :is() أقوى من تنسيق كل شاشة اللي بييجي بعد الملف ده */
+html{font-size:90%}
+:root{--gut:24px;--s-3:11px;--s-4:14px;--s-5:18px;--s-6:22px;--s-8:28px;--s-10:36px}
+@media (min-width:768px){:root{--gut:32px}}
+body :is(.wrap-c,.wrap-d,.wrap-f,.wrap-i,.wrap-m,.wrap-p,.wrap-s,.wrap-x){max-width:468px}
+body .login{max-width:380px}
+body .toast{max-width:432px}
+body .wrap-c .ring{width:120px;height:120px}
+body .wrap-p .ring{width:94px;height:94px}
+body .wrap-p .av{width:58px;height:58px}
