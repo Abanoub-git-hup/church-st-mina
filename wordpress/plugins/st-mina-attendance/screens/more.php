@@ -150,6 +150,10 @@ a.pane-h{color:inherit}
       <span class="pane-ic"><svg class="icon"><use href="#i-sheet"/></svg></span>
       <b>استيراد من Excel</b><small>ضيف مخدومين كتير مرة واحدة</small>
     </a>
+    <a class="glass tile" href="<?php echo esc_url( stmina_att_url( 'dashboard' ) ); ?>">
+      <span class="pane-ic"><svg class="icon"><use href="#i-chart"/></svg></span>
+      <b>لوحة الخادم</b><small>حضور الكل ونسب كل نوع نشاط</small>
+    </a>
   </div>
 
   <!-- موقع الكنيسة -->

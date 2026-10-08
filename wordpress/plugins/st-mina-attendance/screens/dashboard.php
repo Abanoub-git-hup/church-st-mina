@@ -1,7 +1,16 @@
+<?php
+/**
+ * شاشة "dashboard" في نظام الحضور. متولّدة من design/attend-dashboard.html بأداة tools/convert-attend.js،
+ * فأي تعديل في الشكل يتعمل في التصميم وبعدين تتشغّل الأداة تاني.
+ */
+
+defined( 'ABSPATH' ) || exit;
+?>
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2a1c12">
 <title>لوحة الخادم | إعداد الخدام</title>
@@ -9,8 +18,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
-<link rel="stylesheet" href="assets/attend.css">
+<link rel="stylesheet" href="<?php echo esc_url( get_template_directory_uri() . '/assets/site.css' ); ?>">
+<link rel="stylesheet" href="<?php echo esc_url( STMINA_ATT_URL . 'assets/attend.css?ver=' . STMINA_ATT_VERSION ); ?>">
 <style>
 /* خاص بلوحة الخادم */
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
@@ -124,18 +133,12 @@
   <symbol id="i-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
 </svg>
 
-<!-- لافتة المراجعة: للنموذج فقط، تُحذف في ووردبريس. الأسماء والأرقام وهمية -->
-<div class="review" role="group" aria-label="حالات الشاشة للمراجعة">
-  <span>نموذج للمراجعة (أسماء وأرقام وهمية)، اختر الحالة:</span>
-  <button class="chip" type="button" data-show="normal" aria-pressed="true">عادي</button>
-  <button class="chip" type="button" data-show="empty" aria-pressed="false">مفيش جلسات لسه</button>
-</div>
 
 <main class="wrap-d" id="main">
   <header class="glass p-top">
-    <a class="ibtn" href="attend-more.html" aria-label="رجوع للمزيد"><svg class="icon"><use href="#i-right"/></svg></a>
+    <a class="ibtn" href="<?php echo esc_url( stmina_att_url( 'more' ) ); ?>" aria-label="رجوع للمزيد"><svg class="icon"><use href="#i-right"/></svg></a>
     <b>لوحة الخادم</b>
-    <a class="ibtn out" href="attend-login.html" data-logout aria-label="خروج من الحساب" title="خروج"><svg class="icon"><use href="#i-out"/></svg></a>
+    <a class="ibtn out" href="<?php echo esc_url( stmina_att_url( 'login' ) ); ?>" data-logout aria-label="خروج من الحساب" title="خروج"><svg class="icon"><use href="#i-out"/></svg></a>
   </header>
 
   <div class="seg" role="group" aria-label="الفترة" id="period"></div>
@@ -168,150 +171,16 @@
 
 <nav class="glass g-nav" aria-label="التنقل في نظام الحضور">
   <ul>
-    <li><a href="attend-sessions.html"><svg class="icon"><use href="#i-calendar"/></svg>الجلسات</a></li>
-    <li><a href="attend-members.html"><svg class="icon"><use href="#i-users"/></svg>المخدومون</a></li>
-    <li><a href="attend-scan.html"><svg class="icon"><use href="#i-scan"/></svg>المسح</a></li>
-    <li><a href="attend-followup.html"><svg class="icon"><use href="#i-heart"/></svg>الافتقاد</a></li>
-    <li><a href="attend-more.html" aria-current="page"><svg class="icon"><use href="#i-more"/></svg>المزيد</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'sessions' ) ); ?>"><svg class="icon"><use href="#i-calendar"/></svg>الجلسات</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'members' ) ); ?>"><svg class="icon"><use href="#i-users"/></svg>المخدومون</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'scan' ) ); ?>"><svg class="icon"><use href="#i-scan"/></svg>المسح</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'followup' ) ); ?>"><svg class="icon"><use href="#i-heart"/></svg>الافتقاد</a></li>
+    <li><a href="<?php echo esc_url( stmina_att_url( 'more' ) ); ?>" aria-current="page"><svg class="icon"><use href="#i-more"/></svg>المزيد</a></li>
   </ul>
 </nav>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="assets/attend-demo.js"></script>
-<script>
-(() => {
-  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-  const body = document.body, D = window.AttendDemo;
-  const fShort = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { day: 'numeric', month: 'short' });
-  const fMonth = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { month: 'short' });
-  const MANUAL_MIN = 3;
-  const active = D.members.filter(m => !m.suspended), off = D.members.length - active.length;
-  let period = '3m', filter = 'all', open = null, demoEmpty = false;
-
-  // ---------- الفترة: أرقام الجلسات اللي جواها (الأحدث أولًا زي السجل) ----------
-  const PERIODS = [['month', 'الشهر ده'], ['3m', 'آخر 3 شهور'], ['all', 'من الأول']];
-  function sessionsIn(p) {
-    if (demoEmpty) return [];
-    const now = new Date();
-    const from = p === 'month' ? new Date(now.getFullYear(), now.getMonth(), 1) : p === '3m' ? new Date(now.getFullYear(), now.getMonth() - 3, now.getDate()) : null;
-    return D.sessionDates.map((d, k) => k).filter(k => !from || D.sessionDates[k] >= from);
-  }
-
-  // نفس حساب "حضوري": حضر ÷ (الجلسات − الغياب بعذر)
-  function stats(m, idx) {
-    const h = idx.filter(k => m.log[k] === 'h').length, e = idx.filter(k => m.log[k] === 'e').length;
-    const base = idx.length - e;
-    return { h, e, base, pct: base ? Math.round(h / base * 100) : null, manual: idx.filter(k => m.manual[k]).length };
-  }
-  const sessN = n => n === 1 ? 'جلسة واحدة' : n === 2 ? 'جلستين' : n <= 10 ? `${n} جلسات` : `${n} جلسة`;
-  const timesN = n => n === 1 ? 'مرة واحدة' : n === 2 ? 'مرتين' : n <= 10 ? `${n} مرات` : `${n} مرة`;
-
-  // ---------- حضور الكل ----------
-  function renderAll(idx) {
-    // النسبة العامة: مجموع الحضور ÷ مجموع (الجلسات − العذر) لكل المخدومين
-    let h = 0, base = 0;
-    active.forEach(m => { const s = stats(m, idx); h += s.h; base += s.base; });
-    const pct = base ? Math.round(h / base * 100) : 0;
-    const perSess = idx.map(k => active.filter(m => m.log[k] === 'h').length);
-    const avg = Math.round(perSess.reduce((a, b) => a + b, 0) / perSess.length);
-    $('#headline').innerHTML = `نسبة الحضور <b><bdi dir="ltr">${pct}%</bdi></b>`;
-    $('#headSub').textContent = `في ${sessN(idx.length)}، بيحضر في المتوسط ${avg} من ${active.length} مخدوم.`;
-    // الأحدث على اليمين، زي رسم الشهور في "حضوري"
-    const max = active.length, ord = idx;
-    $('#strip').innerHTML = ord.map(k => `<i class="${D.sessionTypes[k] === 'mass' ? 'mass' : ''}" style="height:${Math.max(3, perSess[idx.indexOf(k)] / max * 100)}%" title="${D.TYPES[D.sessionTypes[k]]} ${fShort.format(D.sessionDates[k])}: ${perSess[idx.indexOf(k)]}"></i>`).join('');
-    $('#strip').setAttribute('aria-label', 'عدد الحاضرين في كل جلسة: ' + ord.map(k => `${D.TYPES[D.sessionTypes[k]]} ${fShort.format(D.sessionDates[k])} ${perSess[idx.indexOf(k)]}`).join('، '));
-    $('#axFrom').textContent = fShort.format(D.sessionDates[ord[0]]);
-    $('#axTo').textContent = ord.length > 1 ? fShort.format(D.sessionDates[ord[ord.length - 1]]) : '';
-    // نسبة كل نوع نشاط
-    $('#types').innerHTML = Object.entries(D.TYPES).map(([t, name]) => {
-      const ti = idx.filter(k => D.sessionTypes[k] === t);
-      let th = 0, tb = 0; active.forEach(m => { const s = stats(m, ti); th += s.h; tb += s.base; });
-      const p = tb ? Math.round(th / tb * 100) : null;
-      return `<div class="t-row${p === null ? ' none' : ''}"><span>${name}<small>${ti.length ? sessN(ti.length) : 'مفيش'}</small></span><span class="t-bar" aria-hidden="true"><span style="width:${p || 0}%"></span></span><b>${p === null ? '–' : p + '%'}</b></div>`;
-    }).join('');
-  }
-
-  // ---------- كل مخدوم ----------
-  function renderList(idx) {
-    const rows = active.map(m => ({ m, s: stats(m, idx) }));
-    const many = rows.filter(r => r.s.manual >= MANUAL_MIN);
-    const F = [['all', 'الأقل حضورًا', null], ['name', 'بالاسم', null], ['manual', 'يدوي كتير', many.length]];
-    $('#filter').innerHTML = F.map(([k, t, n]) => `<button type="button" data-f="${k}" aria-pressed="${k === filter}">${t}${n === null ? '' : ` <b>${n}</b>`}</button>`).join('');
-    let L = filter === 'manual' ? many.sort((a, b) => b.s.manual - a.s.manual)
-      : filter === 'name' ? rows.sort((a, b) => a.m.name.localeCompare(b.m.name, 'ar'))
-      : rows.sort((a, b) => (a.s.pct ?? 101) - (b.s.pct ?? 101) || a.m.name.localeCompare(b.m.name, 'ar'));
-    $('#listCount').textContent = `${active.length} مخدوم`;
-    $('#noteOff').textContent = off ? `${off === 1 ? 'مخدوم واحد موقوف مش' : off + ' موقوفين مش'} داخل في الأرقام.` : '';
-    $('#list').innerHTML = L.length ? L.map(({ m, s }) => {
-      const isOpen = open === m.id;
-      const meta = s.base ? `حضر ${s.h} من ${s.base}` : 'مفيش جلسات له';
-      const flag = s.manual >= MANUAL_MIN ? `<span class="flag">يدوي ${s.manual}</span>` : s.manual ? `<span>· يدوي ${s.manual}</span>` : '';
-      return `<div class="m${isOpen ? ' open' : ''}">
-        <button class="m-btn" type="button" data-id="${m.id}" aria-expanded="${isOpen}" aria-controls="mm-${m.id}">
-          <span class="av" aria-hidden="true">${D.initials(m.name)}</span>
-          <span><span class="m-name">${m.name}</span><span class="m-meta"><span>${meta}</span>${flag}</span></span>
-          <span class="ring${s.pct === null ? ' na' : s.pct < 60 ? ' low' : ''}" style="--p:${s.pct || 0}" aria-label="نسبة الحضور ${s.pct === null ? 'مفيش' : s.pct + '%'}"><span>${s.pct === null ? '–' : s.pct + '%'}</span></span>
-        </button>
-        <div class="m-more" id="mm-${m.id}">${isOpen ? detail(m, idx, s) : ''}</div>
-      </div>`;
-    }).join('') : `<p class="no-match">مفيش حد اتسجّل يدوي ${timesN(MANUAL_MIN)} أو أكتر في الفترة دي. الكروت شغالة.</p>`;
-  }
-
-  // تفاصيل مخدوم: نسبة كل نوع، ورسم آخر 6 شهور (نفس اللي في "حضوري")، والتسجيل اليدوي
-  function detail(m, idx, s) {
-    const types = Object.entries(D.TYPES).map(([t, name]) => {
-      const p = stats(m, idx.filter(k => D.sessionTypes[k] === t)).pct;
-      return `<div><b>${p === null ? '–' : p + '%'}</b><span>${name}</span></div>`;
-    }).join('');
-    const now = new Date(), months = Array.from({ length: 6 }, (_, k) => new Date(now.getFullYear(), now.getMonth() - k, 1));
-    const data = months.map(d => {
-      const mi = D.sessionDates.map((x, k) => k).filter(k => D.sessionDates[k].getMonth() === d.getMonth() && D.sessionDates[k].getFullYear() === d.getFullYear());
-      return { d, pct: stats(m, mi).pct };
-    });
-    const bars = data.map((x, k) => `<div class="bar${k === 0 ? ' now' : ''}${x.pct === null ? ' none' : ''}"><em>${x.pct === null ? '–' : x.pct + '%'}</em><i style="height:${x.pct === null ? 4 : Math.max(6, x.pct)}%"></i><span>${fMonth.format(x.d)}</span></div>`).join('');
-    const label = 'نسبة كل شهر: ' + data.map(x => `${fMonth.format(x.d)} ${x.pct === null ? 'مفيش جلسات' : x.pct + '%'}`).join('، ');
-    const manual = s.manual
-      ? `اتسجّل يدوي <b>${timesN(s.manual)}</b> من ${s.h} حضور في الفترة دي.${s.manual >= MANUAL_MIN ? ' غالبًا الكارت مش معاه، ابعتهوله تاني.' : ''}`
-      : 'كل حضوره اتسجّل بمسح الكارت.';
-    return `<div><h3>نسبته في كل نوع</h3><div class="mini">${types}</div></div>
-      <div><h3>آخر 6 شهور</h3><div class="bars" role="img" aria-label="${label}">${bars}</div></div>
-      <p class="manual-t">${manual}</p>
-      <div class="m-acts">
-        ${s.manual >= MANUAL_MIN ? `<a class="wa" href="${D.waCard(m)}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-wa"/></svg>ابعتله الكارت تاني</a>` : ''}
-        <a class="go" href="attend-member.html?id=${m.id}">افتح ملفه<svg class="icon"><use href="#i-left"/></svg></a>
-      </div>`;
-  }
-
-  function render() {
-    $('#period').innerHTML = PERIODS.map(([k, t]) => `<button type="button" data-p="${k}" aria-pressed="${k === period}">${t}</button>`).join('');
-    const idx = sessionsIn(period);
-    if (!idx.length) { body.dataset.empty = ''; return; }
-    delete body.dataset.empty;
-    renderAll(idx); renderList(idx);
-  }
-
-  // في النموذج مفيش تنزيل حقيقي
-  $('#xlsx').addEventListener('click', () => { const t = document.getElementById('toast'); if (t) { t.textContent = 'في الموقع بينزّل ملف Excel: صف لكل مخدوم، وعمود لكل جلسة، والنسبة في الآخر.'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600); } });
-
-  $('#period').addEventListener('click', e => { const b = e.target.closest('[data-p]'); if (!b) return; period = b.dataset.p; render(); });
-  $('#filter').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; filter = b.dataset.f; open = null; render(); });
-  $('#list').addEventListener('click', e => {
-    const b = e.target.closest('.m-btn'); if (!b) return;
-    const id = +b.dataset.id; open = open === id ? null : id; render();
-    $(`.m-btn[data-id="${id}"]`).focus();
-  });
-
-  // ---------- حالات المراجعة ----------
-  const chips = $$('.review .chip');
-  chips.forEach(c => c.addEventListener('click', () => {
-    chips.forEach(x => x.setAttribute('aria-pressed', x === c));
-    demoEmpty = c.dataset.show === 'empty';
-    open = null; render();
-  }));
-
-  render();
-})();
-</script>
+<?php stmina_att_footer( 'dashboard' ); ?>
 </body>
 </html>

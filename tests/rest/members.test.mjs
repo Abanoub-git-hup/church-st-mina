@@ -670,3 +670,90 @@ describe('الاستيراد من Excel وحالة الكارت (المهمة 20
     assert.equal(re.data.card_sent, false, 'الكارت الجديد لسه مااتبعتش');
   });
 });
+
+describe('لوحة الخادم (المهمة 17)', () => {
+  // تاريخ من n يوم، بتوقيت القاهرة
+  const daysAgo = n => { const d = new Date(Date.now() - n * 864e5); return new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(d); };
+  const rnd = (a, b) => a + Math.floor(Math.random() * (b - a));
+  let a, b, mass, meeting, old2, old5;
+  const ids = r => r.data.sessions.map(s => s.id);
+
+  before(async () => {
+    a = (await call('servant', 'POST', '/members', { full_name: 'لوحة الخادم ' + Date.now(), phone: phone() })).data;
+    b = (await call('servant', 'POST', '/members', { full_name: 'لوحة موقوف ' + Date.now(), phone: phone() })).data;
+    // النهارده: قداس حضر (يدوي)، واجتماع غاب
+    mass = (await call('servant', 'POST', '/sessions', { kind: 'mass', date: todayCairo() })).data;
+    await call('servant', 'PUT', `/sessions/${mass.id}/records/${a.id}`, { status: 'present' });
+    await call('servant', 'PUT', `/sessions/${mass.id}/records/${b.id}`, { status: 'present' });
+    await call('servant', 'POST', `/sessions/${mass.id}/close`);
+    meeting = (await call('servant', 'POST', '/sessions', { kind: 'meeting', date: todayCairo() })).data;
+    await call('servant', 'PUT', `/sessions/${meeting.id}/records/${a.id}`, { status: 'absent' });
+    await call('servant', 'POST', `/sessions/${meeting.id}/close`);
+    // جلسة من شهرين تقريبًا (جوه "آخر 3 شهور" وبرا "الشهر ده")، وجلسة أقدم من 3 شهور
+    old2 = (await call('servant', 'POST', '/sessions', { kind: 'activity', date: daysAgo(rnd(40, 80)) })).data;
+    await call('servant', 'POST', `/sessions/${old2.id}/close`);
+    old5 = (await call('servant', 'POST', '/sessions', { kind: 'activity', date: daysAgo(rnd(120, 300)) })).data;
+    await call('servant', 'POST', `/sessions/${old5.id}/close`);
+    assert.ok(mass.id && meeting.id && old2.id && old5.id, 'كل الجلسات اتفتحت');
+    // الموقوف بعد ما حضر: مايتحسبش في اللوحة
+    await call('servant', 'PATCH', `/members/${b.id}`, { status: 'stopped' });
+  });
+
+  test('غير الخدام مايوصلوش للوحة ولا للجدول', async () => {
+    assert.equal((await call('guest', 'GET', '/dashboard')).status, 401);
+    assert.equal((await call('subscriber', 'GET', '/dashboard')).status, 403);
+  });
+
+  test('أرقام المخدوم في اللوحة هي نفس أرقام ملفه و"حضوري"', async () => {
+    const d = (await call('servant', 'GET', '/dashboard?period=all')).data;
+    const row = d.members.find(x => x.id === a.id);
+    const s = (await call('servant', 'GET', `/members/${a.id}/stats`)).data;
+    const me = (await call('guest', 'GET', `/me/${a.qr_token}`)).data;
+    assert.deepEqual(row.kinds, s.kinds);
+    assert.deepEqual(row.kinds, me.kinds);
+    assert.deepEqual(row.months, me.months, 'نفس رسم آخر 6 شهور');
+    assert.deepEqual([row.kinds.all.present, row.kinds.all.base, row.kinds.all.pct], [1, 2, 50]);
+  });
+
+  test('عدد التسجيل اليدوي لكل مخدوم', async () => {
+    const d = (await call('servant', 'GET', '/dashboard?period=all')).data;
+    assert.equal(d.members.find(x => x.id === a.id).manual, 1);
+    assert.equal(d.manual_min, 3);
+  });
+
+  test('جدول Excel: حالة كل مخدوم في كل جلسة، وعدد الحاضرين في كل جلسة', async () => {
+    const d = (await call('servant', 'GET', '/dashboard?period=all')).data;
+    const row = d.members.find(x => x.id === a.id);
+    assert.equal(row.records['s' + mass.id], 'present');
+    assert.equal(row.records['s' + meeting.id], 'absent');
+    assert.equal(row.records['s' + old2.id], undefined, 'الجلسة اللي قبل تسجيله مالهاش خانة');
+    assert.equal(d.sessions.find(s => s.id === mass.id).present, 1, 'الموقوف مش محسوب في الحاضرين');
+  });
+
+  test('الموقوفين برا الأرقام، وعددهم بس ظاهر', async () => {
+    const d = (await call('servant', 'GET', '/dashboard?period=all')).data;
+    assert.ok(!d.members.some(x => x.id === b.id));
+    assert.ok(d.stopped >= 1);
+  });
+
+  test('النسبة العامة = مجموع الحضور ÷ مجموع المقامات', async () => {
+    const d = (await call('servant', 'GET', '/dashboard?period=all')).data;
+    const p = d.members.reduce((t, m) => t + m.kinds.all.present, 0), base = d.members.reduce((t, m) => t + m.kinds.all.base, 0);
+    assert.deepEqual([d.overall.all.present, d.overall.all.base], [p, base]);
+    assert.equal(d.overall.all.pct, base ? Math.round(p / base * 100) : null);
+  });
+
+  test('الفترة بتحدد الجلسات: الشهر ده، وآخر 3 شهور، ومن الأول', async () => {
+    const month = ids(await call('servant', 'GET', '/dashboard?period=month'));
+    const m3 = ids(await call('servant', 'GET', '/dashboard?period=3m'));
+    const all = ids(await call('servant', 'GET', '/dashboard?period=all'));
+    assert.ok(month.includes(mass.id) && !month.includes(old2.id) && !month.includes(old5.id));
+    assert.ok(m3.includes(mass.id) && m3.includes(old2.id) && !m3.includes(old5.id));
+    assert.ok(all.includes(old2.id) && all.includes(old5.id));
+    assert.equal((await call('servant', 'GET', '/dashboard?period=year')).status, 400);
+  });
+
+  test('تنضيف', async () => {
+    for (const s of [mass, meeting, old2, old5]) assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}`)).status, 200);
+  });
+});

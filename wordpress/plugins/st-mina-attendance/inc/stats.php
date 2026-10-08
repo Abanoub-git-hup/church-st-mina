@@ -141,8 +141,130 @@ function stmina_att_member_service_id( $member_id ) {
 	) );
 }
 
+/**
+ * أول يوم في الفترة (Y-m-d)، أو '' لـ "من الأول".
+ * month: من أول الشهر ده. 3m: من نفس اليوم من 3 شهور.
+ */
+function stmina_att_period_from( $period ) {
+	$today = new DateTimeImmutable( current_time( 'Y-m-d' ), wp_timezone() );
+	if ( 'month' === $period ) {
+		return $today->format( 'Y-m-01' );
+	}
+	if ( '3m' === $period ) {
+		return $today->modify( '-3 months' )->format( 'Y-m-d' );
+	}
+	return '';
+}
+
+/**
+ * لوحة الخادم: كل اللي الشاشة وملف Excel محتاجينه في رد واحد.
+ * الأرقام من stmina_att_stats وstmina_att_months نفسهم، على نفس السجل اللي stmina_att_member_log بيجيبه،
+ * بس باستعلام واحد لكل المخدومين بدل استعلام لكل واحد. والموقوفين برا الأرقام، وعددهم بس في الرد.
+ */
+function stmina_att_dashboard( $service, $period ) {
+	global $wpdb;
+	$from  = stmina_att_period_from( $period );
+	$kinds = stmina_att_kinds();
+	$S     = stmina_att_table( 'sessions' );
+	$R     = stmina_att_table( 'records' );
+	$order = 'ORDER BY s.session_date DESC, s.opened_at DESC, s.id DESC'; // نفس ترتيب stmina_att_member_log
+
+	// الجلسات المنتهية في الفترة، الأحدث الأول
+	$sql  = "SELECT s.id, s.kind, s.session_date FROM $S s WHERE s.service_id = %d AND s.status = 'closed'";
+	$args = array( $service->id );
+	if ( $from ) {
+		$sql   .= ' AND s.session_date >= %s';
+		$args[] = $from;
+	}
+	$sessions = $wpdb->get_results( $wpdb->prepare( "$sql $order", $args ) ); // phpcs:ignore WordPress.DB.PreparedSQL -- أسماء الجداول من stmina_att_table
+
+	// سجل كل المخدومين في كل الجلسات المنتهية (من غير فلتر الفترة، علشان رسم آخر 6 شهور)
+	$rows = $wpdb->get_results( $wpdb->prepare(
+		"SELECT r.member_id, s.id AS session_id, s.kind, s.session_date, r.status, r.method
+		 FROM $R r JOIN $S s ON s.id = r.session_id
+		 WHERE s.service_id = %d AND s.status = 'closed' $order", // phpcs:ignore WordPress.DB.PreparedSQL
+		$service->id
+	) );
+	$logs = array();
+	foreach ( $rows as $x ) {
+		$logs[ (int) $x->member_id ][] = $x;
+	}
+
+	$sum     = array_fill_keys( array_merge( array( 'all' ), array_keys( $kinds ) ), array( 'present' => 0, 'base' => 0 ) );
+	$present = array_fill_keys( wp_list_pluck( $sessions, 'id' ), 0 );
+	$members = array();
+	foreach ( stmina_att_list_members( $service, 'active' ) as $m ) {
+		$log = isset( $logs[ (int) $m->id ] ) ? $logs[ (int) $m->id ] : array();
+		$in  = $from ? array_values( array_filter( $log, function ( $x ) use ( $from ) { return $x->session_date >= $from; } ) ) : $log;
+
+		$k = array( 'all' => stmina_att_stats( $in ) );
+		foreach ( array_keys( $kinds ) as $kind ) {
+			$k[ $kind ] = stmina_att_stats( $in, $kind );
+		}
+		foreach ( $k as $key => $s ) {
+			$sum[ $key ]['present'] += $s['present'];
+			$sum[ $key ]['base']    += $s['base'];
+		}
+		$records = array();
+		$manual  = 0;
+		foreach ( $in as $x ) {
+			$records[ 's' . $x->session_id ] = $x->status; // حرف قبل الرقم علشان JSON يفضل object
+			if ( 'present' === $x->status ) {
+				$present[ $x->session_id ]++;
+				if ( 'manual' === $x->method ) {
+					$manual++;
+				}
+			}
+		}
+		$members[] = array(
+			'id'        => (int) $m->id,
+			'full_name' => $m->full_name,
+			'phone'     => $m->phone,
+			'card_url'  => stmina_att_card_url( $m->qr_token ),
+			'kinds'     => $k,
+			'manual'    => $manual,
+			'months'    => stmina_att_months( $log ),
+			'records'   => (object) $records,
+		);
+	}
+
+	$overall = array();
+	foreach ( $sum as $key => $s ) {
+		$overall[ $key ] = $s + array( 'pct' => $s['base'] > 0 ? (int) round( $s['present'] / $s['base'] * 100 ) : null );
+	}
+	return array(
+		'period'     => $period,
+		'from'       => $from,
+		'kind_names' => $kinds,
+		'sessions'   => array_map( function ( $s ) use ( $kinds, $present ) {
+			return array( 'id' => (int) $s->id, 'kind' => $s->kind, 'kind_name' => $kinds[ $s->kind ], 'date' => $s->session_date, 'present' => $present[ $s->id ] );
+		}, $sessions ),
+		'overall'    => $overall,
+		'members'    => $members,
+		'stopped'    => count( stmina_att_list_members( $service, 'stopped' ) ),
+		'manual_min' => 3, // "يدوي كتير": الكارت غالبًا مش معاه
+	);
+}
+
 add_action( 'rest_api_init', function () {
 	$ns = 'stmina/v1';
+
+	// لوحة الخادم وملف Excel (المهمة 17)
+	register_rest_route( $ns, '/dashboard', array(
+		'methods'             => 'GET',
+		'permission_callback' => 'stmina_att_can',
+		'args'                => array(
+			'service' => array( 'type' => 'string', 'default' => 'i3dad', 'sanitize_callback' => 'sanitize_key' ),
+			'period'  => array( 'type' => 'string', 'default' => '3m', 'enum' => array( 'month', '3m', 'all' ) ),
+		),
+		'callback'            => function ( WP_REST_Request $req ) {
+			$service = stmina_att_req_service( $req );
+			if ( is_wp_error( $service ) ) {
+				return $service;
+			}
+			return stmina_att_dashboard( $service, $req['period'] );
+		},
+	) );
 
 	// "حضوري": عامة بالكود زي الكارت، وبتاعة المخدوم ده بس
 	register_rest_route( $ns, '/me/(?P<token>[A-Za-z0-9_-]{32})', array(
