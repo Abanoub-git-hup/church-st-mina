@@ -65,7 +65,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 
 /* شريط التنقل: زجاج عايم بأيقونات وأسماء */
 .g-nav{position:fixed;inset-inline:var(--s-3);bottom:calc(var(--s-3) + env(safe-area-inset-bottom));z-index:30;max-width:520px;margin-inline:auto;border-radius:22px}
-.g-nav ul{display:grid;grid-template-columns:repeat(5,1fr);height:var(--nav-h);padding:6px}
+.g-nav ul{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);height:var(--nav-h);padding:6px}
 .g-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;height:100%;border-radius:16px;font-size:.75rem;font-weight:400;color:var(--on-glass-2);transition:background var(--t-fast),color var(--t-fast)}
 .g-nav a .icon{width:22px;height:22px}
 .g-nav a:hover{color:var(--on-glass)}

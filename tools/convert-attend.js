@@ -30,6 +30,9 @@ for (const [key, file] of Object.entries(SCREENS)) {
   h = h.replace(/[ \t]*<!-- لافتة المراجعة[^\n]*\n[ \t]*<div class="review"(?:[^\n]*<\/div>|[\s\S]*?\n[ \t]*<\/div>)\n/, '');
   // البيانات الوهمية وسكريبت النموذج في آخر الصفحة
   h = h.replace(/[ \t]*<script src="assets\/attend-demo\.js"><\/script>\n/, '');
+  // الافتقاد (المهمة 18) مؤجّل بطلب المستخدم: التبويب بيتشال من شريط التنقل في كل الشاشات،
+  // والتصميم فاضل زي ما هو لو رجعناله. لما يرجع، امسح السطر ده
+  h = h.replace(/[ \t]*<li><a href="attend-followup\.html"[^\n]*<\/li>\n/g, '');
   for (const re of LATER[key] || []) {
     if (!re.test(h)) throw new Error(`${file}: مالقيتش ${re}`);
     h = h.replace(re, '');

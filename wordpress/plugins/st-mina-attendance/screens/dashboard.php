@@ -174,7 +174,6 @@ defined( 'ABSPATH' ) || exit;
     <li><a href="<?php echo esc_url( stmina_att_url( 'sessions' ) ); ?>"><svg class="icon"><use href="#i-calendar"/></svg>الجلسات</a></li>
     <li><a href="<?php echo esc_url( stmina_att_url( 'members' ) ); ?>"><svg class="icon"><use href="#i-users"/></svg>المخدومون</a></li>
     <li><a href="<?php echo esc_url( stmina_att_url( 'scan' ) ); ?>"><svg class="icon"><use href="#i-scan"/></svg>المسح</a></li>
-    <li><a href="<?php echo esc_url( stmina_att_url( 'followup' ) ); ?>"><svg class="icon"><use href="#i-heart"/></svg>الافتقاد</a></li>
     <li><a href="<?php echo esc_url( stmina_att_url( 'more' ) ); ?>" aria-current="page"><svg class="icon"><use href="#i-more"/></svg>المزيد</a></li>
   </ul>
 </nav>

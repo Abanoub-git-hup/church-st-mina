@@ -1,6 +1,6 @@
 <?php
 /**
- * شاشة لسه ماتعملتش (الجلسات، والمسح، والافتقاد ...): رسالة "جاية قريب" وشريط التنقل.
+ * شاشة لسه ماتعملتش (أي شاشة مهمتها لسه ماتعملتش): رسالة "جاية قريب" وشريط التنقل.
  * كل شاشة بتتعمل في مهمتها، وساعتها بيبقى ليها ملف باسمها هنا.
  */
 
@@ -51,7 +51,6 @@ defined( 'ABSPATH' ) || exit;
     <li><a href="<?php echo esc_url( stmina_att_url( 'sessions' ) ); ?>"><svg class="icon"><use href="#i-calendar"/></svg>الجلسات</a></li>
     <li><a href="<?php echo esc_url( stmina_att_url( 'members' ) ); ?>"><svg class="icon"><use href="#i-users"/></svg>المخدومون</a></li>
     <li><a href="<?php echo esc_url( stmina_att_url( 'scan' ) ); ?>"><svg class="icon"><use href="#i-scan"/></svg>المسح</a></li>
-    <li><a href="<?php echo esc_url( stmina_att_url( 'followup' ) ); ?>"><svg class="icon"><use href="#i-heart"/></svg>الافتقاد</a></li>
     <li><a href="<?php echo esc_url( stmina_att_url( 'more' ) ); ?>"><svg class="icon"><use href="#i-more"/></svg>المزيد</a></li>
   </ul>
 </nav>
