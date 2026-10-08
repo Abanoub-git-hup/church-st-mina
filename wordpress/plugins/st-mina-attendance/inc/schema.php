@@ -9,7 +9,7 @@
 defined( 'ABSPATH' ) || exit;
 
 // رقم نسخة الجداول. أي تغيير في شكل جدول يزوّده، والتحديث بيشتغل لوحده
-define( 'STMINA_ATT_DB_VERSION', 3 ); // 2: روابط شاشات /attend/، و3: رابط الكارت /me/
+define( 'STMINA_ATT_DB_VERSION', 4 ); // 2: روابط شاشات /attend/، و3: رابط الكارت /me/، و4: جدول الجلسات
 
 /**
  * أسماء الجداول بالبادئة بتاعة الموقع (wp_ أو غيرها).
@@ -70,6 +70,21 @@ function stmina_att_install() {
   created_at datetime NOT NULL,
   PRIMARY KEY  (id),
   KEY member_id (member_id)
+) $charset;" );
+
+	// الجلسات: الخدمة، ونوع النشاط، واليوم، والحالة (open أو closed). ومينفعش جلستين من نفس النوع في نفس اليوم للخدمة
+	dbDelta( 'CREATE TABLE ' . stmina_att_table( 'sessions' ) . " (
+  id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  service_id bigint(20) unsigned NOT NULL,
+  kind varchar(16) NOT NULL,
+  session_date date NOT NULL,
+  status varchar(10) NOT NULL DEFAULT 'open',
+  opened_by bigint(20) unsigned NOT NULL DEFAULT 0,
+  opened_at datetime NOT NULL,
+  closed_at datetime DEFAULT NULL,
+  PRIMARY KEY  (id),
+  UNIQUE KEY one_per_day (service_id,kind,session_date),
+  KEY status (status)
 ) $charset;" );
 
 	// الخدمات: "إعداد الخدام" الظاهرة، و"اختبار" المستخبية لبيانات الاختبارات

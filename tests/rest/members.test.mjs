@@ -244,3 +244,68 @@ describe('الكارت (المهمة 09)', () => {
     assert.match(await res.text(), /"card":null/);
   });
 });
+
+describe('الجلسات (المهمة 10)', () => {
+  // يوم قديم عشوائي، علشان مينفعش جلستين من نفس النوع في نفس اليوم والاختبارات بتتكرر
+  const pastDay = () => { const d = new Date(); d.setDate(d.getDate() - 30 - Math.floor(Math.random() * 3000)); return d.toISOString().slice(0, 10); };
+  let s;
+
+  test('غير الخدام مرفوضين', async () => {
+    for (const [m, p, b] of [['GET', '/sessions'], ['POST', '/sessions', { kind: 'meeting', date: pastDay() }], ['GET', '/sessions/last'], ['DELETE', '/sessions/1']]) {
+      assert.equal((await call('guest', m, p, b)).status, 401, `${m} ${p}`);
+      assert.equal((await call('subscriber', m, p, b)).status, 403, `${m} ${p}`);
+    }
+  });
+
+  test('فتح جلسة بيحفظ النوع والتاريخ والحالة "مفتوحة"', async () => {
+    const date = pastDay();
+    const r = await call('servant', 'POST', '/sessions', { kind: 'mass', date });
+    assert.equal(r.status, 201, JSON.stringify(r.data));
+    s = r.data;
+    assert.equal(s.kind, 'mass');
+    assert.equal(s.kind_name, 'قداس');
+    assert.equal(s.date, date);
+    assert.equal(s.status, 'open');
+  });
+
+  test('مينفعش جلستين من نفس النوع في نفس اليوم', async () => {
+    const r = await call('servant', 'POST', '/sessions', { kind: 'mass', date: s.date });
+    assert.equal(r.status, 409);
+    assert.match(r.data.message, /مفتوحة/);
+  });
+
+  test('النوع والتاريخ لازم يبقوا صح، والتاريخ مايبقاش لسه ماجاش', async () => {
+    const bad = await call('servant', 'POST', '/sessions', { kind: 'party', date: 'x' });
+    assert.equal(bad.status, 400);
+    assert.ok(bad.data.data.fields.kind && bad.data.data.fields.date);
+    const next = new Date(); next.setDate(next.getDate() + 2);
+    const future = await call('servant', 'POST', '/sessions', { kind: 'meeting', date: next.toISOString().slice(0, 10) });
+    assert.equal(future.status, 400);
+    assert.match(future.data.data.fields.date, /لسه ماجاش/);
+  });
+
+  test('القايمة بتظهر الجلسة وحالتها', async () => {
+    const r = await call('servant', 'GET', '/sessions');
+    const found = r.data.find(x => x.id === s.id);
+    assert.ok(found);
+    assert.equal(found.status, 'open');
+  });
+
+  test('"زي آخر جلسة" بيرجّع الخدمة والنوع من غير التاريخ', async () => {
+    const r = await call('servant', 'GET', '/sessions/last');
+    assert.equal(r.status, 200);
+    assert.deepEqual(Object.keys(r.data).sort(), ['kind', 'service']);
+    assert.equal(r.data.service, 'test');
+  });
+
+  test('الجلسة مش ظاهرة في خدمة تانية', async () => {
+    const res = await fetch(BASE + `/sessions/${s.id}?service=i3dad`, { headers: { Authorization: AS.servant } });
+    assert.equal(res.status, 404);
+  });
+
+  test('حذف الجلسة المفتوحة بالغلط', async () => {
+    const r = await call('servant', 'DELETE', `/sessions/${s.id}`);
+    assert.equal(r.status, 200);
+    assert.equal((await call('servant', 'GET', `/sessions/${s.id}`)).status, 404);
+  });
+});

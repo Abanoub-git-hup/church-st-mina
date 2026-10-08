@@ -3,7 +3,8 @@
  * شاشات الخدام على /attend/: صفحة لكل شاشة، والبيانات كلها من REST (rest.php) بسكريبت كل شاشة.
  *
  *   /attend/login        الدخول (بالبريد أو الموبايل)
- *   /attend/ و/attend/members   المخدومين
+ *   /attend/ و/attend/sessions  الجلسات (أول شاشة)
+ *   /attend/members      المخدومين
  *   /attend/members/12   ملف مخدوم
  *   أي شاشة تانية (الجلسات، والمسح ...)   "الشاشة دي جاية قريب" لحد ما مهمتها تتعمل
  *   /me/<الكود>/         كارت المخدوم (عام من غير دخول، ومابيدّيش أي صلاحية)
@@ -23,7 +24,7 @@ function stmina_att_url( $screen = '', $id = 0 ) {
 }
 
 add_action( 'init', function () {
-	add_rewrite_rule( '^attend/?$', 'index.php?stmina_screen=members', 'top' );
+	add_rewrite_rule( '^attend/?$', 'index.php?stmina_screen=sessions', 'top' );
 	add_rewrite_rule( '^attend/members/([0-9]+)/?$', 'index.php?stmina_screen=member&stmina_id=$matches[1]', 'top' );
 	add_rewrite_rule( '^attend/([a-z]+)/?$', 'index.php?stmina_screen=$matches[1]', 'top' );
 	// كارت المخدوم. أي حاجة بعد /me/ بتوصل للشاشة، والكود الغلط بيظهر "الرابط ده مش شغال"
@@ -56,7 +57,7 @@ add_action( 'template_redirect', function () {
 		// عامة: مفيش تحويل ولا فحص صلاحية، والصفحة نفسها مافيهاش غير الاسم والكارت
 	} elseif ( 'login' === $screen ) {
 		if ( $can ) {
-			wp_safe_redirect( stmina_att_url( 'members' ) );
+			wp_safe_redirect( stmina_att_url( 'sessions' ) );
 			exit;
 		}
 	} elseif ( ! $can ) {
@@ -163,7 +164,7 @@ add_action( 'rest_api_init', function () {
 				return new WP_Error( 'stmina_not_servant', 'الحساب ده مالوش صلاحية الخدام. كلّم مسؤول الخدمة.', array( 'status' => 403 ) );
 			}
 			delete_transient( $key );
-			return array( 'redirect' => stmina_att_url( 'members' ) );
+			return array( 'redirect' => stmina_att_url( 'sessions' ) );
 		},
 	) );
 
