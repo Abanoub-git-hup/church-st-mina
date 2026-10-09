@@ -591,7 +591,7 @@ describe('حضوري والنسب (المهمة 16)', () => {
     assert.ok(!('manual' in d) && !('notes' in d) && !('phone' in d) && !('away' in d));
     assert.ok(!text.includes('"method"'), 'مفيش طريقة تسجيل');
     assert.ok(!text.includes(m.phone));
-    assert.deepEqual(Object.keys(d.last[0]).sort(), ['date', 'kind', 'kind_name', 'status']);
+    assert.deepEqual(Object.keys(d.last[0]).sort(), ['date', 'kind', 'kind_name', 'open', 'status']);
   });
 
   test('الخادم بيشوف نفس الأرقام، ومعاها اليدوي والغياب ورا بعض', async () => {
@@ -612,6 +612,70 @@ describe('حضوري والنسب (المهمة 16)', () => {
 
   test('تنضيف', async () => {
     for (const s of sessions) assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}`)).status, 200);
+  });
+});
+
+describe('الحضور المؤقت في الجلسة المفتوحة', () => {
+  let s, a, b, c, d;
+  const me = async m => (await call('guest', 'GET', `/me/${m.qr_token}`)).data;
+  const add = async name => (await call('servant', 'POST', '/members', { full_name: name + ' ' + Date.now(), phone: phone() })).data;
+
+  before(async () => {
+    a = await add('مؤقت حاضر بالمسح');
+    b = await add('مؤقت بعذر');
+    c = await add('مؤقت غايب يدوي');
+    d = await add('مؤقت لسه ماجاش');
+    s = (await call('servant', 'POST', '/sessions', { kind: 'mass', date: todayCairo() })).data;
+    assert.ok(s && s.id, 'اتفتحت الجلسة');
+    assert.equal((await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: a.qr_token })).data.result, 'ok');
+    await call('servant', 'PUT', `/sessions/${s.id}/records/${b.id}`, { status: 'excused' });
+    await call('servant', 'PUT', `/sessions/${s.id}/records/${c.id}`, { status: 'absent' });
+  });
+
+  test('الحضور بيظهر على طول، ومتعلّم مؤقت، وبيدخل في النسبة والشموع', async () => {
+    const x = await me(a);
+    assert.deepEqual(x.last[0], { kind: 'mass', kind_name: x.last[0].kind_name, date: todayCairo(), status: 'present', open: true });
+    assert.deepEqual([x.kinds.all.present, x.kinds.all.base, x.kinds.all.pct], [1, 1, 100]);
+    assert.equal(x.streak, 1);
+    assert.equal(x.months[0].pct, 100);
+  });
+
+  test('الغياب بعذر بيظهر مؤقت، والغياب العادي مابيظهرش غير بعد القفل', async () => {
+    const xb = await me(b);
+    assert.deepEqual([xb.last[0].status, xb.last[0].open, xb.kinds.all.excused, xb.kinds.all.pct], ['excused', true, 1, null]);
+    const xc = await me(c);
+    assert.equal(xc.last.length, 0, 'غاب يدوي والجلسة مفتوحة: لسه مابيظهرش');
+    assert.equal(xc.kinds.all.total, 0);
+    assert.equal((await me(d)).last.length, 0, 'لسه ماجاش: مفيش حاجة');
+  });
+
+  test('ملف المخدوم وقايمة المخدومين بنفس الأرقام، واللوحة على المقفول بس', async () => {
+    const st = (await call('servant', 'GET', `/members/${a.id}/stats`)).data;
+    assert.deepEqual(st.kinds, (await me(a)).kinds);
+    assert.equal((await call('servant', 'GET', '/members')).data.find(x => x.id === a.id).pct, 100);
+    const dash = (await call('servant', 'GET', '/dashboard?period=all')).data;
+    assert.ok(!dash.sessions.some(x => x.id === s.id), 'الجلسة المفتوحة مش في اللوحة');
+  });
+
+  test('لو الخادم شال التسجيل، العلامة بتختفي', async () => {
+    assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}/records/${a.id}`)).status, 200);
+    assert.equal((await me(a)).last.length, 0);
+    await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: a.qr_token });
+  });
+
+  test('بعد القفل: نفس الأرقام من غير تكرار، ومابقاش مؤقت، والغياب ظهر', async () => {
+    assert.equal((await call('servant', 'POST', `/sessions/${s.id}/close`)).status, 200);
+    const x = await me(a);
+    assert.equal(x.last.length, 1);
+    assert.equal(x.last[0].open, false);
+    assert.deepEqual([x.kinds.all.present, x.kinds.all.base, x.kinds.all.pct], [1, 1, 100]);
+    const xc = await me(c), xd = await me(d);
+    assert.deepEqual([xc.last[0].status, xc.kinds.all.pct], ['absent', 0]);
+    assert.deepEqual([xd.last[0].status, xd.kinds.all.pct], ['absent', 0], 'اللي ماجاش اتعمله غياب وقت القفل');
+  });
+
+  test('تنضيف', async () => {
+    assert.equal((await call('servant', 'DELETE', `/sessions/${s.id}`)).status, 200);
   });
 });
 

@@ -17,7 +17,7 @@
 |---|---|
 | `CLAUDE.md` | قواعد العمل الإلزامية، وأهمها اللغة |
 | `docs/dev-setup.md` | الموقع المؤقت، وطريقة الرفع، والتشغيل المحلي، والنسخ الاحتياطي |
-| `docs/wp-dev-guide.md` | مرجع التطوير: 36 باب لحد دلوقتي، بيتحدّث مع كل خطوة |
+| `docs/wp-dev-guide.md` | مرجع التطوير: 37 باب لحد دلوقتي، بيتحدّث مع كل خطوة |
 | `docs/design.md` | نظام التصميم المعتمد، والمكوّنات، وقواعد حساب الحضور (القسم 5) |
 | `church-platform-handoff.md` | القرارات من ADR-001 لـ ADR-023 |
 | `.scratch/church-platform/issues/` | الـ 26 مهمة، والفهرس في `00-index.md` |
@@ -93,9 +93,9 @@
 - **الإدخال مرة واحدة:** الخدمات وقت التفعيل (`stmina_content_seeded`)، والكنيسة والعبادة مع أول طلب للموقع بقفل `add_option` (`stmina_church_seeded` و`stmina_worship_seeded` و`stmina_library_seeded` و`stmina_news_seeded`). الصور مابتتكرّرش في المكتبة.
 - **قواعد الإدخال:** القيم بتتحفظ بـ `update_post_meta` مع سطر `_name => field key` بتاع `ACF`، مش بـ `update_field()`.
 
-### الـ `plugin` `st-mina-attendance` (النسخة 0.16.1)
+### الـ `plugin` `st-mina-attendance` (النسخة 0.17.0)
 
-نظام الحضور على `/attend/`: الدخول، والمخدومين، والكارت، والجلسات، والمسح، والتصحيح، و"حضوري"، والاستيراد من `Excel`. والتفاصيل في جدول المهام تحت. الشاشات متولّدة من `design/attend-*.html` بأداة `tools/convert-attend.js`، والتنسيق المشترك في `design/assets/attend.css`. و97 اختبار في `tests/rest/`، و6 زيادة لمدير الموقع بتشتغل لما `ADMIN_USER` يتضاف في `tests/.env`.
+نظام الحضور على `/attend/`: الدخول، والمخدومين، والكارت، والجلسات، والمسح، والتصحيح، و"حضوري"، والاستيراد من `Excel`. والتفاصيل في جدول المهام تحت. الشاشات متولّدة من `design/attend-*.html` بأداة `tools/convert-attend.js`، والتنسيق المشترك في `design/assets/attend.css`. و103 اختبار في `tests/rest/`، و6 زيادة لمدير الموقع بتشتغل لما `ADMIN_USER` يتضاف في `tests/.env`. والحضور المؤقت في الجلسة المفتوحة بيظهر في "حضوري" على طول (الباب 36).
 
 ### أدوات في `tools/`
 

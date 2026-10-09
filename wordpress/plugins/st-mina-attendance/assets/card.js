@@ -4,7 +4,8 @@
 // والتثبيت على الموبايل كتطبيق اسمه "حضوري" بيفتح من غير نت (المهمة 19). رسالة الخدام مؤجّلة.
 (() => {
   const { $, $$, esc, C, qrCells, qrSvg, digits } = window.Attend;
-  const card = C.card, me = C.me;
+  const card = C.card;
+  let me = C.me; // بيتحدّث من /me/<الكود> وهي مفتوحة (تحت)
   const icon = id => `<svg class="icon"><use href="#${id}"/></svg>`;
   const fDay = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' });
   const fMonth = new Intl.DateTimeFormat('ar-EG-u-nu-latn', { month: 'short' });
@@ -129,12 +130,33 @@
     $('#bars').setAttribute('aria-label', 'نسبة كل شهر: ' + me.months.map(x => `${fMonth.format(toDay(x.month))} ${x.pct === null ? 'مفيش جلسات' : x.pct + '%'}`).join('، '));
   }
 
+  // الجلسة المفتوحة (x.open): الحضور أو العذر بيظهر على طول، بس مؤقت لحد ما الخادم يقفلها
   function renderLast() {
     $('#last').innerHTML = me.last.length
-      ? me.last.map(x => `<div class="ls"><div><b>${esc(x.kind_name)}</b><small>${fDay.format(toDay(x.date))}</small></div><span class="badge ${ST[x.status][2]}">${icon(ST[x.status][1])}${ST[x.status][0]}</span></div>`).join('')
-      : '<p style="color:var(--on-glass-2);font-size:.9rem;padding:var(--s-2) 0">لسه مفيش جلسات خلصت من ساعة ما اتسجّلت.</p>';
+      ? me.last.map(x => `<div class="ls"><div><b>${esc(x.kind_name)}</b><small>${fDay.format(toDay(x.date))}${x.open ? ' · مؤقت، الجلسة لسه مفتوحة' : ''}</small></div><span class="badge ${ST[x.status][2]}">${icon(ST[x.status][1])}${ST[x.status][0]}</span></div>`).join('')
+      : '<p style="color:var(--on-glass-2);font-size:.9rem;padding:var(--s-2) 0">لسه مفيش جلسات من ساعة ما اتسجّلت.</p>';
   }
-  renderPct(); renderStreak(); renderBars(); renderLast();
+  const renderAll = () => { renderPct(); renderStreak(); renderBars(); renderLast(); };
+  renderAll();
+
+  // تحديث لوحده: كل 20 ثانية والصفحة قدامه، ولما يرجعلها من تطبيق تاني.
+  // علشان لو فاتحها وهو واقف قدام الخادم، يشوف حضوره أول ما يتسجّل من غير ما يعيد فتحها.
+  // من غير كوكي زي الرقم السري، ولو مفيش نت بيفضل على آخر أرقام
+  let busy = false;
+  async function refresh() {
+    if (busy || document.hidden || !navigator.onLine) return;
+    busy = true;
+    try {
+      const res = await fetch(`${C.rest}me/${card.token}`, { credentials: 'omit', cache: 'no-store' });
+      if (res.ok) {
+        const next = await res.json();
+        if (JSON.stringify(next) !== JSON.stringify(me)) { me = next; renderAll(); }
+      }
+    } catch (e) { /* مفيش نت: آخر أرقام */ }
+    busy = false;
+  }
+  setInterval(refresh, 20000);
+  document.addEventListener('visibilitychange', refresh);
 
   // ---------- التبويبين: حضوري وكارتي (#card في الرابط بيفتح الكارت على طول) ----------
   const tabs = $$('#tabs [role=tab]');

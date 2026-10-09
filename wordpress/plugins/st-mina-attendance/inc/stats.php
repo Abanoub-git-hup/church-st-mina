@@ -11,17 +11,21 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * سجل مخدوم في الجلسات المنتهية، الأحدث الأول.
+ * سجل مخدوم في الجلسات المنتهية، ومعاها الجلسات المفتوحة اللي اتسجّل فيها حاضر أو غاب بعذر، الأحدث الأول.
+ * الجلسة المفتوحة بتتحسب في النسبة على طول (قرار المستخدم)، فالمخدوم يشوف حضوره من غير ما يستنى القفل.
+ * والغياب العادي مابيظهرش غير بعد القفل، لأن سجله بيتعمل وقت القفل.
+ * لوحة الخادم (stmina_att_dashboard) على الجلسات المنتهية بس.
  *
- * @return object[] كل واحد: kind, session_date, status, method
+ * @return object[] كل واحد: session_id, kind, session_date, status, method, is_open (1 لو الجلسة لسه مفتوحة)
  */
 function stmina_att_member_log( $member_id, $service_id ) {
 	global $wpdb;
 	return $wpdb->get_results( $wpdb->prepare(
-		'SELECT s.id AS session_id, s.kind, s.session_date, r.status, r.method
-		 FROM ' . stmina_att_table( 'records' ) . ' r
+		"SELECT s.id AS session_id, s.kind, s.session_date, r.status, r.method, IF( s.status = 'open', 1, 0 ) AS is_open
+		 FROM " . stmina_att_table( 'records' ) . ' r
 		 JOIN ' . stmina_att_table( 'sessions' ) . " s ON s.id = r.session_id
-		 WHERE r.member_id = %d AND s.service_id = %d AND s.status = 'closed'
+		 WHERE r.member_id = %d AND s.service_id = %d
+		   AND ( s.status = 'closed' OR ( s.status = 'open' AND r.status IN ( 'present', 'excused' ) ) )
 		 ORDER BY s.session_date DESC, s.opened_at DESC, s.id DESC",
 		$member_id,
 		$service_id
@@ -124,7 +128,8 @@ function stmina_att_my_page( $member, $service_id ) {
 		'streak'        => stmina_att_streak( $log ),
 		'months'        => stmina_att_months( $log ),
 		'last'          => array_map( function ( $x ) use ( $names ) {
-			return array( 'kind' => $x->kind, 'kind_name' => $names[ $x->kind ], 'date' => $x->session_date, 'status' => $x->status );
+			// open: الجلسة لسه مفتوحة، فالحالة مؤقتة لحد ما الخادم يقفلها
+			return array( 'kind' => $x->kind, 'kind_name' => $names[ $x->kind ], 'date' => $x->session_date, 'status' => $x->status, 'open' => (bool) $x->is_open );
 		}, array_slice( $log, 0, 10 ) ),
 	);
 }
@@ -158,7 +163,7 @@ function stmina_att_period_from( $period ) {
 
 /**
  * لوحة الخادم: كل اللي الشاشة وملف Excel محتاجينه في رد واحد.
- * الأرقام من stmina_att_stats وstmina_att_months نفسهم، على نفس السجل اللي stmina_att_member_log بيجيبه،
+ * الأرقام من stmina_att_stats وstmina_att_months نفسهم، على الجلسات المنتهية بس (stmina_att_member_log بيزوّد عليها المفتوحة)،
  * بس باستعلام واحد لكل المخدومين بدل استعلام لكل واحد. والموقوفين برا الأرقام، وعددهم بس في الرد.
  */
 function stmina_att_dashboard( $service, $period ) {
