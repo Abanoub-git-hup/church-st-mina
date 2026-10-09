@@ -63,6 +63,18 @@ function stmina_news( $args = array() ) {
 }
 
 /**
+ * أحداث خدمة: الأخبار اللي خانة "حدث لخدمة" فيها الخدمة دي، الأحدث الأول.
+ *
+ * @param WP_Post|int $service الخدمة.
+ * @return WP_Post[]
+ */
+function stmina_service_events( $service ) {
+	return stmina_news( array(
+		'meta_query' => array( array( 'key' => 'service', 'value' => (string) get_post( $service )->ID ) ),
+	) );
+}
+
+/**
  * الأخبار المثبّتة (الدواير) والباقي، من غير تكرار.
  *
  * @param int $pins  عدد الدواير.

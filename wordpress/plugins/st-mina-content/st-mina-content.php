@@ -3,7 +3,7 @@
  * Plugin Name: St Mina Content
  * Plugin URI: https://github.com/Abanoub-git-hup/church-st-mina
  * Description: أنواع محتوى الموقع العام: الخدمات، وصفحات الكنيسة، وجدول المواعيد، والمكتبة، والأخبار. خاناتها بـ ACF ومتعرّفة في الكود.
- * Version: 0.5.2
+ * Version: 0.5.3
  * Author: Abanoub S. Maurice
  * Requires at least: 6.5
  * Requires PHP: 8.0
@@ -13,7 +13,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_CONTENT_VERSION', '0.5.2' );
+define( 'STMINA_CONTENT_VERSION', '0.5.3' );
 define( 'STMINA_CONTENT_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once STMINA_CONTENT_DIR . 'inc/services.php';

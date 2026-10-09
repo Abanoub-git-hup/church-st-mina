@@ -118,7 +118,29 @@ while ( have_posts() ) :
 	<?php endif; ?>
 
 	<?php
-	$others = $group ? stmina_services( $group, array( $service->ID ) ) : array();
+	// أحداث الخدمة: أخبار مربوطة بيها من خانة "حدث لخدمة"
+	$events = function_exists( 'stmina_service_events' ) ? stmina_service_events( $service ) : array();
+	if ( $events ) :
+		?>
+		<section class="sec pool" aria-labelledby="t-events">
+			<div class="wrap">
+				<div style="text-align:center;margin-bottom:var(--s-12)">
+					<span class="eyebrow" data-rise>رحلات ومؤتمرات وأمسيات</span>
+					<h2 class="title" id="t-events" data-split>أحداث <b>الخدمة</b></h2>
+				</div>
+				<div class="cards">
+					<?php
+					foreach ( $events as $event ) {
+						get_template_part( 'template-parts/news-card', null, array( 'post' => $event ) );
+					}
+					?>
+				</div>
+			</div>
+		</section>
+	<?php endif; ?>
+
+	<?php
+	$others = $group ?stmina_services( $group, array( $service->ID ) ) : array();
 	if ( $others ) :
 		?>
 		<!-- خدمات تانية في نفس المجموعة -->

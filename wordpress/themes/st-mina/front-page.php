@@ -93,7 +93,7 @@ $stmina_service_link = function ( $title, $group ) {
       </div>
     </div>
     <div class="sched-media" data-clip>
-      <img class="grade" data-parallax src="<?php stmina_media( 'worship/youth-night-liturgy-1.jpeg' ); ?>" alt="أب كاهن يصلي عند المذبح">
+      <img class="grade" data-parallax src="<?php stmina_media( 'worship/youth-night-liturgy-3.jpeg' ); ?>" alt="الشمامسة ساجدين في صحن الكنيسة أثناء القداس">
       <div class="badge"><small>القداس الإلهي</small><b>الكنيسة الكبيرة والكنيسة الصغيرة</b></div>
     </div>
   </div>

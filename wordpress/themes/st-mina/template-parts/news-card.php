@@ -19,6 +19,11 @@ $when   = $when ? $when : get_the_date( 'j F Y', $news );
 $title  = get_the_title( $news );
 // الملصق بيبان من فوق ومن غير فلتر الألوان، والصورة العادية بفلتر دافي (grade)
 $img = get_the_post_thumbnail( $news, 'large', array( 'class' => $poster ? '' : 'grade', 'alt' => $title, 'loading' => 'lazy' ) );
+// حدث خدمة من غير صورة: بياخد صورة الخدمة
+$service_id = (int) get_post_meta( $news->ID, 'service', true );
+if ( ! $img && $service_id ) {
+	$img = get_the_post_thumbnail( $service_id, 'large', array( 'class' => 'grade', 'alt' => $title, 'loading' => 'lazy' ) );
+}
 
 if ( isset( $args['style'] ) && 'bubble' === $args['style'] ) : ?>
 	<a class="nbub<?php echo $poster ? ' top' : ''; ?>" data-t="<?php echo esc_attr( $kind ); ?>" href="<?php echo esc_url( get_permalink( $news ) ); ?>" data-bub><span class="bi"><?php echo $img; // phpcs:ignore WordPress.Security.EscapeOutput -- من get_the_post_thumbnail ?><span class="nb-txt"><small><?php echo esc_html( $when ); ?></small><b><?php echo esc_html( $title ); ?></b></span></span></a>

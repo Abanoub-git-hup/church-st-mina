@@ -155,6 +155,11 @@ add_action( 'acf/include_fields', function () {
 			array( 'key' => 'field_stmina_news_highlight', 'name' => 'highlight', 'label' => 'الجزء الدهبي من العنوان', 'type' => 'text', 'instructions' => 'لازم يكون آخر جزء في العنوان. لو فاضي بتبقى آخر كلمة', 'wrapper' => array( 'width' => 40 ) ),
 			array( 'key' => 'field_stmina_news_poster', 'name' => 'is_poster', 'label' => 'الصورة ملصق', 'type' => 'true_false', 'ui' => 1, 'instructions' => 'الملصق بيبان من فوق ومن غير فلتر الألوان', 'wrapper' => array( 'width' => 20 ) ),
 			array( 'key' => 'field_stmina_news_pinned', 'name' => 'pinned', 'label' => 'مثبّت فوق', 'type' => 'true_false', 'ui' => 1, 'instructions' => 'بيظهر في الدواير اللي فوق (أول 3 بس)', 'wrapper' => array( 'width' => 20 ) ),
+			array(
+				'key' => 'field_stmina_news_service', 'name' => 'service', 'label' => 'حدث لخدمة', 'type' => 'post_object',
+				'post_type' => array( 'stmina_service' ), 'return_format' => 'id', 'allow_null' => 1, 'ui' => 1,
+				'instructions' => 'لو الخبر حدث تبع خدمة (رحلة، مؤتمر، أمسية)، اختارها، فيظهر في "أحداث الخدمة" في صفحتها. ولو مالوش صورة بياخد صورة الخدمة',
+			),
 			array( 'key' => 'field_stmina_news_season', 'name' => 'is_season', 'label' => 'مناسبة موسمية', 'type' => 'true_false', 'ui' => 1, 'instructions' => 'الميلاد، أو أسبوع الآلام، أو القيامة. بتظهر خانات زيادة', 'wrapper' => array( 'width' => 20 ) ),
 			array( 'key' => 'field_stmina_news_note', 'name' => '', 'label' => 'الصورة والنبذة', 'type' => 'message', 'message' => 'الصورة من "Featured image"، والنبذة القصيرة اللي على الكارت من "Excerpt"، والتفاصيل في المحرر.' ),
 			// خانات المناسبة بس
