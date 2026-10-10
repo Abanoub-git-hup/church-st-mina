@@ -44,8 +44,10 @@ function stmina_att_member_json( $m ) {
 		'qr_token'      => $m->qr_token,
 		'card_url'      => stmina_att_card_url( $m->qr_token ),
 		'card_sent'     => ! empty( $m->card_sent_at ), // الخادم داس "ابعت الكارت" للكارت الحالي
-		// ينفع يتمسح نهائيًا: مالوش أي حضور (والمسح نفسه للمدير بس)
-		'can_delete'    => 0 === stmina_att_member_records_count( $m->id ),
+		// المسح النهائي متاح دايمًا لأي خادم. has_records علشان الواجهة تنبّه
+		// إن المخدوم ده ليه حضور هيتمسح معاه (قرار المستخدم 10 أكتوبر 2026)
+		'can_delete'    => true,
+		'has_records'   => stmina_att_member_records_count( $m->id ) > 0,
 	);
 }
 
@@ -130,16 +132,10 @@ add_action( 'rest_api_init', function () {
 		),
 	) );
 
-	// الحذف النهائي: للمدير بس، وللي مالوش حضور (الاستثناء الوحيد من "الإيقاف بدل الحذف")
+	// الحذف النهائي: متاح لأي خادم وفي كل الحالات، وبيمسح سجلات حضوره معاه (قرار المستخدم 10 أكتوبر 2026)
 	register_rest_route( $ns, '/members/(?P<id>\d+)', array(
 		'methods'             => 'DELETE',
-		'permission_callback' => function () {
-			$can = stmina_att_can();
-			if ( true !== $can ) {
-				return $can;
-			}
-			return current_user_can( 'manage_options' ) ? true : new WP_Error( 'rest_forbidden', 'المسح النهائي للمدير بس.', array( 'status' => 403 ) );
-		},
+		'permission_callback' => 'stmina_att_can',
 		'args'                => $args,
 		'callback'            => function ( WP_REST_Request $req ) {
 			$m = stmina_att_req_member( $req );

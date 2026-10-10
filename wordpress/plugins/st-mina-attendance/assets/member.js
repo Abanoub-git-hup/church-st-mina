@@ -107,19 +107,25 @@
   $('#sendCard').addEventListener('click', () => { api(`members/${m.id}/card-sent`, { method: 'POST' }).then(x => { m = x; }).catch(() => {}); });
 
 
-  // ---------- المسح النهائي: للمدير بس، وللمخدوم اللي مالوش أي حضور (اتضاف بالغلط) ----------
-  // بنفس شكل قسم الإيقاف: كارت، وزرار، وتأكيد في نفس المكان
+  // ---------- المسح النهائي: متاح لأي خادم وفي كل الحالات ----------
+  // بنفس شكل قسم الإيقاف: كارت، وزرار، وتأكيد في نفس المكان.
+  // لو المخدوم عنده حضور، التحذير بيوضّح إن حضوره هيتمسح معاه
   function renderDelete() {
     const old = $('#delCard');
     if (old) old.remove();
-    if (!C.admin || !m.can_delete) return;
+    const intro = m.has_records
+      ? 'المخدوم ده ليه حضور متسجّل. مسحه هيشيله هو وكل حضوره من كل الجلسات، وهيغيّر نسب الجلسات القديمة. ومفيش رجوع بعد المسح. لو مش متأكد، أوقفه بدل ما تمسحه.'
+      : 'للي اتضاف بالغلط، زي تسجيل تجربة أو اسم مكرر. المخدوم ده مالوش أي حضور، فمسحه مش هيأثر على أي نسبة. ومفيش رجوع بعد المسح.';
+    const warn = m.has_records
+      ? `هيتمسح <b>${esc(m.full_name)}</b> وكل حضوره وكارته وملاحظاته خالص.`
+      : `هيتمسح <b>${esc(m.full_name)}</b> وكارته وملاحظاته خالص.`;
     $('.suspend').insertAdjacentHTML('afterend', `
       <section class="glass card suspend" id="delCard" aria-labelledby="delH">
         <div class="c-h"><h2 id="delH">مسح نهائي</h2></div>
-        <p>للي اتضاف بالغلط بس، زي تسجيل تجربة أو اسم مكرر. المخدوم ده مالوش أي حضور، فمسحه مش هيأثر على أي نسبة. ومفيش رجوع بعد المسح.</p>
+        <p>${intro}</p>
         <button class="btn btn-out" type="button" id="askDel">امسح المخدوم نهائيًا</button>
         <div class="confirm" role="group" aria-label="تأكيد المسح">
-          <p>هيتمسح <b>${esc(m.full_name)}</b> وكارته وملاحظاته خالص.</p>
+          <p>${warn}</p>
           <div class="row2">
             <button class="btn-del" type="button" id="doDel">امسحه</button>
             <button class="textlink" type="button" id="keepDel">رجوع</button>

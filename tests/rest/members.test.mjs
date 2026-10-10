@@ -145,17 +145,38 @@ describe('التعديل والإيقاف', () => {
     assert.ok(list.data.some(m => m.id === member.id), 'بيظهر في فلتر الموقوفين');
   });
 
-  test('المسح النهائي للمدير بس: الخادم العادي والزائر مرفوضين', async () => {
-    assert.equal((await call('guest', 'DELETE', `/members/${member.id}`)).status, 401);
-    assert.equal((await call('subscriber', 'DELETE', `/members/${member.id}`)).status, 403);
-    const r = await call('servant', 'DELETE', `/members/${member.id}`);
-    assert.equal(r.status, 403, 'حساب الخادم في الاختبارات مش مدير');
-    assert.equal((await call('servant', 'GET', `/members/${member.id}`)).status, 200, 'لسه موجود');
+  test('المسح النهائي: الزائر والمشترك العادي مرفوضين', async () => {
+    const t = (await call('servant', 'POST', '/members', { full_name: 'مخدوم للمسح ' + Date.now(), phone: phone() })).data;
+    assert.equal((await call('guest', 'DELETE', `/members/${t.id}`)).status, 401);
+    assert.equal((await call('subscriber', 'DELETE', `/members/${t.id}`)).status, 403);
+    assert.equal((await call('servant', 'GET', `/members/${t.id}`)).status, 200, 'لسه موجود بعد الرفض');
+    await call('servant', 'DELETE', `/members/${t.id}`);
   });
 
-  test('بيانات المخدوم بتقول إذا كان ينفع يتمسح (مالوش حضور)', async () => {
+  test('أي خادم يقدر يمسح مخدوم مالوش حضور نهائيًا', async () => {
+    const t = (await call('servant', 'POST', '/members', { full_name: 'مخدوم بالغلط ' + Date.now(), phone: phone() })).data;
+    const r = await call('servant', 'DELETE', `/members/${t.id}`);
+    assert.equal(r.status, 200);
+    assert.equal(r.data.deleted, true);
+    assert.equal((await call('servant', 'GET', `/members/${t.id}`)).status, 404, 'اتمسح خالص');
+  });
+
+  test('مسح مخدوم عنده حضور بيشيل سجلاته معاه', async () => {
+    const t = (await call('servant', 'POST', '/members', { full_name: 'مخدوم بحضور ' + Date.now(), phone: phone() })).data;
+    const s = (await call('servant', 'POST', '/sessions', { kind: 'meeting', date: todayCairo() })).data;
+    assert.equal((await call('servant', 'POST', `/sessions/${s.id}/scan`, { code: t.qr_token })).data.result, 'ok');
+    assert.equal((await call('servant', 'GET', `/members/${t.id}`)).data.has_records, true, 'بيانات المخدوم بتقول إن عنده حضور');
+    assert.equal((await call('servant', 'DELETE', `/members/${t.id}`)).status, 200, 'المسح شغال حتى مع وجود حضور');
+    assert.equal((await call('servant', 'GET', `/members/${t.id}`)).status, 404);
+    const recs = await call('servant', 'GET', `/sessions/${s.id}/records`);
+    assert.ok(!(recs.data || []).some(x => x.member_id === t.id), 'مفيش سجل حضور يتيم للمخدوم المتمسح');
+    await call('servant', 'DELETE', `/sessions/${s.id}`);
+  });
+
+  test('بيانات المخدوم بتقول إنه ينفع يتمسح وإذا كان عنده حضور', async () => {
     const r = await call('servant', 'GET', `/members/${member.id}`);
-    assert.equal(typeof r.data.can_delete, 'boolean');
+    assert.equal(r.data.can_delete, true);
+    assert.equal(typeof r.data.has_records, 'boolean');
   });
 
   test('المخدوم مش ظاهر في خدمة تانية', async () => {

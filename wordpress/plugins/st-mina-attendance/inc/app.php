@@ -115,7 +115,7 @@ function stmina_att_footer( $screen ) {
 		'id'     => (int) get_query_var( 'stmina_id' ),
 		'user'   => is_user_logged_in() ? wp_get_current_user()->display_name : '',
 		'svc'    => 'إعداد الخدام',
-		'admin'  => current_user_can( 'manage_options' ), // زرار المسح النهائي يظهر للمدير بس
+		'admin'  => current_user_can( 'manage_options' ), // مدير الموقع (سياق عام للواجهة)
 	);
 	if ( 'card' === $screen ) {
 		// الكارت: الاسم والرابط بس، أو null لو الكود غلط أو اتلغى

@@ -282,17 +282,16 @@ function stmina_att_member_records_count( $member_id ) {
 }
 
 /**
- * حذف نهائي لمخدوم اتضاف بالغلط. للمدير بس، وبشرط إن مالوش أي حضور متسجّل:
- * القاعدة لسه "الإيقاف بدل الحذف"، والاستثناء ده للغلطات بس (زي تسجيل تجربة).
- * بيتمسح معاه كل اللي يخصه: الربط بالخدمات، والملاحظات، وأكواده القديمة.
+ * حذف نهائي للمخدوم، متاح لأي خادم وفي كل الحالات (قرار المستخدم 10 أكتوبر 2026).
+ * بيتمسح معاه كل اللي يخصه: سجلات الحضور في كل الجلسات، والربط بالخدمات،
+ * والملاحظات، وأكواده القديمة. مسح سجلات الحضور بيخلّي نسب الجلسات القديمة
+ * تتحسب من غير سجلات يتيمة، لكنه بيغيّر الأرقام ومفيش رجوع.
  *
  * @return true|WP_Error
  */
 function stmina_att_delete_member( $member_id ) {
 	global $wpdb;
-	if ( stmina_att_member_records_count( $member_id ) ) {
-		return new WP_Error( 'stmina_has_records', 'المخدوم ده ليه حضور متسجّل، فمينفعش يتمسح. أوقفه بدل كده.', array( 'status' => 409 ) );
-	}
+	$wpdb->delete( stmina_att_table( 'records' ), array( 'member_id' => $member_id ) );
 	$wpdb->delete( stmina_att_table( 'member_service' ), array( 'member_id' => $member_id ) );
 	$wpdb->delete( stmina_att_table( 'notes' ), array( 'member_id' => $member_id ) );
 	$wpdb->delete( stmina_att_table( 'revoked' ), array( 'member_id' => $member_id ) );
