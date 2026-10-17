@@ -701,10 +701,13 @@ const ENTRY_LINKS = [
   ['طايو — اجتماع الشباب', 'https://tayo-shbab-app.lovable.app/'],
 ];
 ```
-**الفرق بين الرابط الداخلي والخارجي:** الرابط الداخلي (`attend-login.html`) بيتحوّل لشكل `WordPress` بدالة `toWp()` ومعتمد على `SITE_BASE`. أما الرابط الخارجي اللي بيبدأ بـ `http` فدالة `toWp()` بتسيبه زي ما هو (الـ `regex` بتاعها بيطابق `اسم.html` بس في أول النص). وبنكتشف الخارجي ونضيف له `target="_blank"` علشان يفتح في تاب جديد، و`rel="noopener"` للأمان (بيمنع الصفحة الجديدة إنها توصل لـ `window.opener`):
+**الرابط الداخلي والخارجي:** الرابط الداخلي (`attend-login.html`) بيتحوّل لشكل `WordPress` بدالة `toWp()` ومعتمد على `SITE_BASE`. أما الرابط الخارجي اللي بيبدأ بـ `http` فدالة `toWp()` بتسيبه زي ما هو (الـ `regex` بتاعها بيطابق `اسم.html` بس في أول النص).
+
+**كل البنود بتفتح في نافذة/تاب جديد** (قرار المستخدم)، فبنضيف `target="_blank"` لكلهم، ومعاه `rel="noopener"` للأمان:
 ```js
-const ext = /^https?:\/\//.test(h);
-const attr = ext ? ' target="_blank" rel="noopener"' : '';
+const loginList = ENTRY_LINKS.map(([t, h]) =>
+  `<li><a href="${new URL(h, navBase).href}" target="_blank" rel="noopener">${t}</a></li>`
+).join('');
 ```
 **ليه `rel="noopener"`؟** من غيرها، الموقع اللي بيتفتح في تاب جديد يقدر يتحكّم في التاب الأصلي عن طريق `window.opener`، وده ثغرة أمان معروفة. المتصفحات الحديثة بتضيفها لوحدها مع `target="_blank"`، بس كتابتها صريح أأمن.
 

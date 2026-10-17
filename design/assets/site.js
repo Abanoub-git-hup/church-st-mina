@@ -23,7 +23,7 @@
     'news': [['الأخبار والإعلانات', 'news.html'], ['المناسبة القادمة', 'season.html']]
   };
   // روابط أيقونة الدخول في الهيدر: اجتماع إعداد الخدام (نظام الحضور بتاع الكنيسة)،
-  // ومعاه تطبيقات خارجية لخدمات تانية. الرابط اللي بيبدأ بـ http بيتفتح في تاب جديد.
+  // ومعاه تطبيقات خارجية لخدمات تانية. كلهم بيفتحوا في نافذة/تاب جديد.
   const ENTRY_LINKS = [
     ['اجتماع إعداد الخدام', 'attend-login.html'],
     ['مدارس الأحد', 'https://fasly.up.railway.app/'],
@@ -53,11 +53,10 @@
 
   // أيقونة الدخول: فوق في الهيدر، وتحتها روابط الدخول والتطبيقات (نظام الحضور، والمواقع الخارجية)
   const navBase = ($('.top-nav a[href], #drawer li a[href]') || {}).href || location.href;
-  const loginList = ENTRY_LINKS.map(([t, h]) => {
-    const ext = /^https?:\/\//.test(h);                       // رابط خارجي يتفتح في تاب جديد
-    const attr = ext ? ' target="_blank" rel="noopener"' : '';
-    return `<li><a href="${new URL(h, navBase).href}"${attr}>${t}</a></li>`;
-  }).join('');
+  // كل الروابط بتفتح في نافذة/تاب جديد، وrel="noopener" للأمان
+  const loginList = ENTRY_LINKS.map(([t, h]) =>
+    `<li><a href="${new URL(h, navBase).href}" target="_blank" rel="noopener">${t}</a></li>`
+  ).join('');
   const userIcon = '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5a6.5 6.5 0 0 1 13 0"/></svg>';
   $$('.hero-top .menu-btn, .float-nav .menu-btn').forEach(btn => {
     const id = 'dd' + ++ddN;
