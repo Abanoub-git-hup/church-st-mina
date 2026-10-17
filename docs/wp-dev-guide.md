@@ -691,6 +691,28 @@ wp_add_inline_script( 'stmina-site', 'window.SITE_BASE = ' . wp_json_encode( hom
 https://developer.wordpress.org/reference/functions/wp_add_inline_script/
 ```
 
+### روابط أيقونة الدخول والتطبيقات الخارجية
+
+أيقونة الدخول في الهيدر (وفي قايمة الموبايل) بتفتح قايمة منسدلة عنوانها "الدخول والتطبيقات"، بتتبنى من مصفوفة `ENTRY_LINKS` في `site.js`:
+```js
+const ENTRY_LINKS = [
+  ['اجتماع إعداد الخدام', 'attend-login.html'],          // داخلي: نظام الحضور بتاع الكنيسة
+  ['مدارس الأحد', 'https://fasly.up.railway.app/'],      // تطبيق خارجي
+  ['طايو — اجتماع الشباب', 'https://tayo-shbab-app.lovable.app/'],
+];
+```
+**الفرق بين الرابط الداخلي والخارجي:** الرابط الداخلي (`attend-login.html`) بيتحوّل لشكل `WordPress` بدالة `toWp()` ومعتمد على `SITE_BASE`. أما الرابط الخارجي اللي بيبدأ بـ `http` فدالة `toWp()` بتسيبه زي ما هو (الـ `regex` بتاعها بيطابق `اسم.html` بس في أول النص). وبنكتشف الخارجي ونضيف له `target="_blank"` علشان يفتح في تاب جديد، و`rel="noopener"` للأمان (بيمنع الصفحة الجديدة إنها توصل لـ `window.opener`):
+```js
+const ext = /^https?:\/\//.test(h);
+const attr = ext ? ' target="_blank" rel="noopener"' : '';
+```
+**ليه `rel="noopener"`؟** من غيرها، الموقع اللي بيتفتح في تاب جديد يقدر يتحكّم في التاب الأصلي عن طريق `window.opener`، وده ثغرة أمان معروفة. المتصفحات الحديثة بتضيفها لوحدها مع `target="_blank"`، بس كتابتها صريح أأمن.
+
+📖 التوثيق الرسمي:
+```
+https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#security_and_privacy
+```
+
 ---
 
 ## الباب 10: صفحة إعدادات بـ `Settings API`

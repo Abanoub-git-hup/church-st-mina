@@ -6,7 +6,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.7.8' );
+define( 'STMINA_THEME_VERSION', '0.7.9' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
 require_once get_template_directory() . '/inc/seo.php'; // وصف كل صفحة ومعاينة الرابط على واتساب

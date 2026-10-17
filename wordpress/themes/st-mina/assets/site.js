@@ -19,15 +19,20 @@
     'library': [['العظات', 'library.html#panel-sermons'], ['النشرات', 'library.html#panel-bulletins'], ['الترانيم', 'library.html#panel-hymns']],
     'news': [['الأخبار والإعلانات', 'news.html'], ['المناسبة القادمة', 'season.html']]
   };
-  // لإضافة نظام حضور لاجتماع تاني: سطر جديد هنا بالاسم ورابط شاشة الدخول بتاعته
-  const MEETINGS = [['اجتماع إعداد الخدام', 'attend-login.html']];
+  // روابط أيقونة الدخول في الهيدر: اجتماع إعداد الخدام (نظام الحضور بتاع الكنيسة)،
+  // ومعاه تطبيقات خارجية لخدمات تانية. الرابط اللي بيبدأ بـ http بيتفتح في تاب جديد.
+  const ENTRY_LINKS = [
+    ['اجتماع إعداد الخدام', 'attend-login.html'],
+    ['مدارس الأحد', 'https://fasly.up.railway.app/'],
+    ['طايو — اجتماع الشباب', 'https://tayo-shbab-app.lovable.app/'],
+  ];
 
   // في WordPress الروابط شكلها /worship/ مش worship.html، فالـ theme بيبعت SITE_BASE ونحوّل الروابط ليه
   const BASE = window.SITE_BASE;
   if (BASE) {
     const toWp = h => h.replace(/^([a-z0-9-]+)\.html/, (_, p) => BASE + p + '/');
     for (const k in SUB) SUB[k] = SUB[k].map(([t, h]) => [t, toWp(h)]);
-    MEETINGS.forEach(m => { m[1] = toWp(m[1]); });
+    ENTRY_LINKS.forEach(m => { m[1] = toWp(m[1]); });
   }
   const chev = '<svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>';
   // اسم القسم من آخر جزء في الرابط: worship.html أو /worship/
@@ -51,16 +56,20 @@
     a.insertAdjacentHTML('afterend', `<button class="dd-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="صفحات ${a.textContent.trim()}">${chev}</button><ul class="dd" id="${id}">${subLinks(items, a.href)}</ul>`);
   });
 
-  // زر دخول الخدام: أيقونة فوق في الهيدر، وتحتها الاجتماعات اللي ليها نظام حضور
+  // أيقونة الدخول: فوق في الهيدر، وتحتها روابط الدخول والتطبيقات (نظام الحضور، والمواقع الخارجية)
   const navBase = ($('.top-nav a[href], #drawer li a[href]') || {}).href || location.href;
-  const loginList = MEETINGS.map(([t, h]) => `<li><a href="${new URL(h, navBase).href}">${t}</a></li>`).join('');
+  const loginList = ENTRY_LINKS.map(([t, h]) => {
+    const ext = /^https?:\/\//.test(h);                       // رابط خارجي يتفتح في تاب جديد
+    const attr = ext ? ' target="_blank" rel="noopener"' : '';
+    return `<li><a href="${new URL(h, navBase).href}"${attr}>${t}</a></li>`;
+  }).join('');
   const userIcon = '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5a6.5 6.5 0 0 1 13 0"/></svg>';
   $$('.hero-top .menu-btn, .float-nav .menu-btn').forEach(btn => {
     const id = 'dd' + ++ddN;
-    btn.insertAdjacentHTML('beforebegin', `<div class="has-dd login-dd"><button class="dd-btn login-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="دخول الخدام">${userIcon}</button><div class="dd" id="${id}"><p class="dd-title">دخول الخدام</p><ul>${loginList}</ul></div></div>`);
+    btn.insertAdjacentHTML('beforebegin', `<div class="has-dd login-dd"><button class="dd-btn login-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="الدخول والتطبيقات">${userIcon}</button><div class="dd" id="${id}"><p class="dd-title">الدخول والتطبيقات</p><ul>${loginList}</ul></div></div>`);
   });
   const drawerList = $('#drawer > ul');
-  if (drawerList) drawerList.insertAdjacentHTML('afterend', `<div class="drawer-login"><p>${userIcon}دخول الخدام</p><ul>${loginList}</ul></div>`);
+  if (drawerList) drawerList.insertAdjacentHTML('afterend', `<div class="drawer-login"><p>${userIcon}الدخول والتطبيقات</p><ul>${loginList}</ul></div>`);
 
   $$('.has-dd').forEach(box => {
     $('.dd-btn', box).addEventListener('click', e => { e.stopPropagation(); const open = !box.classList.contains('open'); closeAll(box); setOpen(box, open); });

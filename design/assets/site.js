@@ -8,7 +8,10 @@
   const animate = root.classList.contains('anim') && window.gsap && window.ScrollTrigger;
   if (!animate) root.classList.remove('anim');
   const frame = $('.hero, .page-hero');
-  window.Site = { $, $$, animate, frame };
+  // إحساس الحركة: data-motion="spring" على <html> يخليها ناعمة من غير ارتداد زي Framer
+  const spring = root.dataset.motion === 'spring';
+  const EASE = spring ? 'expo.out' : 'power3.out', POP = spring ? 'expo.out' : 'back.out(1.4)';
+  window.Site = { $, $$, animate, frame, EASE, POP };
 
   // ---------- القوائم المنسدلة: صفحات كل قسم، ودخول الخدام لكل اجتماع ----------
   // الروابط بتتحسب من رابط القسم نفسه، فتشتغل في كل الصفحات (حتى 404 اللي روابطها من جذر الموقع)
@@ -19,8 +22,13 @@
     'library': [['العظات', 'library.html#panel-sermons'], ['النشرات', 'library.html#panel-bulletins'], ['الترانيم', 'library.html#panel-hymns']],
     'news': [['الأخبار والإعلانات', 'news.html'], ['المناسبة القادمة', 'season.html']]
   };
-  // لإضافة نظام حضور لاجتماع تاني: سطر جديد هنا بالاسم ورابط شاشة الدخول بتاعته
-  const MEETINGS = [['اجتماع إعداد الخدام', 'attend-login.html']];
+  // روابط أيقونة الدخول في الهيدر: اجتماع إعداد الخدام (نظام الحضور بتاع الكنيسة)،
+  // ومعاه تطبيقات خارجية لخدمات تانية. الرابط اللي بيبدأ بـ http بيتفتح في تاب جديد.
+  const ENTRY_LINKS = [
+    ['اجتماع إعداد الخدام', 'attend-login.html'],
+    ['مدارس الأحد', 'https://fasly.up.railway.app/'],
+    ['طايو — اجتماع الشباب', 'https://tayo-shbab-app.lovable.app/'],
+  ];
 
   const chev = '<svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>';
   const keyOf = a => (a.getAttribute('href') || '').replace(/^\//, '').replace(/\.html.*$/, '');
@@ -43,16 +51,20 @@
     a.insertAdjacentHTML('afterend', `<button class="dd-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="صفحات ${a.textContent.trim()}">${chev}</button><ul class="dd" id="${id}">${subLinks(items, a.href)}</ul>`);
   });
 
-  // زر دخول الخدام: أيقونة فوق في الهيدر، وتحتها الاجتماعات اللي ليها نظام حضور
+  // أيقونة الدخول: فوق في الهيدر، وتحتها روابط الدخول والتطبيقات (نظام الحضور، والمواقع الخارجية)
   const navBase = ($('.top-nav a[href], #drawer li a[href]') || {}).href || location.href;
-  const loginList = MEETINGS.map(([t, h]) => `<li><a href="${new URL(h, navBase).href}">${t}</a></li>`).join('');
+  const loginList = ENTRY_LINKS.map(([t, h]) => {
+    const ext = /^https?:\/\//.test(h);                       // رابط خارجي يتفتح في تاب جديد
+    const attr = ext ? ' target="_blank" rel="noopener"' : '';
+    return `<li><a href="${new URL(h, navBase).href}"${attr}>${t}</a></li>`;
+  }).join('');
   const userIcon = '<svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5.5 19.5a6.5 6.5 0 0 1 13 0"/></svg>';
   $$('.hero-top .menu-btn, .float-nav .menu-btn').forEach(btn => {
     const id = 'dd' + ++ddN;
-    btn.insertAdjacentHTML('beforebegin', `<div class="has-dd login-dd"><button class="dd-btn login-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="دخول الخدام">${userIcon}</button><div class="dd" id="${id}"><p class="dd-title">دخول الخدام</p><ul>${loginList}</ul></div></div>`);
+    btn.insertAdjacentHTML('beforebegin', `<div class="has-dd login-dd"><button class="dd-btn login-btn" type="button" aria-expanded="false" aria-controls="${id}" aria-label="الدخول والتطبيقات">${userIcon}</button><div class="dd" id="${id}"><p class="dd-title">الدخول والتطبيقات</p><ul>${loginList}</ul></div></div>`);
   });
   const drawerList = $('#drawer > ul');
-  if (drawerList) drawerList.insertAdjacentHTML('afterend', `<div class="drawer-login"><p>${userIcon}دخول الخدام</p><ul>${loginList}</ul></div>`);
+  if (drawerList) drawerList.insertAdjacentHTML('afterend', `<div class="drawer-login"><p>${userIcon}الدخول والتطبيقات</p><ul>${loginList}</ul></div>`);
 
   $$('.has-dd').forEach(box => {
     $('.dd-btn', box).addEventListener('click', e => { e.stopPropagation(); const open = !box.classList.contains('open'); closeAll(box); setOpen(box, open); });
@@ -91,7 +103,7 @@
     items.forEach(it => {
       const ok = b.dataset[attr] === 'all' || it.dataset[k] === b.dataset[attr];
       it.classList.toggle('hide', !ok);
-      if (ok && animate) gsap.fromTo(it, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power3.out', overwrite: true });
+      if (ok && animate) gsap.fromTo(it, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: EASE, overwrite: true });
     });
     if (animate) ScrollTrigger.refresh();
   }));
@@ -105,7 +117,7 @@
     const select = t => {
       tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.setAttribute('aria-pressed', on); x.tabIndex = on ? 0 : -1; $('#' + x.getAttribute('aria-controls')).hidden = !on; });
       const panel = $('#' + t.getAttribute('aria-controls'));
-      if (animate) { gsap.fromTo(panel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .6, ease: 'power3.out' }); ScrollTrigger.refresh(); }
+      if (animate) { gsap.fromTo(panel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .6, ease: EASE }); ScrollTrigger.refresh(); }
     };
     // فتح التبويب من الرابط: #اسم-اللوحة
     const fromHash = () => tabs.find(t => location.hash && '#' + t.getAttribute('aria-controls') === location.hash);
@@ -315,7 +327,7 @@
 
   // الواجهة الداخلية: الضوء يدخل ثم يظهر العنوان (مقدمة الرئيسية في home.html)
   if (frame && frame.classList.contains('page-hero')) {
-    gsap.timeline({ defaults: { ease: 'power3.out' } })
+    gsap.timeline({ defaults: { ease: EASE } })
       .to('.page-hero .hero-bg img', { scale: 1, duration: 2.2, ease: 'power2.out' }, 0)
       .to('.page-hero .rays', { opacity: .75, duration: 1.8 }, .1)
       .to('.page-hero #dust', { opacity: 1, duration: 1.6 }, .4)
@@ -326,13 +338,13 @@
 
   // العناوين: كلمة كلمة
   $$('[data-split]').forEach(el => { if (el.closest('.hero, .page-hero')) return;
-    gsap.to($$('.w > span', el), { y: 0, duration: 1.1, stagger: .07, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 86%' } });
+    gsap.to($$('.w > span', el), { y: 0, duration: 1.1, stagger: .07, ease: EASE, scrollTrigger: { trigger: el, start: 'top 86%' } });
   });
 
   // العناصر: صعود متدرج على دفعات
   ScrollTrigger.batch('[data-rise]', {
     start: 'top 90%',
-    onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, duration: 1, stagger: .08, ease: 'power3.out', overwrite: true })
+    onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, duration: 1, stagger: .08, ease: EASE, overwrite: true })
   });
 
   // خلفيات الأقسام الخاصة: تظهر وتختفي بنعومة مع التمرير
@@ -350,7 +362,7 @@
   // الدوائر: تظهر بتكبير هادئ متدرج
   ScrollTrigger.batch('[data-bub]', {
     start: 'top 92%',
-    onEnter: batch => gsap.to(batch, { opacity: 1, scale: 1, duration: 1.2, stagger: .06, ease: 'back.out(1.4)', overwrite: true })
+    onEnter: batch => gsap.to(batch, { opacity: 1, scale: 1, duration: 1.2, stagger: .06, ease: POP, overwrite: true })
   });
 
   // الصور الكبيرة: كشف من الأسفل
