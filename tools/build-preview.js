@@ -82,6 +82,12 @@ for (const rel of used) {
   if (!fs.existsSync(src)) { console.error('صورة غير موجودة:', rel); process.exit(1); }
   const dest = path.join(dist, rel);
   fs.mkdirSync(path.dirname(dest), { recursive: true });
+  // فولدر كامل (زي فريمات الفيديو اللي بيحمّلها JavaScript بالأرقام) يتنسخ بكل الصور اللي فيه
+  if (fs.statSync(src).isDirectory()) {
+    fs.cpSync(src, dest, { recursive: true });
+    for (const f of fs.readdirSync(src)) bytes += fs.statSync(path.join(src, f)).size;
+    continue;
+  }
   fs.copyFileSync(src, dest);
   bytes += fs.statSync(src).size;
 }

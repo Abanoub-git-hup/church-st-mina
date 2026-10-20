@@ -1,0 +1,875 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس | الجبل الأصفر</title>
+<meta name="description" content="كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس، عرب العيايدة، ناحية الجبل الأصفر، مطرانية شبين القناطر وتوابعها.">
+<script>
+  document.documentElement.classList.add('anim');
+  document.documentElement.dataset.motion = 'spring';
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* خاص بالرئيسية: الواجهة الكبيرة، والدوائر الأربعة، ومجموعة صور الكنيسة */
+.hero-center{flex:1;display:grid;place-items:center;text-align:center;padding:var(--s-16) var(--gut) var(--s-24)}
+.hero-center > div{max-width:980px}
+.hello{position:relative;display:inline-flex;align-items:center;gap:var(--s-2);padding:6px 18px;border-radius:var(--r-full);color:#FFF8EE;background:linear-gradient(180deg,rgba(255,244,228,.12),rgba(255,244,228,.05));backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4)}
+.hello::after{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:var(--gild);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.hello .icon{width:16px;height:16px}
+.hero h1{font-family:var(--f-verse);font-weight:700;font-size:clamp(2rem,5.4vw,4.3rem);line-height:1.6;color:#FFF3E0;text-shadow:0 4px 30px rgba(0,0,0,.55)}
+.hero h1 em{font-style:normal;color:var(--gold-soft)}
+.hero .ref{display:block;margin-top:var(--s-4);color:var(--gold);font-size:.95rem}
+.hero .sub{margin:var(--s-8) auto 0;max-width:620px;color:var(--cream-2);font-size:1.02rem;line-height:2}
+.hero-ctas{display:flex;align-items:center;justify-content:center;gap:var(--s-4);flex-wrap:wrap;margin-top:var(--s-12)}
+@media (max-width:600px){.hero-ctas{justify-content:flex-start}.hero-ctas .pill{min-height:44px;gap:var(--s-2);padding:4px 16px 4px 4px;font-size:.88rem}.hero-ctas .pill .dot{width:36px;height:36px}.hero-center{padding:var(--s-12) var(--gut) var(--s-20)}.hero .sub{margin-top:var(--s-6)}.hero-ctas{margin-top:var(--s-10);gap:var(--s-3)}}
+/* الدوائر الأربعة أسفل الواجهة */
+.hero-cards{position:relative;z-index:2;margin-top:var(--s-8)}
+.hcirc{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:var(--s-6)}
+.hc{position:relative;flex:none;width:var(--w);aspect-ratio:1;display:block;color:inherit}
+.hc.next{--w:clamp(200px,20vw,270px)}
+.hc.live{--w:clamp(160px,16vw,210px);margin-top:70px}
+.hc.fathers{--w:clamp(170px,17vw,220px);margin-top:-30px}
+.hc.quote{--w:clamp(160px,15.5vw,205px);margin-top:90px}
+.hc .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 1px rgba(243,201,135,.3)}
+.hc img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.hc:hover img{transform:scale(1.08)}
+.hc.photo .bi::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(23,15,9,.62) 0%,rgba(23,15,9,.5) 45%,rgba(23,15,9,.82) 100%)}
+.hc.photo .hc-tx{text-shadow:0 1px 12px rgba(0,0,0,.8)}
+a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold-soft)}
+.hc-tx{position:relative;z-index:1;text-align:center;padding:15%;display:grid;justify-items:center;gap:4px}
+.hc-tx small{color:var(--gold-soft);font-size:.75rem}
+.hc-tx b{font-weight:400;font-size:clamp(.95rem,1.3vw,1.15rem);line-height:1.45}
+.hc.next .bi{background:radial-gradient(circle at 35% 25%,#FFF8EC,var(--cream) 60%,#EAD9BE)}
+.hc.next .hc-tx{color:var(--ink)}
+.hc.next small{color:var(--gold-deep);font-weight:500}
+.hc.next h3{font-size:clamp(1.2rem,2vw,1.65rem);font-weight:300;line-height:1.3}
+.hc.next p{color:#6B533E;font-size:.82rem}
+.hc.next .link{margin-top:6px;color:var(--ink);font-weight:500;font-size:.85rem}
+.hc.next .mark{width:26px;height:26px;color:var(--gold-deep);margin-bottom:2px}
+.hc.quote .bi{background:radial-gradient(circle at 35% 25%,var(--umber-600),var(--umber-950) 75%)}
+.hc.quote .qm{font-family:var(--f-verse);font-size:2.4rem;line-height:1;height:22px;color:var(--gold)}
+.hc.quote b{font-family:var(--f-verse);font-size:clamp(.9rem,1.15vw,1.05rem);line-height:1.65;color:var(--cream-2)}
+.hc .play{position:relative;width:56px;height:56px;border-radius:50%;background:var(--gold);color:var(--ink);display:grid;place-items:center;margin-bottom:6px;transition:transform var(--t-base) var(--ease)}
+.hc .play .icon{fill:currentColor;width:20px;height:20px;margin-inline-end:-3px}
+.hc .play::after{content:"";position:absolute;inset:-7px;border-radius:50%;border:1px solid var(--gold);animation:pulse 2.4s ease-out infinite}
+@keyframes pulse{from{transform:scale(.9);opacity:.9}to{transform:scale(1.4);opacity:0}}
+.hc:hover .play{transform:scale(1.08)}
+.hc .lbl{display:inline-flex;align-items:center;gap:6px;font-size:.92rem}
+.hc .play.book .icon{fill:none;margin:0;width:22px;height:22px}
+.hc .play.book::after{animation:none;opacity:.5}
+.hc .lbl.read::before{display:none}
+.hc .lbl::before{content:"";width:8px;height:8px;border-radius:50%;background:#E5634F;box-shadow:0 0 0 4px rgba(229,99,79,.25)}
+@media (max-width:600px){
+  .hero-cards{margin-top:var(--s-6)}
+  .hcirc{gap:var(--s-3)}
+  .hc.next{--w:52vw;margin-top:0}
+  .hc.live{--w:36vw;margin-top:44px}
+  .hc.fathers{--w:40vw;margin-top:0}
+  .hc.quote{--w:46vw;margin-top:34px}
+  .hc-tx{padding:12%}
+  .hc-tx b{font-size:.85rem}
+  .hc.quote b{font-size:.8rem}
+  .hc .play{width:42px;height:42px}
+  .hc.next .link{display:none}
+}
+/* صور الكنيسة: دائرة كبيرة وحولها دوائر */
+.gal{display:grid;gap:var(--s-12);align-items:center}
+@media (min-width:960px){.gal{grid-template-columns:.8fr 1.2fr;gap:var(--s-16)}}
+.ring-btn{margin-top:var(--s-10);width:150px;height:150px;border-radius:50%;border:1px solid var(--gold);background:none;display:grid;place-content:center;justify-items:center;gap:4px;font-size:.95rem;cursor:pointer;transition:background var(--t-base),transform var(--t-base) var(--ease)}
+.ring-btn .icon{width:16px;height:16px;color:var(--gold-soft)}
+.ring-btn small{color:var(--muted);font-size:.75rem}
+.ring-btn:hover{background:rgba(243,201,135,.1);transform:scale(1.04)}
+.gcl{position:relative;width:100%;max-width:660px;aspect-ratio:1;justify-self:center}
+.gcl .g{position:absolute;margin:0;width:calc(var(--gs) * 1%);left:calc(var(--gl) * 1%);top:calc(var(--gt) * 1%)}
+.gcl .g:not(.big) .cap{display:none}
+.gcl .g.big .bi{box-shadow:0 40px 90px -30px rgba(0,0,0,.75),0 0 0 1px var(--line)}
+@media (max-width:700px){
+  .gcl{aspect-ratio:1 / 2}
+  .gcl .g{width:calc(var(--ms) * 1%);left:calc(var(--ml) * 1%);top:calc(var(--mt) * 1%)}
+  .gcl .g .cap{display:none}
+  .ring-btn{width:120px;height:120px}
+}
+
+/* ===== تجربة الحركة (home-motion): كروت الخدمات فوق بعض، والفوتر الستارة ===== */
+.deck{position:relative;margin-top:var(--s-12);display:grid;gap:22vh}
+.deck-card{--top:calc(96px + var(--i) * 14px);position:sticky;top:var(--top);height:clamp(400px,64vh,520px);border-radius:var(--r-xl);overflow:hidden;isolation:isolate;background:var(--umber-800);box-shadow:0 30px 80px -30px rgba(0,0,0,.7);transform-origin:50% 0}
+.deck-card > img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover}
+.deck-card.paper{background:radial-gradient(ellipse at 30% 30%, #FFF5E4, #E3CBA4 75%)}
+.deck-card.paper > img{object-fit:contain;mix-blend-mode:multiply;padding:var(--s-10);inset-inline-end:0;width:55%}
+.deck-card::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(270deg,rgba(23,15,9,.55),transparent 60%)}
+.deck-shade{position:absolute;inset:0;z-index:3;background:var(--umber-950);opacity:0;pointer-events:none}
+.deck-tx{position:absolute;inset-block:var(--s-6);inset-inline-start:var(--s-6);width:min(380px,calc(100% - 48px));display:flex;flex-direction:column;padding:var(--s-8);border-radius:var(--r-lg);background:rgba(240,242,248,.1);border:1px solid rgba(236,238,244,.22);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4)}
+.deck-n{font-size:.78rem;color:var(--cream-2);letter-spacing:.02em}
+.deck-tx h3{font-size:clamp(1.5rem,2.6vw,2.1rem);font-weight:300;line-height:1.35;margin-top:var(--s-4);color:#FFF8EE}
+.deck-tx small{color:var(--gold-soft);font-size:.88rem;margin-top:var(--s-1)}
+.deck-tx ul{margin-top:var(--s-6);display:grid;gap:var(--s-2);font-size:.92rem;color:var(--cream)}
+.deck-tx li{padding-inline-start:var(--s-4);position:relative}
+.deck-tx li::before{content:"";position:absolute;inset-inline-start:0;top:.75em;width:5px;height:5px;border-radius:50%;background:rgba(236,238,244,.7)}
+.deck-tx .pill{margin-top:auto;align-self:flex-start}
+@media (max-width:700px){
+  .deck{gap:18vh}
+  .deck-card{--top:calc(84px + var(--i) * 10px);height:clamp(420px,66vh,520px)}
+  .deck-card.paper > img{width:100%;height:50%;padding:var(--s-6)}
+  .deck-card::after{background:linear-gradient(180deg,transparent 30%,rgba(23,15,9,.6))}
+  .deck-tx{inset-block:auto var(--s-4);inset-inline:var(--s-4);width:auto;padding:var(--s-6)}
+  .deck-tx{padding:var(--s-5)}
+  .deck-tx h3{margin-top:var(--s-2)}
+  .deck-tx ul{display:none}
+  .deck-tx .pill{margin-top:var(--s-5)}
+}
+/* ===== تجربة الحركة: مشهد الدخول بفريمات الفيديو ورا أول أقسام الصفحة ===== */
+/* المسرح sticky بطول الشاشة، والهامش السالب بيخلي الأقسام اللي بعده تبدأ فوقه وتعدّي عليه.
+   طول .intro هو طول الأقسام نفسها، فالمشهد بيتقلب على طول المسافة دي */
+.intro{position:relative;background:var(--umber-950)}
+.intro-stage{position:sticky;top:0;height:100vh;height:100svh;margin-bottom:-100vh;margin-bottom:-100svh;overflow:hidden;isolation:isolate}
+.intro > :not(.intro-stage){position:relative;z-index:1}
+.intro-media{position:absolute;inset:0}
+.intro-poster,.intro-cv{position:absolute;inset:0;width:100%;height:100%}
+.intro-poster{object-fit:cover}
+.intro.on .intro-poster{visibility:hidden}
+/* تغميق ورا الأقسام علشان الكلام يتقري، ويخف في لحظة النور */
+.intro-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(23,15,9,.5),rgba(23,15,9,.85) 95%);opacity:0}
+.intro-fade{position:absolute;inset:0;background:var(--umber-950);opacity:0}
+/* لحظة النور: مسافة فاضية والباب بيتفتح */
+.intro-gap{height:120vh;height:120svh}
+/* آخر المشهد ضلمة، والقسم اللي بعده فوق خلفية الموقع. التدرّج ده بيدوّب الحد بينهم */
+.intro::after{content:"";position:absolute;top:100%;inset-inline:0;z-index:1;height:40vh;background:linear-gradient(var(--umber-950),transparent);pointer-events:none}
+
+/* overflow-x:hidden على body بيخليه حاوية تمرير فيوقف sticky. clip بيقص بنفس الشكل من غير المشكلة دي */
+body{overflow-x:clip}
+/* الفوتر على الموبايل: مضغوط، والروابط في عمودين، علشان يقصر عن الشاشة وتشتغل الستارة */
+@media (max-width:767px){
+  .footer{padding-top:var(--s-8)}
+  .f-cta{align-items:center;flex-wrap:nowrap;gap:var(--s-4);padding-bottom:var(--s-6)}
+  .f-cta h2{font-size:1.35rem;line-height:1.5}
+  .f-cta .pill{min-height:40px;gap:var(--s-2);padding:4px 14px 4px 4px;font-size:.82rem;white-space:nowrap}
+  .f-cta .pill .dot{width:32px;height:32px}
+  .f-grid{grid-template-columns:1fr 1fr;gap:var(--s-4);padding-block:var(--s-5)}
+  .f-grid > div:first-child{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:var(--s-3)}
+  .f-grid > div:first-child p{display:none}
+  .footer .brand{margin:0;font-size:.85rem}
+  .footer .brand img{width:40px;height:40px}
+  .footer .brand .nw{display:block}
+  .footer .brand .sep{display:none}
+  .footer .socials{flex:none;gap:var(--s-2)}
+  .footer .socials .circle{width:36px;height:36px}
+  .f-grid > div:last-child{grid-column:1/-1}
+  .f-grid > div:last-child ul{grid-template-columns:auto auto;justify-content:space-between;column-gap:var(--s-4)}
+  /* العنوان سطر كامل، ورابط فيسبوك متكرر مع أيقونته فوق */
+  .f-grid > div:last-child li:first-child{grid-column:1/-1}
+  .f-grid > div:last-child li:has(a[href*="facebook"]){display:none}
+  .footer h4{font-size:.78rem;margin-bottom:var(--s-2)}
+  .footer ul{gap:2px}
+  .footer ul a,.footer li{font-size:.84rem;line-height:1.6}
+  .f-bar{padding-block:var(--s-3);padding-inline-end:64px;font-size:.7rem;line-height:1.6}
+}
+.footer-space{display:none}
+.fr main{position:relative;z-index:1}
+.fr .footer{position:fixed;margin:0;inset:auto var(--s-3) var(--s-3);z-index:0}
+.fr .footer-space{display:block;height:calc(var(--footer-h,0px) + var(--s-3) * 2)}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-cross" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/><circle cx="12" cy="3.2" r="1.4"/><circle cx="12" cy="20.8" r="1.4"/><circle cx="3.2" cy="12" r="1.4"/><circle cx="20.8" cy="12" r="1.4"/><circle cx="12" cy="12" r="2.2"/></symbol>
+  <symbol id="i-nw" viewBox="0 0 24 24"><path d="M17 17 7 7M7 17V7h10"/></symbol>
+  <symbol id="i-left" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></symbol>
+  <symbol id="i-right" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5L7 4.5Z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="i-church" viewBox="0 0 24 24"><path d="M12 2v4M10 4h4M18 22V11l-6-5-6 5v11M2 22h20M6 14l-4 3v5M18 14l4 3v5M10 22v-4a2 2 0 0 1 4 0v4"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-headphones" viewBox="0 0 24 24"><path d="M3 14h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a9 9 0 0 1 18 0v7a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2Z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7Z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7Z"/></symbol>
+  <symbol id="i-candle" viewBox="0 0 24 24"><path d="M9 22V11h6v11M7 22h10M12 11V9M12 3c1.5 1.8 2 3 0 5-2-2-1.5-3.2 0-5Z"/></symbol>
+  <symbol id="i-grad" viewBox="0 0 24 24"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c3 3 9 3 12 0v-5M22 10v6"/></symbol>
+  <symbol id="i-mask" viewBox="0 0 24 24"><path d="M3 4h18v6a9 9 0 0 1-18 0Z"/><path d="M8 9h.01M16 9h.01M9 14a4 4 0 0 0 6 0"/></symbol>
+  <symbol id="i-whatsapp" viewBox="0 0 24 24"><path d="M3 21l1.65-3.8A9 9 0 1 1 7.8 20.3L3 21Z"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></symbol>
+  <symbol id="i-facebook" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3Z"/></symbol>
+  <symbol id="i-youtube" viewBox="0 0 24 24"><path d="M2.5 17a24 24 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.6 49.6 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24 24 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.6 49.6 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/><path d="m10 15 5-3-5-3z"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M8 16h12"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+</svg>
+
+<div class="site-cover" aria-hidden="true"><img src="../media/church/bg-light-beams.jpg" alt=""><span class="veil"></span></div>
+
+<a class="skip" href="#main">تخطَّ إلى المحتوى</a>
+
+<!-- شريط عائم يظهر بعد الواجهة -->
+<div class="float-nav" id="floatNav">
+  <a class="brand" href="#top"><img src="../media/brand/logo.png" alt="" width="38" height="38"><span><b><span class="nw">كنيسة العذراء ومارمينا</span> <span class="nw">والبابا كيرلس</span></b>الجبل الأصفر</span></a>
+  <nav aria-label="القائمة">
+    <ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li></ul>
+  </nav>
+  <button class="menu-btn" data-open-menu aria-label="فتح القائمة" aria-controls="drawer"><svg class="icon"><use href="#i-menu"/></svg></button>
+</div>
+
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="القائمة">
+  <div class="drawer-top">
+    <a class="brand" href="#top"><img src="../media/brand/logo.png" alt=""><span><b>كنيسة السيدة العذراء ومارمينا</b><span class="nw">والبابا كيرلس السادس</span> <span class="nw"><span class="sep">· </span>الجبل الأصفر</span></span></a>
+    <button class="menu-btn" id="menuClose" aria-label="إغلاق القائمة"><svg class="icon"><use href="#i-x"/></svg></button>
+  </div>
+  <ul><li><a href="#top">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li></ul>
+  <div class="socials">
+    <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
+    <a class="circle" href="https://www.youtube.com/@%D8%A7%D9%84%D9%82%D9%85%D8%B5%D9%83%D9%8A%D8%B1%D9%84%D8%B3%D8%B1%D9%88%D9%85%D8%A7%D9%86%D9%8A/" target="_blank" rel="noopener" aria-label="قناة يوتيوب"><svg class="icon"><use href="#i-youtube"/></svg></a>
+    <a class="circle" href="https://wa.me/201227445837" target="_blank" rel="noopener" aria-label="واتساب الكنيسة"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ===== مشهد الدخول: الفريمات خلفية ثابتة ورا الأقسام من الواجهة لحد "اكتشف" ===== -->
+<div class="intro" id="top" data-frames-v="../media/motion/frames-v/" data-count-v="192" data-frames-w="../media/motion/frames-w/" data-count-w="186">
+<div class="intro-stage" aria-hidden="true">
+  <div class="intro-media">
+    <picture>
+      <source media="(min-aspect-ratio: 1/1)" srcset="../media/motion/frames-w/0001.webp">
+      <img class="intro-poster" src="../media/motion/frames-v/0001.webp" alt="">
+    </picture>
+    <canvas class="intro-cv"></canvas>
+    <span class="intro-shade"></span>
+    <span class="intro-fade"></span>
+  </div>
+</div>
+
+<!-- ===== الواجهة ===== -->
+<section class="hero" aria-label="الترحيب">
+  <canvas id="dust" aria-hidden="true"></canvas>
+
+  <header class="hero-top">
+    <div class="wrap">
+      <a class="brand" href="#top" data-intro><img src="../media/brand/logo.png" alt="شعار الكنيسة"><span><b>كنيسة السيدة العذراء ومارمينا</b><span class="nw">والبابا كيرلس السادس</span> <span class="nw"><span class="sep">· </span>الجبل الأصفر</span></span></a>
+      <nav class="top-nav" aria-label="القائمة الرئيسية" data-intro>
+        <ul><li><a href="#top" aria-current="page">الرئيسية</a></li><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="services.html">الخدمات</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li></ul>
+      </nav>
+      <div class="socials" data-intro>
+        <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
+        <a class="circle" href="https://www.youtube.com/@%D8%A7%D9%84%D9%82%D9%85%D8%B5%D9%83%D9%8A%D8%B1%D9%84%D8%B3%D8%B1%D9%88%D9%85%D8%A7%D9%86%D9%8A/" target="_blank" rel="noopener" aria-label="قناة يوتيوب"><svg class="icon"><use href="#i-youtube"/></svg></a>
+        <a class="circle" href="https://wa.me/201227445837" target="_blank" rel="noopener" aria-label="واتساب الكنيسة"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
+      </div>
+      <button class="menu-btn" data-open-menu aria-label="فتح القائمة" aria-controls="drawer"><svg class="icon"><use href="#i-menu"/></svg></button>
+    </div>
+  </header>
+
+  <div class="hero-center">
+    <div>
+      <span class="hello" data-intro><svg class="icon"><use href="#i-cross"/></svg>آية اليوم</span>
+      <h1 data-split>فِي ٱلْعَالَمِ سَيَكُونُ لَكُمْ ضِيقٌ، وَلكِنْ ثِقُوا: <em>أَنَا قَدْ غَلَبْتُ ٱلْعَالَمَ</em></h1>
+      <span class="ref" data-intro>(يوحنا 16: 33)</span>
+      <div class="hero-ctas" data-intro>
+        <a class="pill" href="#schedule">مواعيد القداسات <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        <a class="pill ghost" href="#about">تعرّف على الكنيسة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== الدوائر الأربعة أسفل الواجهة ===== -->
+<section class="hero-cards" aria-label="وصول سريع">
+  <div class="wrap hcirc">
+    <a class="hc next" href="worship.html" data-tile>
+      <span class="bi"><span class="hc-tx">
+        <svg class="icon mark" aria-hidden="true"><use href="#i-cross"/></svg>
+        <small>القداس القادم</small>
+        <h3 id="nextMass">الأحد</h3>
+        <p id="nextMassTime">7:00 – 10:00 صباحًا</p>
+        <span class="link">كل المواعيد <svg class="icon"><use href="#i-nw"/></svg></span>
+      </span></span>
+    </a>
+    <a class="hc photo live" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener" data-tile aria-label="القراءات اليومية على موقع الأنبا تكلا هيمانوت">
+      <span class="bi"><img class="grade" src="../media/worship/youth-night-liturgy-2.jpeg" alt="">
+        <span class="hc-tx"><span class="play book"><svg class="icon"><use href="#i-book"/></svg></span><span class="lbl read">القراءات اليومية</span></span>
+      </span>
+    </a>
+    <a class="hc photo fathers" href="church-fathers.html" data-tile>
+      <span class="bi"><img class="grade" src="../media/worship/deacons.jpeg" alt="آباء الكنيسة مع الشمامسة أمام الهيكل">
+        <span class="hc-tx"><small>كنيستنا</small><b>آباء الكنيسة<br>والشمامسة</b></span>
+      </span>
+    </a>
+    <div class="hc quote" data-tile>
+      <span class="bi"><span class="hc-tx">
+        <span class="qm" aria-hidden="true">”</span>
+        <b>الوصية مش قيد.. الوصية أمان لينا</b>
+        <small>أبونا فام عبد المسيح</small>
+      </span></span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ===== مواعيد القداسات ===== -->
+<section class="sec pool" id="schedule" data-cover-start aria-labelledby="t-sched">
+  <div class="wrap sched">
+    <div>
+      <span class="eyebrow" data-rise>صلِّ معنا</span>
+      <h2 class="title" id="t-sched" data-split>مواعيد <b>القداسات</b> والاجتماعات</h2>
+      <div class="days">
+        <div class="day" data-day="0" data-rise><div class="day-n">الأحد</div><div class="slots"><span>7:00 – 10:00 ص</span><span>9:00 – 11:00 ص</span></div></div>
+        <div class="day" data-day="2" data-rise><div class="day-n">الثلاثاء</div><div class="slots"><span>8:00 – 9:30 ص</span></div></div>
+        <div class="day" data-day="3" data-rise><div class="day-n">الأربعاء</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
+        <div class="day" data-day="5" data-rise><div class="day-n">الجمعة</div><div class="slots"><span>7:00 – 9:00 ص <em>التربية الكنسية</em></span><span>7:00 – 9:30 ص <em>الشعب</em></span><span>10:00 – 12:00 ظ</span><span class="meet">3:00 – 5:00 م <em>صلاة ودراسة الكتاب</em></span></div></div>
+        <div class="day" data-day="6" data-rise><div class="day-n">السبت</div><div class="slots"><span>8:00 – 10:00 ص</span></div></div>
+      </div>
+      <div class="sched-foot" data-rise>
+        <p>تتغير المواعيد في الأصوام والأعياد، وتُعلن في الأخبار.</p>
+        <a class="pill" href="worship.html">الجدول الكامل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        <a class="link" href="https://st-takla.org/zJ/index.php/en-readings-katamaros?view=reading-arabic" target="_blank" rel="noopener">القراءات اليومية <svg class="icon"><use href="#i-nw"/></svg></a>
+      </div>
+    </div>
+    <div class="sched-media" data-clip>
+      <img class="grade" data-parallax src="../media/worship/youth-night-liturgy-1.jpeg" alt="أب كاهن يصلي عند المذبح">
+      <div class="badge"><small>القداس الإلهي</small><b>الكنيسة الكبيرة والكنيسة الصغيرة</b></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== عن الكنيسة ===== -->
+<section class="sec deep pool-l" id="about" aria-labelledby="t-about">
+  <div class="wrap about">
+    <div class="arch" data-clip><img src="../media/priests/fathers-group.png" alt="آباء الكنيسة الثلاثة"></div>
+    <div>
+      <span class="eyebrow" data-rise>عن كنيستنا</span>
+      <h2 class="title" id="t-about" data-split>بيت الله <b>وباب السماء</b></h2>
+      <p class="lead" data-rise>نبذة عن نشأة الكنيسة وتاريخها تظهر هنا، ويكتبها محرر المحتوى من لوحة التحكم.</p>
+      <div class="meta" data-rise>
+        <span><svg class="icon"><use href="#i-pin"/></svg>عرب العيايدة، ناحية الجبل الأصفر</span>
+        <span><svg class="icon"><use href="#i-church"/></svg>مطرانية شبين القناطر وتوابعها</span>
+      </div>
+      <ul class="fathers" aria-label="آباء الكنيسة">
+        <li data-rise><span class="fp" style="background-image:url('../media/priests/quote-kyrillos-3.jpg');background-size:265px auto;background-position:-32px -233px" role="img" aria-label="القمص كيرلس روماني"></span><span class="who"><b>القمص كيرلس روماني</b><span>كاهن الكنيسة</span></span></li>
+        <li data-rise><span class="fp" style="background-image:url('../media/priests/quote-arsanios-1.jpg');background-size:252px auto;background-position:-49px -84px" role="img" aria-label="القس أرسانيوس عزت"></span><span class="who"><b>القس أرسانيوس عزت</b><span>كاهن الكنيسة</span></span></li>
+        <li data-rise><span class="fp" style="background-image:url('../media/priests/quote-fam.jpg');background-size:301px auto;background-position:-5px -115px" role="img" aria-label="القس فام عبد المسيح"></span><span class="who"><b>القس فام عبد المسيح</b><span>كاهن الكنيسة</span></span></li>
+      </ul>
+      <div style="margin-top:var(--s-8)" data-rise><a class="pill" href="church-history.html">نشأة الكنيسة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- لحظة النور: مسافة فاضية والباب بيتفتح ورا -->
+<div class="intro-gap" aria-hidden="true"></div>
+
+<!-- ===== قداس افتتاح الكنيسة (يوتيوب: قناة القمص كيرلس روماني) ===== -->
+<section class="sec pool" id="opening" aria-labelledby="t-open">
+  <div class="wrap opening-grid">
+    <div>
+      <span class="eyebrow" data-rise>حدث تاريخي</span>
+      <h2 class="title" id="t-open" data-split>قداس <b>افتتاح الكنيسة</b></h2>
+      <p class="lead" data-rise>قداس افتتاح كنيستنا مسجّلًا كاملًا في ثلاثة أجزاء، ذكرى لنا وللأجيال القادمة.</p>
+      <ul class="ev-meta" data-rise style="margin-top:var(--s-8)">
+        <li><svg class="icon" aria-hidden="true"><use href="#i-calendar"/></svg>29 ديسمبر 2007</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg>أبونا كيرلس روماني، وأبونا مقار ماهر، وأبونا بطرس حليم</li>
+      </ul>
+      <div style="display:flex;flex-wrap:wrap;gap:var(--s-6);align-items:center" data-rise>
+        <a class="pill" href="church-history.html#opening">قصة الكنيسة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        <a class="link" href="https://www.youtube.com/watch?v=3oN42iWOHGY" target="_blank" rel="noopener">شاهد على يوتيوب <svg class="icon"><use href="#i-nw"/></svg></a>
+      </div>
+    </div>
+    <div class="yt" data-yt data-clip>
+      <div class="yt-frame">
+        <img class="grade" src="https://i.ytimg.com/vi/3oN42iWOHGY/hqdefault.jpg" alt="" loading="lazy">
+        <button class="yt-play" aria-label="تشغيل الجزء 1"><svg class="icon"><use href="#i-play"/></svg></button>
+        <span class="yt-cap">الجزء 1 · 1:32:01</span>
+      </div>
+      <div class="yt-parts" role="group" aria-label="أجزاء القداس">
+        <button class="yt-part" data-id="3oN42iWOHGY" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 1" data-thumb="https://i.ytimg.com/vi/3oN42iWOHGY/hqdefault.jpg" aria-pressed="true" aria-label="الجزء 1، 1:32:01"><span class="yc" style="--h:64px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 1</b><small>1:32:01</small></button>
+        <button class="yt-part" data-id="S-1k0WgHzNA" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 2" data-thumb="https://i.ytimg.com/vi/S-1k0WgHzNA/hqdefault.jpg" aria-pressed="false" aria-label="الجزء 2، 1:28:36"><span class="yc" style="--h:62px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 2</b><small>1:28:36</small></button>
+        <button class="yt-part" data-id="848eJp9_nbI" data-title="قداس افتتاح كنيسة العذراء ومارمينا والبابا كيرلس الجبل الأصفر 3" data-thumb="https://i.ytimg.com/vi/848eJp9_nbI/hqdefault.jpg" aria-pressed="false" aria-label="الجزء 3، 48:27"><span class="yc" style="--h:34px" aria-hidden="true"><span class="glow"></span></span><b>الجزء 3</b><small>48:27</small></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== اكتشف كنيستنا ===== -->
+<section class="sec" aria-labelledby="t-disc">
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <span class="eyebrow" data-rise>اكتشف</span>
+        <h2 class="title" id="t-disc" data-split>كل ما تحتاج معرفته <b>عن كنيستنا</b></h2>
+      </div>
+    </div>
+    <div class="disc">
+      <a class="dcard" href="worship.html" data-rise><img class="grade" src="../media/worship/youth-night-liturgy-3.jpeg" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>جدول القداسات</h3><p>مواعيد القداسات والاجتماعات والاعتراف طوال الأسبوع.</p></a>
+      <a class="dcard paper" href="church-fathers.html" data-rise><img src="../media/priests/fathers-group.png" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>الآباء الكهنة</h3><p>القمص كيرلس روماني، والقس أرسانيوس عزت، والقس فام عبد المسيح.</p></a>
+      <a class="dcard" href="church-history.html" data-rise><img class="grade" src="../media/church/history-founder.jpg" alt="" loading="lazy" style="object-position:center 20%"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>نشأة الكنيسة</h3><p>قصة كنيستنا منذ تأسيسها حتى اليوم.</p></a>
+      <a class="dcard" href="church-gallery.html" data-rise><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="" loading="lazy"><span class="go"><svg class="icon"><use href="#i-nw"/></svg></span><h3>صور الكنيسة</h3><p>صور من القداسات والخدمات والمؤتمرات والرحلات.</p></a>
+    </div>
+  </div>
+</section>
+
+</div>
+<!-- ===== نهاية مشهد الدخول ===== -->
+
+<!-- ===== أقوال الآباء ===== -->
+<section class="has-bg sec deep pool" aria-labelledby="t-quotes">
+  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <span class="eyebrow" data-rise>كلمة روحية</span>
+        <h2 class="title" id="t-quotes" data-split>من أقوال <b>آباء الكنيسة</b></h2>
+      </div>
+      <div class="rail-ctl" data-rise>
+        <button data-dir="prev" aria-label="السابق"><svg class="icon"><use href="#i-right"/></svg></button>
+        <button data-dir="next" aria-label="التالي"><svg class="icon"><use href="#i-left"/></svg></button>
+      </div>
+    </div>
+    <div class="qslider" id="qslider" aria-roledescription="carousel" aria-label="أقوال الآباء" data-rise>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('../media/priests/quote-kyrillos-3.jpg');background-size:336.7% auto;background-position:13.1% 77.6%" aria-hidden="true"></span><span class="qs-q long">«قف أمام الله وصلِّ قائلًا: اضبطني يا ضابط الكل، ولا تتركني لذاتي لئلا أهلك. يا رب إن كنت أنا عاجزًا عن ضبط نفسي فلا تتركني، وإن لزم الأمر أن تقودني بالعصا أو التأديب فلا تسمح أن أحيد عن طريقك. خلّصني بكل وسيلة.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="../media/priests/quote-kyrillos-3.jpg" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><span class="qs-face" style="background-image:url('../media/priests/quote-arsanios-1.jpg');background-size:341.3% auto;background-position:24.9% 25.9%" aria-hidden="true"></span><span class="qs-q">«خادم مش مصلي.. غصنه ناشف. خادم مش صايم ولا بيقدّم ذبيحة حب.. غصنه ناشف. خادم مش بيقرأ في الكتاب المقدس بروح الشبع.. غصنه ناشف.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="../media/priests/quote-arsanios-1.jpg" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس فام عبد المسيح"><span class="qs-face" style="background-image:url('../media/priests/quote-fam.jpg');background-size:408.7% auto;background-position:0.4% 63.6%" aria-hidden="true"></span><span class="qs-q">«الوصية مش قيد.. الوصية أمان لينا. ربنا ما بيمنعشي الفرح، ربنا بيحمي الفرح من إنه يتحول إلى وجع.»</span><span class="qs-by">القس فام عبد المسيح</span><img class="qs-src" src="../media/priests/quote-fam.jpg" alt="ملصق قول القس فام عبد المسيح" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('../media/priests/quote-kyrillos-1.jpg');background-size:348.1% auto;background-position:93.6% 55.0%" aria-hidden="true"></span><span class="qs-q">«كل مؤمن في المسيح يستطيع أن يغادر القبر وبستان الأشواك، ويقول: مكاني ليس في القبور، بل في المسيح.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="../media/priests/quote-kyrillos-1.jpg" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القس أرسانيوس عزت"><span class="qs-face" style="background-image:url('../media/priests/quote-arsanios-2.jpg');background-size:447.6% auto;background-position:8.9% 37.5%" aria-hidden="true"></span><span class="qs-q">«المخدوع من سلطان هذا العالم يجري ولا يأخذ.»</span><span class="qs-by">القس أرسانيوس عزت</span><img class="qs-src" src="../media/priests/quote-arsanios-2.jpg" alt="ملصق قول القس أرسانيوس عزت" loading="lazy"></button>
+      <button class="qs" data-lb data-cap="القمص كيرلس روماني"><span class="qs-face" style="background-image:url('../media/priests/quote-kyrillos-2.jpg');background-size:408.7% auto;background-position:88.3% 68.6%" aria-hidden="true"></span><span class="qs-q">«احترس من الشفقة التي تضيّع أبديتك، فحتى المشاعر النبيلة إن لم توزن بميزان الإرادة الإلهية قد تقودنا إلى الخطأ والهلاك.»</span><span class="qs-by">القمص كيرلس روماني</span><img class="qs-src" src="../media/priests/quote-kyrillos-2.jpg" alt="ملصق قول القمص كيرلس روماني" loading="lazy"></button>
+      <div class="qs-dots" role="tablist" aria-label="اختر القول"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== الخدمات ===== -->
+<section class="sec pool-l" id="services" aria-labelledby="t-svc">
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <span class="eyebrow" data-rise>خدماتنا</span>
+        <h2 class="title" id="t-svc" data-split>خدمة <b>لكل عمر</b></h2>
+        <p class="lead" data-rise>خدمات الكنيسة في ست مجموعات. اختر ما يناسبك وتواصل مع المسؤول مباشرة.</p>
+      </div>
+      <a class="pill" href="services.html" data-rise>كل الخدمات <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+    </div>
+    <div class="deck">
+      <article class="deck-card" style="--i:0" aria-labelledby="dk-sunday">
+        <img class="grade" src="../media/services/sunday-school/primary-conference-2026-1.jpg" alt="" loading="lazy">
+        <span class="deck-shade" aria-hidden="true"></span>
+        <div class="deck-tx">
+          <span class="deck-n">1 من 6</span>
+          <h3 id="dk-sunday">مدارس الأحد</h3>
+          <small>3 مراحل</small>
+          <ul><li>المرحلة الابتدائية</li><li>المرحلة الإعدادية</li><li>المرحلة الثانوية</li></ul>
+          <a class="pill" href="services.html#g-sunday">عرض التفاصيل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        </div>
+      </article>
+      <article class="deck-card" style="--i:1" aria-labelledby="dk-meet">
+        <img class="grade" src="../media/services/youth/youth-meeting-2026.jpeg" alt="" loading="lazy">
+        <span class="deck-shade" aria-hidden="true"></span>
+        <div class="deck-tx">
+          <span class="deck-n">2 من 6</span>
+          <h3 id="dk-meet">الاجتماعات</h3>
+          <small>5 اجتماعات</small>
+          <ul><li>اجتماع الشباب</li><li>صلاة ودراسة الكتاب المقدس</li><li>اجتماع الألحان</li><li>اجتماع الشعب</li><li>اجتماع السيدات</li></ul>
+          <a class="pill" href="services.html#g-meet">عرض التفاصيل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        </div>
+      </article>
+      <article class="deck-card" style="--i:2" aria-labelledby="dk-servants">
+        <img class="grade" src="../media/services/counseling/counseling-course-2026-1.jpeg" alt="" loading="lazy">
+        <span class="deck-shade" aria-hidden="true"></span>
+        <div class="deck-tx">
+          <span class="deck-n">3 من 6</span>
+          <h3 id="dk-servants">الخدام</h3>
+          <small>اجتماعان</small>
+          <ul><li>اجتماع الخدام</li><li>إعداد الخدام</li></ul>
+          <a class="pill" href="services.html#g-servants">عرض التفاصيل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        </div>
+      </article>
+      <article class="deck-card" style="--i:3" aria-labelledby="dk-teams">
+        <img class="grade" src="../media/services/theater/theater-ismuh-yasou.jpg" alt="" loading="lazy">
+        <span class="deck-shade" aria-hidden="true"></span>
+        <div class="deck-tx">
+          <span class="deck-n">4 من 6</span>
+          <h3 id="dk-teams">الفرق والأنشطة</h3>
+          <small>4 فرق</small>
+          <ul><li>مسرح الأنبا موسى الأسود</li><li>كورال ترينتي</li><li>فريق الكشافة</li><li>أوبريت الأنبا بيشوي والأنبا كاراس</li></ul>
+          <a class="pill" href="services.html#g-teams">عرض التفاصيل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        </div>
+      </article>
+      <article class="deck-card paper" style="--i:4" aria-labelledby="dk-nursery">
+        <img src="../media/services/sunday-school/sunday-school-art.jpg" alt="" loading="lazy">
+        <span class="deck-shade" aria-hidden="true"></span>
+        <div class="deck-tx">
+          <span class="deck-n">5 من 6</span>
+          <h3 id="dk-nursery">الحضانة</h3>
+          <small>للأطفال الصغار</small>
+          <ul><li>حضانة الكنيسة</li></ul>
+          <a class="pill" href="services.html#g-nursery">عرض التفاصيل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        </div>
+      </article>
+      <article class="deck-card" style="--i:5" aria-labelledby="dk-family">
+        <img class="grade" src="../media/services/counseling/counseling-course-2026-2.jpeg" alt="" loading="lazy">
+        <span class="deck-shade" aria-hidden="true"></span>
+        <div class="deck-tx">
+          <span class="deck-n">6 من 6</span>
+          <h3 id="dk-family">الأسرة والمجتمع</h3>
+          <small>خدمتان جديدتان</small>
+          <ul><li>كورس المشورة للمقبلين على الزواج</li><li>عيادات البتول التخصصية</li></ul>
+          <a class="pill" href="services.html#g-family">عرض التفاصيل <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===== من حياة الكنيسة ===== -->
+<section class="sec deep" id="gallery" aria-labelledby="t-gal">
+  <div class="wrap gal">
+    <div class="gal-text">
+      <span class="eyebrow" data-rise>صور الكنيسة</span>
+      <h2 class="title" id="t-gal" data-split>من <b>حياة الكنيسة</b></h2>
+      <p class="lead" data-rise>لحظات من القداسات والمؤتمرات والرحلات والأنشطة.</p>
+      <p class="lead" data-rise>كل صورة حكاية من حياة كنيستنا: صلاة وخدمة وفرح مع بعض، لكل الأعمار.</p>
+      <button class="ring-btn" id="allPhotos" data-rise>كل الصور<svg class="icon"><use href="#i-nw"/></svg><small>16 صورة</small></button>
+    </div>
+    <div class="gcl" aria-label="صور من حياة الكنيسة">
+      <button class="g big" style="--gl:15;--gt:17;--gs:38;--ml:13;--mt:8.5;--ms:54" data-lb data-cap="قداس الشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-liturgy.jpeg" alt="الشباب مع أب الكاهن داخل الكنيسة" loading="lazy"><span class="cap">قداس الشباب<small>العبادة</small></span></span></button>
+      <button class="g big" style="--gl:57;--gt:53;--gs:30;--ml:39;--mt:64;--ms:48" data-lb data-cap="الآباء مع الشمامسة أمام الهيكل" data-bub><span class="bi"><img class="grade" src="../media/worship/deacons.jpeg" alt="الآباء مع الشمامسة أمام الهيكل" loading="lazy"><span class="cap">الآباء مع الشمامسة<small>العبادة</small></span></span></button>
+      <button class="g" style="--gl:0.97;--gt:5.14;--gs:17;--ml:51.86;--mt:34.22;--ms:30" data-lb data-cap="مسابقة كرة القدم لمرحلة ابتدائي" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-football-1.jpg" alt="تسليم ميداليات المسابقة" loading="lazy"></span></button>
+      <button class="g" style="--gl:25.19;--gt:83.13;--gs:15;--ml:73.83;--mt:16.06;--ms:25" data-lb data-cap="قداس ليلي للشباب" data-bub><span class="bi"><img class="grade" src="../media/worship/youth-night-liturgy-2.jpeg" alt="الشمامسة في الهيكل" loading="lazy"></span></button>
+      <button class="g" style="--gl:6.41;--gt:78.51;--gs:14;--ml:0.67;--mt:34.35;--ms:22" data-lb data-cap="رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-1.jpeg" alt="الشباب في رحلة أديرة المنيا" loading="lazy"></span></button>
+      <button class="g" style="--gl:72;--gt:3.48;--gs:13;--ml:60.05;--mt:0.2;--ms:20" data-lb data-cap="مؤتمر عنبر 11 للشباب 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/youth-conference-anbar11-2026.jpeg" alt="مؤتمر الشباب" loading="lazy"></span></button>
+      <button class="g" style="--gl:37.43;--gt:1.78;--gs:12;--ml:4.15;--mt:2.5;--ms:18" data-lb data-cap="عرض اسمه يسوع" data-bub><span class="bi"><img class="grade" src="../media/services/theater/theater-ismuh-yasou.jpg" alt="عرض مسرحي داخل الكنيسة" loading="lazy"></span></button>
+      <button class="g" style="--gl:80.35;--gt:28.37;--gs:12;--ml:82.55;--mt:5.83;--ms:16" data-lb data-cap="مؤتمر ابتدائي 2026" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-conference-2026-2.jpg" alt="مؤتمر ابتدائي" loading="lazy"></span></button>
+      <button class="g" style="--gl:16.94;--gt:56.27;--gs:11;--ml:33.64;--mt:39.26;--ms:14" data-lb data-cap="زيارة دير ضمن رحلة أديرة المنيا 2026" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-2.jpeg" alt="الشباب داخل كنيسة أثرية" loading="lazy"></span></button>
+      <button class="g" style="--gl:86.44;--gt:75.42;--gs:10;--ml:6.68;--mt:54.32;--ms:28" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-1.jpeg" alt="أمسية العبور" loading="lazy"></span></button>
+      <button class="g" style="--gl:53.48;--gt:86.75;--gs:10;--ml:6.55;--mt:87.48;--ms:24" data-lb data-cap="فريق المسرح" data-bub><span class="bi"><img class="grade" src="../media/services/theater/theater-team.jpg" alt="صورة جماعية لفريق المسرح" loading="lazy"></span></button>
+      <button class="g" style="--gl:88.04;--gt:49.92;--gs:9;--ml:70.75;--mt:87.69;--ms:21" data-lb data-cap="أبطال مسابقة كرة القدم" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-football-2.jpg" alt="الأطفال بالميداليات" loading="lazy"></span></button>
+      <button class="g" style="--gl:68.74;--gt:88.9;--gs:9;--ml:62.82;--mt:52.19;--ms:19" data-lb data-cap="مؤتمر ثانوي 2015" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/secondary-conference-2015.jpeg" alt="مؤتمر ثانوي" loading="lazy"></span></button>
+      <button class="g" style="--gl:39.56;--gt:59.1;--gs:8;--ml:8.26;--mt:71.52;--ms:17" data-lb data-cap="كورال ترينتي" data-bub><span class="bi"><img class="grade" src="../media/services/choir/trinity-choir.jpg" alt="كورال ترينتي على المسرح" loading="lazy"></span></button>
+      <button class="g" style="--gl:58.02;--gt:1.32;--gs:8;--ml:43.2;--mt:52.67;--ms:15" data-lb data-cap="كلمة الأب في مؤتمر ابتدائي 2026" data-bub><span class="bi"><img class="grade" src="../media/services/sunday-school/primary-conference-2026-3.jpg" alt="أب كاهن يتحدث مع الأطفال" loading="lazy"></span></button>
+      <button class="g" style="--gl:47.14;--gt:52.72;--gs:7;--ml:24.23;--mt:80.86;--ms:13" data-lb data-cap="أمسية العبور 2025" data-bub><span class="bi"><img class="grade" src="../media/services/youth/obour-evening-2025-2.jpeg" alt="صورة جماعية ليلية" loading="lazy"></span></button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== آية اليوم: ضوء الشموع ===== -->
+<section class="has-bg candle-sec" aria-label="كلمة للتأمل">
+  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt="" loading="lazy"></div>
+  <span class="flame-glow" aria-hidden="true"></span>
+  <div class="wrap">
+    <div class="candle" aria-hidden="true" data-rise></div>
+    <span class="eyebrow" data-rise>كلمة للتأمل</span>
+    <blockquote data-split>تَعَالَوْا إِلَيَّ يَا جَمِيعَ الْمُتْعَبِينَ وَالثَّقِيلِي الأَحْمَالِ، وَأَنَا أُرِيحُكُمْ</blockquote>
+    <cite data-rise>(متى 11: 28)</cite>
+  </div>
+</section>
+
+<!-- ===== المناسبة القادمة ===== -->
+<section class="sec pool" aria-labelledby="t-event">
+  <div class="wrap event">
+    <div class="event-media" data-clip><img class="grade" data-parallax src="../media/worship/youth-night-liturgy-2.jpeg" alt="الشمامسة في الهيكل أمام أيقونة المسيح"></div>
+    <div>
+      <span class="eyebrow" data-rise>المناسبة القادمة</span>
+      <h2 class="title" id="t-event" data-split>عيد <b>الميلاد المجيد</b></h2>
+      <div class="countdown" id="countdown" data-date="2027-01-06T23:00:00+02:00" data-rise>
+        <div><b data-u="d">00</b><small>يوم</small></div><div><b data-u="h">00</b><small>ساعة</small></div><div><b data-u="m">00</b><small>دقيقة</small></div><div><b data-u="s">00</b><small>ثانية</small></div>
+      </div>
+      <ul class="ev-meta" data-rise>
+        <li><svg class="icon"><use href="#i-calendar"/></svg>ليلة 6 يناير 2027</li>
+        <li><svg class="icon"><use href="#i-clock"/></svg>موعد القداس يُعلن قريبًا</li>
+        <li><svg class="icon"><use href="#i-pin"/></svg>الكنيسة الكبيرة</li>
+      </ul>
+      <div data-rise><a class="pill" href="season.html">تفاصيل المناسبة <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== أحدث العظات ===== -->
+<section class="sec deep" id="sermons" aria-labelledby="t-serm">
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <span class="eyebrow" data-rise>المكتبة</span>
+        <h2 class="title" id="t-serm" data-split>أحدث <b>العظات</b></h2>
+      </div>
+      <a class="link" href="library.html" data-rise>كل العظات <svg class="icon"><use href="#i-nw"/></svg></a>
+    </div>
+    <div class="cards">
+      <a class="sermon" href="sermon.html" data-rise><div class="top"><span class="mi"><svg class="icon"><use href="#i-headphones"/></svg></span><span class="kind">عظة صوتية</span></div><h3>عنوان العظة يظهر هنا</h3><ul><li>اسم المتحدث</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>استمع الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
+      <a class="sermon" href="sermon.html" data-rise><div class="top"><span class="mi"><svg class="icon" style="fill:currentColor"><use href="#i-play"/></svg></span><span class="kind">فيديو</span></div><h3>عنوان العظة يظهر هنا</h3><ul><li>اسم المتحدث</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>شاهد الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
+      <a class="sermon" href="sermon.html" data-rise><div class="top"><span class="mi"><svg class="icon"><use href="#i-file"/></svg></span><span class="kind">ملف PDF</span></div><h3>عنوان العظة يظهر هنا</h3><ul><li>اسم المتحدث</li><li>الموضوع · التاريخ</li></ul><div class="foot"><span>اقرأ الآن</span><svg class="icon"><use href="#i-nw"/></svg></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== الأخبار ===== -->
+<section class="has-bg sec pool-l" id="news" aria-labelledby="t-news">
+  <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-window-rays.jpg" alt="" loading="lazy"></div>
+  <div class="wrap">
+    <div class="head-row">
+      <div>
+        <span class="eyebrow" data-rise>الأخبار</span>
+        <h2 class="title" id="t-news" data-split>آخر <b>الأخبار والإعلانات</b></h2>
+      </div>
+      <div class="tabs" role="group" aria-label="تصفية الأخبار" data-rise>
+        <button class="chip" data-n="all" aria-pressed="true">الكل</button>
+        <button class="chip" data-n="news" aria-pressed="false">أخبار</button>
+        <button class="chip" data-n="ann" aria-pressed="false">إعلانات</button>
+      </div>
+    </div>
+    <div class="nbubs">
+      <a class="nbub top" data-t="ann" href="news-item.html" data-bub><span class="bi"><img src="../media/events/annual-party-umm-lilbay.jpg" alt="ملصق الحفل السنوي أم للبيع" loading="lazy"><span class="nb-txt"><small>الجمعة 28 أغسطس</small><b>الحفل السنوي<br>"أم للبيع"</b></span></span></a>
+      <a class="nbub" data-t="ann" href="news-item.html" data-bub><span class="bi"><img src="../media/events/virgin-mary-revival-2026.jpg" alt="برنامج نهضة السيدة العذراء 2026" loading="lazy"><span class="nb-txt"><small>7 – 22 أغسطس</small><b>نهضة السيدة<br>العذراء مريم</b></span></span></a>
+      <a class="nbub" data-t="news" href="news-item.html" data-bub><span class="bi"><img class="grade" src="../media/services/youth/minya-monasteries-trip-2026-1.jpeg" alt="الشباب في رحلة أديرة المنيا" loading="lazy"><span class="nb-txt"><small>الشباب · 2026</small><b>رحلة أديرة<br>المنيا</b></span></span></a>
+    </div>
+    <div class="cards">
+      <a class="news" data-t="ann" href="news-item.html" data-rise><div class="im top"><img src="../media/services/counseling/counseling-course-poster.jpg" alt="إعلان كورس المشورة" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>يبدأ 14 يونيو 2026</span></div><h3>كورس المشورة للمقبلين على الزواج</h3><p>شهادة اجتياز ضمن مسوغات الزواج، ويقبل الشباب الجامعي والطلبة.</p></div></a>
+      <a class="news" data-t="news" href="news-item.html" data-rise><div class="im"><img class="grade" src="../media/services/sunday-school/primary-football-1.jpg" alt="تسليم ميداليات المسابقة" loading="lazy"></div><div class="bd"><div class="k"><span>خبر</span><span>2026</span></div><h3>تسليم ميداليات مسابقة كرة القدم لمرحلة ابتدائي</h3><p>بحضور آباء الكنيسة والخدام وأولياء الأمور.</p></div></a>
+      <a class="news" data-t="ann" href="news-item.html" data-rise><div class="im top"><img src="../media/events/pope-kyrillos-revival.jpg" alt="إعلان نهضة البابا كيرلس السادس" loading="lazy"></div><div class="bd"><div class="k"><span>إعلان</span><span>6 – 9 مارس</span></div><h3>نهضة البابا كيرلس السادس</h3><p>زفة وتطييب وكلمة روحية 6–8 م، والقداس الإثنين 9 مارس على مذبح البابا كيرلس.</p></div></a>
+    </div>
+  </div>
+</section>
+
+</main>
+<div class="footer-space" aria-hidden="true"></div>
+
+<!-- ===== التذييل ===== -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="f-cta">
+      <h2>عندك مكان معنا في <b>بيت الله</b></h2>
+      <div><a class="pill gold" href="#services">اختر خدمتك <span class="dot"><svg class="icon"><use href="#i-left"/></svg></span></a></div>
+    </div>
+    <div class="f-grid">
+      <div>
+        <a class="brand" href="#top"><img src="../media/brand/logo.png" alt=""><span><b>كنيسة السيدة العذراء ومارمينا</b><span class="nw">والبابا كيرلس السادس</span> <span class="nw"><span class="sep">· </span>الجبل الأصفر</span></span></a>
+        <p>مطرانية شبين القناطر وتوابعها.</p>
+        <div class="socials">
+          <a class="circle" href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener" aria-label="صفحة الكنيسة على فيسبوك"><svg class="icon"><use href="#i-facebook"/></svg></a>
+          <a class="circle" href="https://www.youtube.com/@%D8%A7%D9%84%D9%82%D9%85%D8%B5%D9%83%D9%8A%D8%B1%D9%84%D8%B3%D8%B1%D9%88%D9%85%D8%A7%D9%86%D9%8A/" target="_blank" rel="noopener" aria-label="قناة يوتيوب"><svg class="icon"><use href="#i-youtube"/></svg></a>
+          <a class="circle" href="https://wa.me/201227445837" target="_blank" rel="noopener" aria-label="واتساب الكنيسة"><svg class="icon"><use href="#i-whatsapp"/></svg></a>
+        </div>
+      </div>
+      <div><h4>الموقع</h4><ul><li><a href="church-history.html">الكنيسة</a></li><li><a href="worship.html">العبادة</a></li><li><a href="library.html">المكتبة</a></li><li><a href="news.html">الأخبار</a></li><li><a href="church-gallery.html">صور الكنيسة</a></li></ul></div>
+      <div><h4>الخدمات</h4><ul><li><a href="services.html#g-sunday">مدارس الأحد</a></li><li><a href="services.html#g-meet">الاجتماعات</a></li><li><a href="services.html#g-servants">الخدام</a></li><li><a href="services.html#g-teams">الفرق والأنشطة</a></li><li><a href="services.html#g-family">الأسرة والمجتمع</a></li></ul></div>
+      <div><h4>تواصل معنا</h4><ul><li>عرب العيايدة، ناحية الجبل الأصفر</li><li><a href="tel:+201008025261" dir="ltr">010 0802 5261</a></li><li><a href="mailto:ak.romany7@gmail.com" dir="ltr">ak.romany7@gmail.com</a></li><li><a href="https://wa.me/201227445837" target="_blank" rel="noopener">واتساب: <span dir="ltr">0122 744 5837</span></a></li><li><a href="https://www.facebook.com/santmarychurch" target="_blank" rel="noopener">صفحة الكنيسة على فيسبوك</a></li></ul></div>
+    </div>
+    <div class="f-bar">
+      <span>© 2026 كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس بالجبل الأصفر</span>
+    </div>
+  </div>
+</footer>
+
+<dialog class="lightbox" id="lightbox" aria-label="عارض الصور">
+  <button class="lb-close" id="lbClose" aria-label="إغلاق"><svg class="icon"><use href="#i-x"/></svg></button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="السابقة"><svg class="icon"><use href="#i-right"/></svg></button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="التالية"><svg class="icon"><use href="#i-left"/></svg></button>
+  <figure><img id="lbImg" alt=""><figcaption id="lbCap"></figcaption></figure>
+</dialog>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="assets/site.js"></script>
+<script>
+// خاص بالرئيسية: القداس القادم، وزر "كل الصور"، ومقدمة الواجهة الكبيرة
+(() => {
+  const { $, animate } = window.Site;
+
+  // ---------- القداس القادم من الجدول (0 = الأحد) ----------
+  const masses = [
+    { d: 0, h: 7, t: "7:00 – 10:00 صباحًا" }, { d: 0, h: 9, t: "9:00 – 11:00 صباحًا" },
+    { d: 2, h: 8, t: "8:00 – 9:30 صباحًا" }, { d: 3, h: 8, t: "8:00 – 10:00 صباحًا" },
+    { d: 5, h: 7, t: "7:00 – 9:30 صباحًا" }, { d: 5, h: 10, t: "10:00 ص – 12:00 ظهرًا" },
+    { d: 6, h: 8, t: "8:00 – 10:00 صباحًا" }
+  ];
+  const days = ["الأحد","الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+  const now = new Date(), key = now.getDay() * 24 + now.getHours() + now.getMinutes() / 60;
+  const next = masses.find(m => m.d * 24 + m.h > key) || masses[0];
+  const ahead = (next.d - now.getDay() + 7) % 7;
+  $("#nextMass").textContent = (ahead === 0 ? "اليوم · " : ahead === 1 ? "غدًا · " : "") + days[next.d];
+  $("#nextMassTime").textContent = next.t;
+
+  $("#allPhotos").addEventListener("click", () => $(".gcl .g").click());
+
+  // ---------- تجربة الحركة: مشهد الدخول بفريمات الفيديو ----------
+  // الفريمات بتترسم على canvas ثابت ورا أول أقسام الصفحة، ورقم الفريم بيتحسب من مكان التمرير.
+  // كل لحظة مهمة في الفيديو مربوطة بقسم: الباب يتفتح مع "بيت الله وباب السماء"، والنور في المسافة الفاضية،
+  // والكنيسة من جوه مع "قداس الافتتاح". شغالة من غير GSAP
+  (() => {
+    const intro = $(".intro");
+    if (!intro) return;
+    const cv = $(".intro-cv"), ctx = cv.getContext("2d");
+    const shade = $(".intro-shade"), fade = $(".intro-fade");
+    const clamp = v => Math.min(1, Math.max(0, v));
+    const smooth = t => t * t * (3 - 2 * t);
+
+    // اللحظات المهمة في كل نسخة (جزء من طول الفيديو، من 0 لـ 1)
+    const MOMENTS = {
+      v: { open: .31, light: .6, inside: .68 },
+      w: { open: .36, light: .56, inside: .67 }
+    };
+
+    let set = null, frames = [], cur = 0, target = 0, drawn = null, raf = 0, keys = [];
+
+    // نسخة طولية للموبايل، وعريضة للشاشات العريضة
+    const pick = () => innerWidth / innerHeight >= 1 ? "w" : "v";
+
+    const load = (s, i) => new Promise(res => {
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => { if (s === set) frames[i] = img; res(); };
+      img.onerror = res;
+      img.src = intro.dataset["frames" + s.toUpperCase()] + String(i + 1).padStart(4, "0") + ".webp";
+    });
+
+    const start = s => {
+      set = s;
+      frames = new Array(+intro.dataset["count" + s.toUpperCase()]);
+      drawn = null;
+      // أول فريم فورًا، والباقي 6 في المرة علشان مايخنقوش باقي الصفحة
+      load(s, 0).then(() => {
+        draw();
+        let next = 1;
+        const worker = () => s === set && next < frames.length ? load(s, next++).then(() => { draw(); return worker(); }) : null;
+        for (let k = 0; k < 6; k++) worker();
+      });
+    };
+
+    // مكان كل لحظة على الصفحة (بالبكسل من فوق)، ويتحسب تاني لو المقاس اتغيّر
+    const top = el => el.getBoundingClientRect().top + scrollY;
+    const measure = () => {
+      const m = MOMENTS[set], H = innerHeight, gap = $(".intro-gap");
+      const start = top(intro), end = start + intro.offsetHeight - H;
+      keys = [
+        [start, 0],
+        [top($("#about")) - H * .5, m.open],               // عنوان القسم في نص الشاشة: الباب يبدأ يتفتح
+        [top(gap) + gap.offsetHeight / 2 - H / 2, m.light], // المسافة الفاضية في نص الشاشة: النور مالي الشاشة
+        [top($("#opening")) - H * .6, m.inside],            // قداس الافتتاح داخل: الكنيسة من جوه
+        [end, 1]
+      ];
+    };
+
+    // مكان التمرير لجزء من الفيديو، خطي بين كل لحظتين
+    const progress = y => {
+      if (y <= keys[0][0]) return 0;
+      for (let k = 1; k < keys.length; k++) {
+        const [y0, v0] = keys[k - 1], [y1, v1] = keys[k];
+        if (y <= y1) return v0 + (v1 - v0) * (y - y0) / (y1 - y0);
+      }
+      return 1;
+    };
+
+    // أقرب فريم اتحمّل لحد دلوقتي، علشان الرسم مايقفش لو التحميل متأخر
+    const nearest = i => { for (let k = i; k >= 0; k--) if (frames[k]) return frames[k]; return frames.find(Boolean); };
+
+    // الفريم بيغطي الشاشة كلها زي object-fit: cover
+    const draw = () => {
+      const img = nearest(Math.round(cur));
+      if (!img || img === drawn) return;
+      drawn = img;
+      const W = cv.width, H = cv.height;
+      const s = Math.max(W / img.naturalWidth, H / img.naturalHeight);
+      const w = img.naturalWidth * s, h = img.naturalHeight * s;
+      ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+      intro.classList.add("on");
+    };
+
+    // التغميق: قليل في الواجهة (ليها تغميقها)، وكامل ورا الأقسام، وبيختفي في لحظة النور. وفي الآخر المشهد يغمق خالص
+    const layers = y => {
+      const H = innerHeight, light = keys[2][0], end = keys[4][0];
+      const afterHero = smooth(clamp((y - keys[0][0]) / (H * .7)));
+      const nearLight = smooth(clamp(1 - Math.abs(y - light) / (H * .7)));
+      shade.style.opacity = afterHero * (1 - nearLight);
+      fade.style.opacity = smooth(clamp((y - (end - H * .6)) / (H * .6)));
+    };
+
+    // الفريم بيقرّب من المطلوب تدريجيًا، فالتقليب يبان ناعم حتى مع عجلة الماوس
+    const tick = () => {
+      cur += (target - cur) * .18;
+      if (Math.abs(target - cur) < .05) cur = target;
+      draw();
+      raf = cur === target ? 0 : requestAnimationFrame(tick);
+    };
+
+    const onScroll = () => {
+      target = progress(scrollY) * (frames.length - 1);
+      layers(scrollY);
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+
+    const size = () => {
+      const dpr = Math.min(devicePixelRatio || 1, 2);
+      cv.width = Math.round(cv.clientWidth * dpr);
+      cv.height = Math.round(cv.clientHeight * dpr);
+      if (pick() !== set) start(pick());
+      measure();
+      drawn = null;
+      onScroll();
+      draw();
+    };
+
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", size);
+    // الصور والخطوط بتغيّر أطوال الأقسام بعد التحميل، فالأماكن تتحسب تاني
+    addEventListener("load", size);
+    new ResizeObserver(() => { measure(); onScroll(); }).observe(intro);
+    size();
+  })();
+
+  if (!animate) return;
+
+  // الواجهة: الضوء يدخل ثم يظهر النص
+  gsap.timeline({ defaults: { ease: "power3.out" } })
+    .to("#dust", { opacity: 1, duration: 2 }, .8)
+    .to(".hero h1 .w > span", { y: 0, duration: 1.3, stagger: .1 }, .4)
+    .to(".hero [data-intro]", { opacity: 1, duration: 1.1, stagger: .07, startAt: { y: 24 }, y: 0 }, .9)
+    .to("[data-tile]", { opacity: 1, duration: 1.3, stagger: .14, startAt: { scale: .7 }, scale: 1, ease: "back.out(1.4)" }, 1.1);
+
+
+  // ---------- تجربة الحركة: كروت الخدمات فوق بعض ----------
+  // ScrollTrigger بيقيس العناصر الـ sticky غلط وهي واقفة، فالحساب هنا من مكان الكارت الحي على الشاشة
+  const cards = gsap.utils.toArray(".deck-card");
+  const clamp = gsap.utils.clamp(0, 1);
+  const stack = () => cards.forEach((card, i) => {
+    const top = parseFloat(getComputedStyle(card).top), t = card.getBoundingClientRect().top;
+    // الصورة تهدى وهي داخلة: من تحت الشاشة لحد ما الكارت يقف
+    gsap.set(card.querySelector("img"), { scale: 1 + .12 * (1 - clamp((innerHeight - t) / (innerHeight - top))) });
+    const next = cards[i + 1];
+    if (!next) return;
+    // الكارت اللي بيتغطى يصغر ويغمق: من نص الكارت لحد ما اللي بعده يقف فوقه
+    const nTop = parseFloat(getComputedStyle(next).top), from = top + card.offsetHeight * .5;
+    const p = clamp((from - next.getBoundingClientRect().top) / (from - nTop));
+    gsap.set(card, { scale: 1 - .08 * p });
+    gsap.set(card.querySelector(".deck-shade"), { opacity: .6 * p });
+  });
+  addEventListener("scroll", stack, { passive: true });
+  addEventListener("resize", stack);
+  stack();
+
+  // ---------- تجربة الحركة: الفوتر الستارة ----------
+  const footer = $(".footer"), space = $(".footer-space"), root = document.documentElement, wrap = $(".footer .wrap");
+  const fit = () => {
+    root.classList.remove("fr");
+    const h = footer.offsetHeight;
+    // لو الفوتر أطول من الشاشة، يفضل عادي
+    if (h > innerHeight - 24) return;
+    root.style.setProperty("--footer-h", h + "px");
+    root.classList.add("fr");
+    paint();
+  };
+  const paint = () => {
+    if (!root.classList.contains("fr")) return;
+    const h = footer.offsetHeight, fTop = innerHeight - 12 - h;
+    const cut = Math.min(h, Math.max(0, space.getBoundingClientRect().top - fTop));
+    footer.style.clipPath = `inset(${cut}px 0 0 0 round 32px)`;
+    footer.style.visibility = cut >= h ? "hidden" : "visible";
+    const p = 1 - cut / h;
+    gsap.set(wrap, { y: (1 - p) * 80, opacity: Math.min(1, p * 1.4) });
+  };
+  addEventListener("scroll", paint, { passive: true });
+  addEventListener("resize", fit);
+  new ResizeObserver(fit).observe(footer);
+  fit();
+
+})();
+</script>
+</body>
+</html>
