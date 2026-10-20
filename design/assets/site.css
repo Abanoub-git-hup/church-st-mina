@@ -42,11 +42,12 @@ button{font:inherit;color:inherit}
 /* ===== نصوص ===== */
 .eyebrow{display:inline-flex;align-items:center;gap:var(--s-3);font-size:.85rem;font-weight:500;color:var(--gold);letter-spacing:.02em;margin-bottom:var(--s-4)}
 .eyebrow::before{content:"";width:28px;height:1px;background:currentColor;opacity:.7}
-.title{font-size:clamp(2rem,4.4vw,3.7rem);font-weight:200;line-height:1.3}
+.title{font-size:clamp(2rem,3.6vw,3.2rem);font-weight:200;line-height:1.3}
 .title b{font-weight:400;color:var(--gold-soft)}
 .lead{color:var(--cream-2);font-size:1.05rem;max-width:58ch;margin-top:var(--s-5)}
 .sec{position:relative;padding-block:var(--s-24)}
 @media (min-width:900px){.sec{padding-block:var(--s-32)}}
+.sec.pool::before,.sec.pool-l::before{-webkit-mask-image:linear-gradient(180deg,transparent,#000 220px);mask-image:linear-gradient(180deg,transparent,#000 220px)}
 .sec.pool::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(800px 500px at 85% 0%, var(--glow), transparent 65%)}
 .sec.pool-l::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(800px 520px at 10% 10%, var(--glow), transparent 65%)}
 .sec.deep{background:linear-gradient(180deg,transparent,rgba(23,15,9,.55) 18%,rgba(23,15,9,.55) 82%,transparent)}
@@ -127,7 +128,7 @@ button{font:inherit;color:inherit}
 
 /* ===== مواعيد القداسات ===== */
 .sched{display:grid;gap:var(--s-12);align-items:center}
-@media (min-width:960px){.sched{grid-template-columns:1.1fr .9fr;gap:var(--s-20)}}
+@media (min-width:960px){.sched{grid-template-columns:1.1fr .9fr;gap:var(--s-12)}}
 .days{margin-top:var(--s-10);border-top:1px solid var(--line)}
 .day{display:grid;grid-template-columns:110px 1fr;gap:var(--s-4);align-items:baseline;padding:var(--s-5) 0;border-bottom:1px solid var(--line);position:relative}
 .day-n{font-size:1.15rem;font-weight:400}
@@ -150,7 +151,7 @@ button{font:inherit;color:inherit}
 
 /* ===== عن الكنيسة ===== */
 .about{display:grid;gap:var(--s-12);align-items:center}
-@media (min-width:960px){.about{grid-template-columns:.95fr 1.05fr;gap:var(--s-20)}}
+@media (min-width:960px){.about{grid-template-columns:.95fr 1.05fr;gap:var(--s-12)}}
 .arch{position:relative;width:100%;max-width:620px;justify-self:center;aspect-ratio:10/7.4;border-radius:48% 48% var(--r-lg) var(--r-lg)/36% 36% var(--r-lg) var(--r-lg);background:radial-gradient(ellipse at 50% 15%, #FFF5E4, #E6CFA9 75%);overflow:hidden;display:flex;align-items:flex-end;justify-content:center;box-shadow:0 30px 80px -30px rgba(255,180,90,.35)}
 .arch img{width:100%;height:90%;object-fit:contain;object-position:center bottom;mix-blend-mode:multiply}
 .fathers{margin-top:var(--s-10);border-top:1px solid var(--line)}
@@ -162,7 +163,8 @@ button{font:inherit;color:inherit}
 .meta .icon{color:var(--gold);width:18px;height:18px}
 
 /* ===== اكتشف ===== */
-.disc{display:grid;gap:var(--s-4);grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.disc{display:grid;gap:var(--s-4);grid-template-columns:repeat(2,minmax(0,1fr))}
+@media (min-width:1000px){.disc{grid-template-columns:repeat(4,minmax(0,1fr))}.dcard{padding:var(--s-5)}.dcard h3{font-size:1.2rem}}
 .dcard{position:relative;aspect-ratio:3/4;border-radius:var(--r-lg);overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:var(--s-6);isolation:isolate}
 .dcard img{position:absolute;inset:0;z-index:-2;width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
 .dcard.paper{background:radial-gradient(ellipse at 50% 15%, #FFF5E4, #E3CBA4 75%)}
@@ -530,7 +532,7 @@ body{background:var(--umber-700)}
 
 /* ===== مشغّل يوتيوب بأجزاء (قداس الافتتاح) — الفيديو يُحمَّل عند الضغط فقط ===== */
 .opening-grid{display:grid;gap:var(--s-12);align-items:center}
-@media (min-width:960px){.opening-grid{grid-template-columns:.8fr 1.2fr;gap:var(--s-16)}}
+@media (min-width:960px){.opening-grid{grid-template-columns:.8fr 1.2fr;gap:var(--s-10)}}
 .yt-frame{position:relative;aspect-ratio:16/9;border-radius:var(--r-xl);overflow:hidden;background:var(--umber-900);border:1px solid rgba(243,201,135,.35);box-shadow:0 40px 90px -30px rgba(0,0,0,.75),0 0 0 8px rgba(224,176,96,.06)}
 .yt-frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.02)}
 .yt-frame::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%,rgba(23,15,9,.2),rgba(23,15,9,.7))}

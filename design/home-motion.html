@@ -127,7 +127,7 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 /* ===== تجربة الحركة: مشهد الدخول بفريمات الفيديو ورا أول أقسام الصفحة ===== */
 /* المسرح sticky بطول الشاشة، والهامش السالب بيخلي الأقسام اللي بعده تبدأ فوقه وتعدّي عليه.
    طول .intro هو طول الأقسام نفسها، فالمشهد بيتقلب على طول المسافة دي */
-.intro{position:relative;background:var(--umber-950)}
+.intro{position:relative}
 .intro-stage{position:sticky;top:0;height:100vh;height:100svh;margin-bottom:-100vh;margin-bottom:-100svh;overflow:hidden;isolation:isolate}
 .intro > :not(.intro-stage){position:relative;z-index:1}
 .intro-media{position:absolute;inset:0}
@@ -136,12 +136,8 @@ a.hc:hover .bi{box-shadow:0 30px 70px -25px rgba(0,0,0,.75),0 0 0 2px var(--gold
 .intro.on .intro-poster{visibility:hidden}
 /* تغميق ورا الأقسام علشان الكلام يتقري، ويخف في لحظة النور */
 .intro-shade{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(23,15,9,.5),rgba(23,15,9,.85) 95%);opacity:0}
-.intro-fade{position:absolute;inset:0;background:var(--umber-950);opacity:0}
 /* لحظة النور: مسافة فاضية والباب بيتفتح */
 .intro-gap{height:120vh;height:120svh}
-.intro-tail{height:60vh;height:60svh}
-/* آخر المشهد ضلمة، والقسم اللي بعده فوق خلفية الموقع. التدرّج ده بيدوّب الحد بينهم */
-.intro::after{content:"";position:absolute;top:100%;inset-inline:0;z-index:1;height:40vh;background:linear-gradient(var(--umber-950),transparent);pointer-events:none}
 
 /* overflow-x:hidden على body بيخليه حاوية تمرير فيوقف sticky. clip بيقص بنفس الشكل من غير المشكلة دي */
 body{overflow-x:clip}
@@ -243,7 +239,6 @@ body{overflow-x:clip}
     </picture>
     <canvas class="intro-cv"></canvas>
     <span class="intro-shade"></span>
-    <span class="intro-fade"></span>
   </div>
 </div>
 
@@ -412,14 +407,8 @@ body{overflow-x:clip}
   </div>
 </section>
 
-<!-- مسافة في الآخر: "اكتشف" بيختفي والمشهد يغمق قبل القسم اللي بعده -->
-<div class="intro-tail" aria-hidden="true"></div>
-
-</div>
-<!-- ===== نهاية مشهد الدخول ===== -->
-
-<!-- ===== أقوال الآباء ===== -->
-<section class="has-bg sec deep pool" aria-labelledby="t-quotes">
+<!-- ===== أقوال الآباء: جوه المشهد، وخلفيته بتتداخل مع الفيديو وهو داخل ===== -->
+<section class="has-bg sec deep pool" id="quotes" aria-labelledby="t-quotes">
   <div class="sec-bg" aria-hidden="true"><img src="../media/church/bg-praying-light.jpg" alt="" loading="lazy"></div>
   <div class="wrap">
     <div class="head-row">
@@ -443,6 +432,9 @@ body{overflow-x:clip}
     </div>
   </div>
 </section>
+
+</div>
+<!-- ===== نهاية مشهد الدخول ===== -->
 
 <!-- ===== الخدمات ===== -->
 <section class="sec pool-l" id="services" aria-labelledby="t-svc">
@@ -704,7 +696,7 @@ body{overflow-x:clip}
     const intro = $(".intro");
     if (!intro) return;
     const cv = $(".intro-cv"), ctx = cv.getContext("2d");
-    const shade = $(".intro-shade"), fade = $(".intro-fade"), disc = $("#discover");
+    const shade = $(".intro-shade"), stage = $(".intro-stage"), disc = $("#discover"), quotes = $("#quotes");
     const clamp = v => Math.min(1, Math.max(0, v));
     const smooth = t => t * t * (3 - 2 * t);
 
@@ -714,7 +706,7 @@ body{overflow-x:clip}
       w: { open: .36, light: .56, inside: .67 }
     };
 
-    let set = null, frames = [], cur = 0, target = 0, drawn = null, raf = 0, keys = [], out = [0, 1];
+    let set = null, frames = [], cur = 0, target = 0, drawn = null, raf = 0, keys = [], stageOut = [0, 1], discOut = [0, 1];
 
     // نسخة طولية للموبايل، وعريضة للشاشات العريضة
     const pick = () => innerWidth / innerHeight >= 1 ? "w" : "v";
@@ -744,7 +736,7 @@ body{overflow-x:clip}
     const top = el => el.getBoundingClientRect().top + scrollY;
     const measure = () => {
       const m = MOMENTS[set], H = innerHeight, gap = $(".intro-gap");
-      const start = top(intro), discEnd = top(disc) + disc.offsetHeight;
+      const start = top(intro), discEnd = top(disc) + disc.offsetHeight, q = top(quotes);
       keys = [
         [start, 0],
         [top($("#about")) - H * .5, m.open],               // عنوان القسم في نص الشاشة: الباب يبدأ يتفتح
@@ -752,8 +744,10 @@ body{overflow-x:clip}
         [top($("#opening")) - H * .6, m.inside],            // قداس الافتتاح داخل: الكنيسة من جوه
         [top(disc) - H * .5, 1]                              // "اكتشف" وصل نص الشاشة: آخر فريم، ويفضل ثابت بعد كده
       ];
-      // آخر "اكتشف" بيطلع لفوق: من 75% لـ 15% من الشاشة القسم بيختفي والمشهد يغمق
-      out = [discEnd - H * .75, discEnd - H * .15];
+      // أقوال الآباء داخل من تحت: الفيديو بيبهت وخلفية القسم بتبان مكانه. المسرح بيخلص قبل ما يسيب مكانه، فحافته ماتبانش
+      stageOut = [q - H * .9, q - H * .2];
+      // و"اكتشف" نفسه بيختفي وهو خارج من فوق
+      discOut = [discEnd - H * .55, discEnd - H * .1];
     };
 
     // مكان التمرير لجزء من الفيديو، خطي بين كل لحظتين
@@ -782,15 +776,15 @@ body{overflow-x:clip}
     };
 
     // التغميق: قليل في الواجهة (ليها تغميقها)، وكامل ورا الأقسام، وبيختفي في لحظة النور.
-    // وفي الآخر "اكتشف" بيختفي والمشهد يغمق خالص، والقسم اللي بعده يطلع من الضلمة
+    // وفي الآخر "اكتشف" والمشهد بيبهتوا، والقسم اللي بعده يكمّل على خلفية الموقع من غير فاصل غامق
     const layers = y => {
       const H = innerHeight, light = keys[2][0];
       const afterHero = smooth(clamp((y - keys[0][0]) / (H * .7)));
       const nearLight = smooth(clamp(1 - Math.abs(y - light) / (H * .7)));
       shade.style.opacity = afterHero * (1 - nearLight);
-      const gone = smooth(clamp((y - out[0]) / (out[1] - out[0])));
-      fade.style.opacity = gone;
-      disc.style.opacity = 1 - gone;
+      const ramp = ([a, b]) => smooth(clamp((y - a) / (b - a)));
+      stage.style.opacity = 1 - ramp(stageOut);
+      disc.style.opacity = 1 - ramp(discOut);
     };
 
     // الفريم بيقرّب من المطلوب تدريجيًا، فالتقليب يبان ناعم حتى مع عجلة الماوس
