@@ -42,6 +42,7 @@ function stmina_seed_news() {
 		array( 'نهضة السيدة العذراء مريم', 'ann', '7 – 22 أغسطس', 'برنامج نهضة السيدة العذراء 2026 بالكنيسة.', 'events/virgin-mary-revival-2026.jpg', 1, 1 ),
 		array( 'الحفل السنوي "أم للبيع"', 'ann', 'الجمعة 28 أغسطس', 'الحفل السنوي للكنيسة.', 'events/annual-party-umm-lilbay.jpg', 1, 1 ),
 		array( 'رحلة أديرة المنيا', 'news', 'الشباب · 2026', 'رحلة الشباب لزيارة أديرة المنيا.', 'services/youth/minya-monasteries-trip-2026-1.jpeg', 0, 1 ),
+		array( 'رحلة إسكندرية 2026', 'news', 'الشباب · 2026', 'رحلة الشباب إلى الإسكندرية ودير مارمينا بمريوط.', 'services/youth/alexandria-trip-2026.jpg', 0, 0 ),
 		array( 'كورس المشورة للمقبلين على الزواج', 'ann', 'يبدأ 14 يونيو 2026', 'شهادة اجتياز ضمن مسوغات الزواج، ويقبل الشباب الجامعي والطلبة.', 'services/counseling/counseling-course-poster.jpg', 1, 0 ),
 		array( 'تسليم ميداليات مسابقة كرة القدم لمرحلة ابتدائي', 'news', '2026', 'بحضور آباء الكنيسة والخدام وأولياء الأمور.', 'services/sunday-school/primary-football-1.jpg', 0, 0 ),
 		array( 'نهضة البابا كيرلس السادس', 'ann', '6 – 9 مارس', 'زفة وتطييب وكلمة روحية 6–8 م، والقداس الإثنين 9 مارس على مذبح البابا كيرلس.', 'events/pope-kyrillos-revival.jpg', 1, 0 ),

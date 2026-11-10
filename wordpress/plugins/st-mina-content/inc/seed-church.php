@@ -89,6 +89,7 @@ function stmina_seed_church() {
 			array( 'church/nave-real.jpeg', 'صحن الكنيسة' ),
 		) ),
 		array( 'اجتماع الشباب 2026', 'youth', array( array( 'services/youth/youth-meeting-2026.jpeg', 'اجتماع الشباب 2026' ) ) ),
+		array( 'رحلة إسكندرية 2026', 'youth', array( array( 'services/youth/alexandria-trip-2026.jpg', 'رحلة إسكندرية 2026' ) ) ),
 		array( 'مؤتمر عنبر 11 للشباب 2026', 'youth', array( array( 'services/youth/youth-conference-anbar11-2026.jpeg', 'مؤتمر "عنبر 11" للشباب 2026' ) ) ),
 		array( 'رحلة أديرة المنيا 2026', 'youth', array(
 			array( 'services/youth/minya-monasteries-trip-2026-1.jpeg', 'رحلة أديرة المنيا 2026' ),

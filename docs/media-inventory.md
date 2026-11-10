@@ -94,6 +94,7 @@
 | | `secondary-meeting.jpg` | نشاط لمرحلة ثانوي في فناء الكنيسة |
 | | `secondary-conference-2015.jpeg` | مؤتمر ثانوي 2015 |
 | `youth/` | `youth-meeting-2026.jpeg` | اجتماع الشباب 2026 |
+| | `alexandria-trip-2026.jpg` | رحلة إسكندرية 2026 (دير مارمينا بمريوط) |
 | | `youth-conference-anbar11-2026.jpeg` | مؤتمر "عنبر 11" للشباب 2026 |
 | | `minya-monasteries-trip-2026-1/2.jpeg` | رحلة أديرة المنيا 2026 |
 | | `obour-evening-2025-1/2.jpeg` | أمسية العبور 2025 |
