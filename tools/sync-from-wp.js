@@ -60,10 +60,20 @@ const toPreview = p => {
   return null;
 };
 
-const collectUploads = (html, set) => {
-  for (const m of html.matchAll(/https:\/\/st-mina\.abanoubmaurice\.com\/wp-content\/uploads\/([^\s"'<>),]+)/g)) {
-    set.add(decodeURI(m[1]));
+// خريطة كل الصور الأصلية في media/ بالاسم علشان نستغني عن نسخ wp-content/uploads المكررة
+const mediaMap = new Map([['cropped-logo.png', '../media/brand/logo.png']]);
+(function walkMedia(d) {
+  for (const f of fs.readdirSync(d, { withFileTypes: true })) {
+    if (f.name === 'uploads' || f.name === 'design-refs') continue;
+    const p = path.join(d, f.name);
+    if (f.isDirectory()) walkMedia(p);
+    else mediaMap.set(f.name.toLowerCase(), '../' + path.relative(root, p).replace(/\\/g, '/'));
   }
+})(path.join(root, 'media'));
+
+const resolveUpload = file => {
+  const base = decodeURI(file).split('/').pop().replace(/-\d+x\d+(?=\.\w+$)/, '').toLowerCase();
+  return mediaMap.get(base) || `../media/${base}`;
 };
 
 const transform = html => {
@@ -82,9 +92,12 @@ const transform = html => {
     .replace(/<script id="stmina-site-js-before">[\s\S]*?<\/script>\s*/g, '')
     // روابط متهرّبة جوه JSON (https:\/\/...): بتتفك الأول علشان باقي التحويلات تشتغل عليها
     .replace(new RegExp(esc(BASE.replace(/\//g, '\\/')) + '(\\\\/[^"\\s]*)', 'g'), (_, rest) => BASE + rest.replace(/\\\//g, '/'))
-    // صور القالب ← media/، والصور المرفوعة ← media/uploads/، وملفات CSS وJS ← assets/
+    // شيل srcset وsizes بتاعة النسخ المصغرة في WordPress علشان نربط بالصورة الأصلية بس
+    .replace(/\s+srcset="[^"]*\/wp-content\/uploads\/[^"]*"/g, '')
+    .replace(/\s+sizes="[^"]*"/g, '')
+    // صور القالب والمرفوعة ← media/ الأصلية، وملفات CSS وJS ← assets/
     .replace(new RegExp(esc(theme) + 'media/', 'g'), '../media/')
-    .replace(new RegExp(esc(uploads), 'g'), '../media/uploads/')
+    .replace(new RegExp(esc(uploads) + '([^"\'\\s<>)]+)', 'g'), (_, f) => resolveUpload(f))
     .replace(new RegExp(esc(theme) + '([\\w.-]+?)(?:\\?ver=[\\w.]+)?(?=["\'\\s])', 'g'), 'assets/$1')
     // روابط الصفحات ← أسماء ملفات المعاينة
     .replace(new RegExp(`href="${esc(BASE)}(/[^"#?]*)?(#[^"]*)?"`, 'g'), (all, p = '/', hash = '') => {
@@ -143,26 +156,7 @@ const transform = html => {
     await sleep(60);
   }
 
-  // 4) جمع وتنزيل كل الصور المرفوعة في media/uploads/
-  for (const { html } of rawHtml.values()) {
-    const unescaped = html.replace(/\\\//g, '/');
-    collectUploads(unescaped, uploadFiles);
-  }
-
-  let downloaded = 0;
-  for (const rel of uploadFiles) {
-    const dest = path.join(root, 'media', 'uploads', rel);
-    if (!fs.existsSync(dest)) {
-      fs.mkdirSync(path.dirname(dest), { recursive: true });
-      const buf = await getBuf(`${BASE}/wp-content/uploads/${enc(rel)}`);
-      fs.writeFileSync(dest, buf);
-      downloaded++;
-      await sleep(40);
-    }
-  }
-  console.log(`الصور المرفوعة: ${uploadFiles.size} صورة (${downloaded} جديدة اتنزّلت في media/uploads/)`);
-
-  // 5) تحويل وحفظ كل الصفحات
+  // 4) تحويل وحفظ كل الصفحات
   for (const [file, { path: p, dir, html: raw }] of rawHtml.entries()) {
     const html = transform(raw);
     if (!html.includes('</html>')) throw new Error(`صفحة ناقصة: ${p}`);
