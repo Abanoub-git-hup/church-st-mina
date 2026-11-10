@@ -5,11 +5,16 @@
   "framework": null,
   "rewrites": [
     { "source": "/api/v1/:path*", "destination": "/api/att?__p=/api/v1/:path*" },
+    { "source": "/api/v1/:path*/", "destination": "/api/att?__p=/api/v1/:path*" },
     { "source": "/api/cron/autoclose", "destination": "/api/att?__p=/api/cron/autoclose" },
     { "source": "/attend", "destination": "/api/att?__p=/attend" },
+    { "source": "/attend/", "destination": "/api/att?__p=/attend/" },
     { "source": "/attend/:path*", "destination": "/api/att?__p=/attend/:path*" },
+    { "source": "/attend/:path*/", "destination": "/api/att?__p=/attend/:path*/" },
     { "source": "/attend-login", "destination": "/api/att?__p=/attend-login" },
-    { "source": "/me/:path*", "destination": "/api/att?__p=/me/:path*" }
+    { "source": "/attend-login/", "destination": "/api/att?__p=/attend-login/" },
+    { "source": "/me/:path*", "destination": "/api/att?__p=/me/:path*" },
+    { "source": "/me/:path*/", "destination": "/api/att?__p=/me/:path*/" }
   ],
   "headers": [
     { "source": "/(me|attend)-sw.js", "headers": [{ "key": "Cache-Control", "value": "no-cache" }, { "key": "X-Robots-Tag", "value": "noindex, nofollow" }] }

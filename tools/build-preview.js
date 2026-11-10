@@ -16,10 +16,14 @@ const NEUTRAL_CAP = 'من داخل الكنيسة';
 
 // اسم الصفحة في المعاينة
 const outName = f => f === 'home.html' ? 'index.html' : f.replace(/^_/, '');
-const pages = fs.readdirSync(design).filter(f => f.endsWith('.html'));
+const rootPages = fs.readdirSync(design).filter(f => f.endsWith('.html')).map(f => ({ file: f, dir: design }));
+const postsDir = path.join(design, 'posts');
+const postPages = fs.existsSync(postsDir) ? fs.readdirSync(postsDir).filter(f => f.endsWith('.html')).map(f => ({ file: f, dir: postsDir })) : [];
+const allPages = [...rootPages, ...postPages];
+const pages = allPages.map(p => p.file);
 
-const build = file => {
-  let html = fs.readFileSync(path.join(design, file), 'utf8');
+const build = ({ file, dir }) => {
+  let html = fs.readFileSync(path.join(dir, file), 'utf8');
 
   // أي عنصر في المعرض يعرض صورة حساسة: تبديل الصورة وجعل الوصف محايدًا
   html = html.replace(/<button class="g[^"]*"[^>]*>[\s\S]*?<\/button>/g, el => {
@@ -59,10 +63,10 @@ fs.mkdirSync(dist, { recursive: true });
 
 // الصفحات
 const used = new Set();
-for (const file of pages) {
-  const html = build(file);
-  for (const m of html.matchAll(/media\/[^"')\s]+/g)) used.add(decodeURI(m[0]));
-  fs.writeFileSync(path.join(dist, outName(file)), html);
+for (const entry of allPages) {
+  const html = build(entry);
+  for (const m of html.matchAll(/media\/[^"')\s,]+/g)) used.add(decodeURI(m[0]));
+  fs.writeFileSync(path.join(dist, outName(entry.file)), html);
 }
 
 // الملفات المشتركة (CSS وJS)
