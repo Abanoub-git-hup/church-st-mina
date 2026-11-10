@@ -1,0 +1,12 @@
+{
+  "name": "church-st-mina",
+  "private": true,
+  "description": "موقع كنيسة السيدة العذراء ومارمينا والبابا كيرلس السادس، ونظام الحضور على Vercel وSupabase",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "build": "node tools/build-preview.js"
+  },
+  "dependencies": {
+    "postgres": "^3.4.5"
+  }
+}

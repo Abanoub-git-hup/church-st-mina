@@ -11,3 +11,9 @@ dist/
 
 # كلمات سر الاختبارات (Application Passwords)، على الجهاز بس
 tests/.env
+
+# نظام الحضور على Vercel: المكتبات، ومفاتيح Supabase والجلسات (في إعدادات Vercel بس)، والشاشات المتولّدة وقت البناء
+node_modules/
+.env
+.env*.local
+lib/att/screens.generated.js

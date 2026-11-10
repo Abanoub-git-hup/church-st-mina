@@ -8,10 +8,7 @@
   const animate = root.classList.contains('anim') && window.gsap && window.ScrollTrigger;
   if (!animate) root.classList.remove('anim');
   const frame = $('.hero, .page-hero');
-  // إحساس الحركة: data-motion="spring" على <html> يخليها ناعمة من غير ارتداد زي Framer
-  const spring = root.dataset.motion === 'spring';
-  const EASE = spring ? 'expo.out' : 'power3.out', POP = spring ? 'expo.out' : 'back.out(1.4)';
-  window.Site = { $, $$, animate, frame, EASE, POP };
+  window.Site = { $, $$, animate, frame };
 
   // ---------- القوائم المنسدلة: صفحات كل قسم، ودخول الخدام لكل اجتماع ----------
   // الروابط بتتحسب من رابط القسم نفسه، فتشتغل في كل الصفحات (حتى 404 اللي روابطها من جذر الموقع)
@@ -30,8 +27,16 @@
     ['طايو — اجتماع الشباب', 'https://tayo-shbab-app.lovable.app/'],
   ];
 
+  // في WordPress الروابط شكلها /worship/ مش worship.html، فالـ theme بيبعت SITE_BASE ونحوّل الروابط ليه
+  const BASE = window.SITE_BASE;
+  if (BASE) {
+    const toWp = h => h.replace(/^([a-z0-9-]+)\.html/, (_, p) => BASE + p + '/');
+    for (const k in SUB) SUB[k] = SUB[k].map(([t, h]) => [t, toWp(h)]);
+    ENTRY_LINKS.forEach(m => { m[1] = toWp(m[1]); });
+  }
   const chev = '<svg class="icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>';
-  const keyOf = a => (a.getAttribute('href') || '').replace(/^\//, '').replace(/\.html.*$/, '');
+  // اسم القسم من آخر جزء في الرابط: worship.html أو /worship/
+  const keyOf = a => { try { return new URL(a.href).pathname.split('/').filter(Boolean).pop().replace(/\.html$/, ''); } catch { return ''; } };
   // الخادم ممكن يعرض الصفحة من غير .html، فالمقارنة بعد شيلها
   const bare = u => u.split('#')[0].replace(/\.html$/, '');
   const here = bare(location.href);
@@ -102,7 +107,7 @@
     items.forEach(it => {
       const ok = b.dataset[attr] === 'all' || it.dataset[k] === b.dataset[attr];
       it.classList.toggle('hide', !ok);
-      if (ok && animate) gsap.fromTo(it, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: EASE, overwrite: true });
+      if (ok && animate) gsap.fromTo(it, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: .6, ease: 'power3.out', overwrite: true });
     });
     if (animate) ScrollTrigger.refresh();
   }));
@@ -116,7 +121,7 @@
     const select = t => {
       tabs.forEach(x => { const on = x === t; x.setAttribute('aria-selected', on); x.setAttribute('aria-pressed', on); x.tabIndex = on ? 0 : -1; $('#' + x.getAttribute('aria-controls')).hidden = !on; });
       const panel = $('#' + t.getAttribute('aria-controls'));
-      if (animate) { gsap.fromTo(panel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .6, ease: EASE }); ScrollTrigger.refresh(); }
+      if (animate) { gsap.fromTo(panel, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: .6, ease: 'power3.out' }); ScrollTrigger.refresh(); }
     };
     // فتح التبويب من الرابط: #اسم-اللوحة
     const fromHash = () => tabs.find(t => location.hash && '#' + t.getAttribute('aria-controls') === location.hash);
@@ -326,7 +331,7 @@
 
   // الواجهة الداخلية: الضوء يدخل ثم يظهر العنوان (مقدمة الرئيسية في home.html)
   if (frame && frame.classList.contains('page-hero')) {
-    gsap.timeline({ defaults: { ease: EASE } })
+    gsap.timeline({ defaults: { ease: 'power3.out' } })
       .to('.page-hero .hero-bg img', { scale: 1, duration: 2.2, ease: 'power2.out' }, 0)
       .to('.page-hero .rays', { opacity: .75, duration: 1.8 }, .1)
       .to('.page-hero #dust', { opacity: 1, duration: 1.6 }, .4)
@@ -337,13 +342,13 @@
 
   // العناوين: كلمة كلمة
   $$('[data-split]').forEach(el => { if (el.closest('.hero, .page-hero')) return;
-    gsap.to($$('.w > span', el), { y: 0, duration: 1.1, stagger: .07, ease: EASE, scrollTrigger: { trigger: el, start: 'top 86%' } });
+    gsap.to($$('.w > span', el), { y: 0, duration: 1.1, stagger: .07, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 86%' } });
   });
 
   // العناصر: صعود متدرج على دفعات
   ScrollTrigger.batch('[data-rise]', {
     start: 'top 90%',
-    onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, duration: 1, stagger: .08, ease: EASE, overwrite: true })
+    onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, duration: 1, stagger: .08, ease: 'power3.out', overwrite: true })
   });
 
   // خلفيات الأقسام الخاصة: تظهر وتختفي بنعومة مع التمرير
@@ -361,7 +366,7 @@
   // الدوائر: تظهر بتكبير هادئ متدرج
   ScrollTrigger.batch('[data-bub]', {
     start: 'top 92%',
-    onEnter: batch => gsap.to(batch, { opacity: 1, scale: 1, duration: 1.2, stagger: .06, ease: POP, overwrite: true })
+    onEnter: batch => gsap.to(batch, { opacity: 1, scale: 1, duration: 1.2, stagger: .06, ease: 'back.out(1.4)', overwrite: true })
   });
 
   // الصور الكبيرة: كشف من الأسفل

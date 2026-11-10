@@ -1,0 +1,9 @@
+/* خاص بصفحة الخدمة: عنوان مخفي للقارئ الآلي */
+.contacts{display:grid;gap:var(--s-4);grid-template-columns:repeat(2,minmax(0,1fr));max-width:820px;margin:var(--s-20) auto 0}
+.contact{display:flex;align-items:center;justify-content:space-between;gap:var(--s-4);padding:var(--s-5) var(--s-6);border-radius:var(--r-lg);background:linear-gradient(160deg,rgba(246,236,220,.06),rgba(246,236,220,.02));border:1px solid var(--line)}
+.contact small{display:block;color:var(--gold-soft);font-size:.82rem}
+.contact b{display:block;font-weight:400;font-size:1.1rem}
+.contact .tel{display:inline-block;margin-top:2px;color:var(--cream-2);font-variant-numeric:tabular-nums;border-bottom:1px solid var(--line-strong)}
+.contact .tel:hover{color:var(--gold-soft)}
+@media (max-width:700px){.contacts{grid-template-columns:1fr;margin-top:var(--s-16)}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

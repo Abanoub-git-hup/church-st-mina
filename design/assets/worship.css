@@ -1,0 +1,17 @@
+/* خاص بالعبادة: عنوان الاجتماعات، ودائرة القراءات */
+.sub-h{font-size:1.25rem;font-weight:400;color:var(--gold-soft);margin-top:var(--s-12)}
+.sub-h + .days{margin-top:var(--s-4)}
+.read-actions{display:flex;align-items:center;gap:var(--s-4);flex-wrap:wrap;margin-top:var(--s-8)}
+.read-actions small{color:var(--muted);font-size:.85rem}
+.read-circle{position:relative;display:block;width:min(440px,78vw);aspect-ratio:1;justify-self:center;color:var(--cream)}
+.read-circle .bi{box-shadow:0 40px 90px -30px rgba(0,0,0,.75),0 0 0 1px rgba(243,201,135,.35)}
+.read-circle img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
+.read-circle .bi::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(23,15,9,.55),rgba(23,15,9,.82))}
+.read-circle:hover img{transform:scale(1.07)}
+.read-circle:hover .bi{box-shadow:0 40px 90px -30px rgba(0,0,0,.75),0 0 0 2px var(--gold-soft)}
+.rc-tx{position:relative;z-index:1;display:grid;justify-items:center;gap:var(--s-2);text-align:center;padding:16%}
+.rc-ic{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:var(--ink);margin-bottom:var(--s-2);transition:transform var(--t-base) var(--ease)}
+.rc-ic .icon{width:28px;height:28px}
+.read-circle:hover .rc-ic{transform:scale(1.08)}
+.rc-tx small{color:var(--gold-soft);font-size:.9rem}
+.rc-tx b{font-weight:300;font-size:clamp(1.3rem,2.4vw,1.8rem);line-height:1.4}
