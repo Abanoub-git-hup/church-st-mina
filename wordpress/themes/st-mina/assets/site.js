@@ -299,7 +299,8 @@
 
   // ---------- ذرات الغبار في ضوء الواجهة ----------
   const cv = $('#dust');
-  if (cv && frame && !reduced) {
+  // على الشاشات الصغيرة بنوفّر الغبار: الرسم المستمر بيتقّل الموبايل ومش بيبان فرقه
+  if (cv && frame && !reduced && innerWidth >= 1024) {
     const ctx = cv.getContext('2d'); let W, H, motes = [], running = true;
     const size = (reflow = false) => {
       if (reflow || !frameW || !frameH) { const r = frame.getBoundingClientRect(); frameW = r.width; frameH = r.height; }

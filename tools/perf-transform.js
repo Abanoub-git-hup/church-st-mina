@@ -24,6 +24,10 @@ const PRECONNECT = [
 
 const optimize = html => {
   let out = html
+    // إصلاح تسلسل العناوين في الفوتر
+    .replace(/<h4>الموقع<\/h4>/g, '<h3>الموقع</h3>')
+    .replace(/<h4>الخدمات<\/h4>/g, '<h3>الخدمات</h3>')
+    .replace(/<h4>تواصل معنا<\/h4>/g, '<h3>تواصل معنا</h3>')
     // أنماط Gutenberg اللي القالب مابيستخدمهاش
     .replace(/<style id=["'](?:wp-block-library|classic-theme-styles|global-styles|wp-emoji-styles)-inline-css["'][^>]*>[\s\S]*?<\/style>\s*/g, '')
     // defer للسكربتات الخارجية (الترتيب بيتحفظ مع defer)

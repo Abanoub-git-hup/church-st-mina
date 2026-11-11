@@ -109,3 +109,13 @@ a.hc.next.glass:hover .bi{box-shadow:inset 0 1px 0 rgba(255,255,255,.34),0 24px 
 .hc.next.glass small{color:var(--gold-soft)}
 .hc.next.glass .t{color:var(--cream-2)}
 .hc.next.glass .mark{color:var(--gold-soft)}
+
+/* ===== تخفيف الرسم على الموبايل والتابلت (PageSpeed): بلا blur ثقيل ولا طبقات ممزوجة ===== */
+@media (max-width:1023px){
+  *,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  body::after{display:none}
+  .rays,#dust{display:none}
+  .sec-bg img{filter:sepia(.35) brightness(.55)}
+  .site-cover .veil{backdrop-filter:none}
+  .glass,.hc.glass .bi,.qslider .qs,.drawer,.float-nav nav,.menu-btn{background-color:rgba(30,20,13,.62)}
+}

@@ -719,3 +719,13 @@ section[id],h2[id],h3[id]{scroll-margin-top:96px}
 .dd-title{color:rgba(236,238,244,.72)}
 .hero-top .socials .circle,.has-dd > .login-btn,.menu-btn{border-color:transparent;background:rgba(240,242,248,.12)}
 .brand img{box-shadow:0 0 0 1px rgba(236,238,244,.35)}
+
+/* ===== تخفيف الرسم على الموبايل والتابلت (PageSpeed): بلا blur ثقيل ولا طبقات ممزوجة ===== */
+@media (max-width:1023px){
+  *,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+  body::after{display:none}
+  .rays,#dust{display:none}
+  .sec-bg img{filter:sepia(.35) brightness(.55)}
+  .site-cover .veil{backdrop-filter:none}
+  .glass,.hc.glass .bi,.qslider .qs,.drawer,.float-nav nav,.menu-btn{background-color:rgba(30,20,13,.62)}
+}
