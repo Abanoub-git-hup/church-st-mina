@@ -6,7 +6,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'STMINA_THEME_VERSION', '0.7.10' );
+define( 'STMINA_THEME_VERSION', '0.7.11' );
 
 require_once get_template_directory() . '/inc/home-settings.php';
 require_once get_template_directory() . '/inc/seo.php'; // وصف كل صفحة ومعاينة الرابط على واتساب
@@ -27,9 +27,9 @@ add_action( 'wp_enqueue_scripts', function () {
 	wp_enqueue_style( 'stmina-fonts', 'https://fonts.googleapis.com/css2?family=Alexandria:wght@200;300;400;500;600&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap', array(), null );
 	wp_enqueue_style( 'stmina-site', $uri . 'site.css', array( 'stmina-fonts' ), $ver );
 
-	wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js', array(), null, true );
-	wp_enqueue_script( 'gsap-scrolltrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js', array( 'gsap' ), null, true );
-	wp_enqueue_script( 'stmina-site', $uri . 'site.js', array( 'gsap-scrolltrigger' ), $ver, true );
+	wp_enqueue_script( 'gsap', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js', array(), null, array( 'strategy' => 'defer' ) );
+	wp_enqueue_script( 'gsap-scrolltrigger', 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js', array( 'gsap' ), null, array( 'strategy' => 'defer' ) );
+	wp_enqueue_script( 'stmina-site', $uri . 'site.js', array( 'gsap-scrolltrigger' ), $ver, array( 'strategy' => 'defer' ) );
 	// site.js بيحوّل روابط القوايم المنسدلة لروابط WordPress من الرابط ده
 	wp_add_inline_script( 'stmina-site', 'window.SITE_BASE = ' . wp_json_encode( home_url( '/' ) ) . ';', 'before' );
 

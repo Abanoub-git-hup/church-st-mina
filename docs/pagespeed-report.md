@@ -1,4 +1,4 @@
-# مراجعة `PageSpeed Insights`: الصفحة الرئيسية
+﻿# مراجعة `PageSpeed Insights`: الصفحة الرئيسية
 
 > الفحص: 20 أكتوبر 2026 الساعة 8:13 الصبح، على `st-mina.abanoubmaurice.com` (الـ `theme` 0.7.10). أداة الفحص `Lighthouse 13.5.0`.
 > الرابط: https://pagespeed.web.dev/analysis/https-st-mina-abanoubmaurice-com/vkig96bqj7
@@ -136,3 +136,151 @@
 | 3 | بند 4 وبند 5 | توفير لحد 900 كيلو |
 | 4 | بند 8 وبند 9 وبند 10 | سهولة الوصول 100 |
 | 5 | بند 6 وبند 7 | أمان أحسن، وزيارات متكررة أسرع |
+
+---
+
+# مراجعة `PageSpeed Insights`: نسخة المعاينة على `Vercel` (الصفحة الرئيسية)
+
+> الفحص: 10 نوفمبر 2026 الساعة 9:50 بالليل، على `church-st-mina.vercel.app` (بعد `commit` رقم `ce6eaee`). أداة الفحص `Lighthouse 13.6.0` من خلال `pagespeed.web.dev`.
+> رابط التقرير (موبايل): https://pagespeed.web.dev/analysis/https-church-st-mina-vercel-app/gs2yvm9hdn?form_factor=mobile
+> رابط التقرير (كمبيوتر): https://pagespeed.web.dev/analysis/https-church-st-mina-vercel-app/gs2yvm9hdn?form_factor=desktop
+> البيئة: نسخة معاينة (`staging` — غير مفهرسة عمدًا). بيانات المستخدمين الحقيقيين (`CrUX`): لا توجد بيانات بعد.
+
+## الدرجات والمقارنة مع الفحص السابق
+
+| المحور | الموبايل (قبل) | الموبايل (الحالي) | الكمبيوتر (قبل) | الكمبيوتر (الحالي) |
+|---|---|---|---|---|
+| السرعة `Performance` | 66 | 55 | 91 | 97 |
+| سهولة الوصول `Accessibility` | 99 | 99 | 95 | 95 |
+| أفضل الممارسات `Best Practices` | 50 | 50 | 50 | 50 |
+| محركات البحث `SEO` | 66 | 66 | 66 | 66 |
+| تصفح الوكلاء `Agentic Browsing` | 3 من 3 | 100 (2 من 2) | 3 من 3 | 100 (2 من 2) |
+
+| المقياس | الموبايل (قبل) | الموبايل (الحالي) | الكمبيوتر (قبل) | الكمبيوتر (الحالي) | الحد المطلوب |
+|---|---|---|---|---|---|
+| أول ظهور لمحتوى `FCP` | 4.0 ث | 9.0 ث | 1.1 ث | 0.6 ث | أقل من أو يساوي 1.8 ث |
+| ظهور أكبر عنصر `LCP` | 5.2 ث | 9.0 ث | 1.1 ث | 0.6 ث | أقل من أو يساوي 2.5 ث |
+| وقت التعطيل `TBT` | 30 م.ث | 130 م.ث | 70 م.ث | 40 م.ث | أقل من أو يساوي 200 م.ث |
+| اهتزاز التصميم `CLS` | 0.001 | 0 | 0.005 | 0.005 | أقل من أو يساوي 0.1 |
+| سرعة اكتمال العرض `Speed Index` | 7.2 ث | 10.6 ث | 2.5 ث | 1.8 ث | أقل من أو يساوي 3.4 ث |
+| وقت التفاعل الكامل `TTI` | — | 18.6 ث | — | 3.4 ث | أقل من أو يساوي 3.8 ث |
+| حجم الصفحة | 2.8 ميجا | 4.4 ميجا (`4,517 KiB`) | 3.7 ميجا | 4.4 ميجا (`4,511 KiB`) | أقل من 1.6 ميجا |
+
+**الصورة العامة:** على الكمبيوتر السرعة ارتفعت لـ 97 لأن سيرفر `Vercel` بيرد في 3 م.ث بس، لكن على الموبايل السرعة نزلت من 66 لـ 55 وأول ظهور للمحتوى وللعنوان الرئيسي وصل لـ 9.0 ثواني، وحجم الصفحة زاد لـ 4.4 ميجا. السبب الأساسي إن ربط الصور الأصلية مباشرة من `media/` وحذف `srcset` في `tools/sync-from-wp.js` خلّى الموبايل يحمّل صور خام كبيرة جدًا (`hero-prayer.png` بحجم 694 كيلو، و`fathers-group.png` بحجم 284 كيلو، و6 صور لآباء الكنيسة كخلفيات `CSS` بحجم 833 كيلو بتتحمّل فورًا) في نفس اللحظة اللي العنوان الرئيسي `h1[data-split]` وعناصر الواجهة مستخبيين بصنف `.anim` مستنيين تحميل وتشغيل `GSAP`. ومشغّل `SoundCloud` لسه بيتحمّل تلقائيًا مع فتح الصفحة (حوالي 1.5 ميجا) وهو لوحده سبب نزول `Best Practices` لـ 50.
+
+## الملخص (فحص `Vercel`)
+
+| الدرجة | العدد | اتصلّح | مفتوح |
+|---|---|---|---|
+| High | 3 | 0 | 3 |
+| Medium | 3 | 0 | 3 |
+| Low | 3 | 0 | 3 |
+
+## High
+
+### 11. تأخر ظهور العنوان الرئيسي والواجهة 9.0 ثواني على الموبايل (`LCP` و`FCP`)
+- **Location:** الواجهة في `design/home.html` (السطر 7 والسطر 145) و`wordpress/themes/st-mina/header.php` (السطر 14) و`front-page.php` (السطر 43)، والتنسيق في `design/assets/site.css` (السطور 433 لـ 439)، والحركة في `design/assets/site.js` (السطور 316 لـ 330) و`design/assets/home.js` (السطور 38 لـ 45).
+- **Expected:** العنوان الرئيسي `h1` وعناصر الواجهة يظهروا فور وصول الصفحة من غير انتظار تحميل السكربتات أو الصور التانية (أقل من 2.5 ث على الموبايل).
+- **Actual:** تحليل `lcp-breakdown-insight` بيوضّح إن وقت استجابة السيرفر `TTFB` هو 3 م.ث بس، بينما تأخير رسم العنصر `Element render delay` هو 2,328 م.ث في القياس المباشر وبيوصل لـ 9.0 ثواني في محاكاة `4G` على الموبايل (و529 م.ث على الكمبيوتر). السبب إن `<script>document.documentElement.classList.add('anim');</script>` في `<head>` بيخفي العنوان (`.anim .w > span { transform: translateY(110%) }`) وكل عناصر `[data-intro]` و`[data-tile]` بشفافية صفر لحد ما تتنفّذ `site.js` و`home.js` في آخر الصفحة بعد تزاحم الصور والخطوط على شبكة الموبايل.
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا): نخلي `h1` وعناصر الواجهة ظاهرة افتراضيًا بدون إخفاء كامل قبل التحميل، أو نشيل إخفاء `h1` من `.anim` ونخلي حركة الدخول تبدأ من حالة مقروءة، مع إضافة `defer` لسكربتات `GSAP` و`site.js` و`home.js`.
+
+### 12. مشغّل `SoundCloud` بيتحمّل تلقائيًا بعد فتح الصفحة ويستهلك 1.5 ميجا
+- **Location:** دالة الترنيمة في `design/assets/site.js` (السطور 214 لـ 278) و`wordpress/themes/st-mina/assets/site.js` (السطور 214 لـ 278).
+- **Expected:** مشغّل الطرف التالت مايتحمّلش في الخلفية وقت فتح الصفحة، ويتحمّل بس لما الزائر يطلب تشغيل الترنيمة.
+- **Actual:** السطور 269 لـ 273 في `site.js` بتنادي `play()` فور فتح الصفحة لو مفيش حالة إيقاف سابقة في `localStorage`، فبيحمّل `api.js` والـ `iframe` وسكربت `widget-9-4c43fee4c24f.js` (حجمه 1,232 كيلو، منه 353 كيلو غير مستخدمة في فحص `unused-javascript` بتوفير متوقع 1,650 م.ث على `LCP` و`FCP`)، وخطوط وتنسيق `Inter` جوه المشغّل (257 كيلو غير مستخدمة في `unused-css-rules`)، ومقطع صوتي مبدئي `data000.m4s` (121 كيلو). وهو سبب أطول مهمة على المعالج (`long-tasks` بطول 182 م.ث)، وسبب كل خصم `Best Practices` (50 من 100):
+  - أخطاء `errors-in-console`: 3 أخطاء `Permissions policy violation: encrypted-media is not allowed in this document` (لأن الـ `iframe` واخد `allow="autoplay"` بس من غير `encrypted-media`)، وخطأين `InvalidStateError: Failed to execute 'createPattern' on 'CanvasRenderingContext2D'` (لأن الـ `iframe` أبعاده `0×0` في `.hymn-frame`).
+  - تحذير `deprecations`: استخدام حدث `unload` القديم جوه `widget-9-4c43fee4c24f.js`.
+  - تحذير `third-party-cookies` و`inspector-issues`: ملف `dd_testcookie` من `w.soundcloud.com`.
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا): عدم استدعاء `play()` تلقائيًا عند فتح الصفحة لأول مرة، وتحميل `api.js` والـ `iframe` عند ضغط الزائر على زر الترنيمة فقط (مع إضافة `allow="autoplay; encrypted-media"` وإعطاء `.hymn-frame` مقاسًا غير صفري مثل `1px × 1px` لمنع خطأ الـ `canvas` عند التشغيل).
+
+### 13. الصور الخام الكبيرة وتحميل الصور تحت الشاشة فورًا بدون `lazy` (توفير 1,701 كيلو)
+- **Location:** `design/home.html` (السطور 92، و122، و158 لـ 168، و234، و243، و253 لـ 255، و326 لـ 331، و505) و`wordpress/themes/st-mina/front-page.php` و`tools/sync-from-wp.js` (السطور 95 لـ 97).
+- **Expected:** الصور تحت الشاشة تتحمّل بخاصية `loading="lazy"`، والصور الكبيرة تتضغط وتتحوّل لصيغة `WebP` بمقاسات مناسبة للعرض.
+- **Actual:** حجم الصفحة وصل لـ 4.4 ميجا بسبب:
+  1. صور بصيغة `PNG` و`JPEG` خام بدون ضغط كافٍ (فحص `image-delivery-insight` يقدّر التوفير بـ 1,701 كيلو على الموبايل و1,616 كيلو على الكمبيوتر):
+     - ملف `media/church/hero-prayer.png`: الحجم 694 كيلو (توفير متوقع 663 كيلو بتحويله لـ `WebP`).
+     - ملف `media/priests/fathers-group.png`: الحجم 284 كيلو بمقاس 607×411 وبيظهر 168×114 (توفير 281 كيلو؛ زاد حجمه في نسخة `Vercel` بعد ربط الأصل بدل المصغّرة).
+     - ملف `media/worship/deacons.jpeg`: الحجم 259 كيلو بمقاس 960×960 وبيظهر 243×182 (توفير 252 كيلو).
+     - ملف `media/worship/youth-night-liturgy-2.jpeg`: الحجم 195 كيلو بمقاس 720×720 وبيظهر 103×183 (توفير 192 كيلو).
+     - ملف `media/worship/youth-night-liturgy-3.jpeg`: الحجم 161 كيلو بمقاس 960×1280 وبيظهر 184×245 (توفير 156 كيلو).
+     - ملف `media/services/youth/youth-meeting-2026.jpeg`: الحجم 79 كيلو بمقاس 640×640 وبيظهر 150×116 (توفير 77 كيلو).
+     - ملف `media/church/bg-light-beams.jpg`: الحجم 62 كيلو (توفير 40 كيلو).
+     - ملف `media/brand/logo.png`: الحجم 41 كيلو بمقاس 146×140 وبيظهر 42×42 (توفير 41 كيلو).
+  2. صور تحت الشاشة بتتحمّل فورًا مع فتح الصفحة:
+     - في `home.html` السطر 234 (صورة جدول القداسات `youth-night-liturgy-3.jpeg`) والسطر 243 (صورة الآباء `fathers-group.png`) من غير `loading="lazy"`.
+     - في `home.html` السطر 505 (صورة المناسبة القادمة `youth-night-liturgy-2.jpeg` في قسم عيد الميلاد آخر الصفحة) واخدة `fetchpriority="high"` من مخرجات `WordPress` من غير `loading="lazy"`، فبتنافس الواجهة على الأولوية.
+     - في `home.html` السطور 253 لـ 255 والسطور 326 لـ 331: 6 صور لآباء الكنيسة (`quote-kyrillos-3.jpg` بحجم 296 كيلو، و`quote-arsanios-1.jpg` بحجم 140 كيلو، و`quote-fam.jpg` بحجم 106 كيلو، و`quote-kyrillos-1.jpg` بحجم 104 كيلو، و`quote-arsanios-2.jpg` بحجم 74 كيلو، و`quote-kyrillos-2.jpg` بحجم 113 كيلو — مجموعها 833 كيلو) محطوطة بـ `style="background-image:url(...)"` في عناصر `.fp` و`.qs-face`، والمتصفح بيحمّل خلفيات الـ `CSS` فورًا وقت فتح الصفحة حتى لو القسم تحت الشاشة.
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا): تحويل الصور الثقيلة لـ `WebP` أو توليد مقاسات مضغوطة، وإضافة `loading="lazy"` للصور تحت الشاشة وشيل `fetchpriority="high"` من صورة المناسبة القادمة، وإضافة `fetchpriority="high"` لصورة الواجهة، وتحويل صور وجوه الآباء من `background-image` لعناصر `<img>` بخاصية `loading="lazy"` و`object-fit: cover` و`object-position`.
+
+## Medium
+
+### 14. ملفات التنسيق والخطوط بتوقف الرسم (`Render-blocking`) وغياب `preconnect` لخادم الخطوط
+- **Location:** `design/home.html` (السطور 10 لـ 58، والسطور 638 لـ 645) و`wordpress/themes/st-mina/functions.php` (السطور 27 لـ 38).
+- **Expected:** اتصال مسبق `preconnect` لـ `fonts.googleapis.com` و`fonts.gstatic.com` (بخاصية `crossorigin`)، وعدم إيقاف الرسم بملفات غير حرجة، وحذف تنسيقات `WordPress` الافتراضية غير المستخدمة.
+- **Actual:** فحص `render-blocking-insight` يسجّل توفير 150 م.ث مباشر: `site.css` (16.6 كيلو، زمن 636 م.ث على الموبايل)، و`home.css` (3.9 كيلو، زمن 478 م.ث)، وملف `Google Fonts` (1.8 كيلو، زمن 751 م.ث) اللي بيحمّل بعده 6 ملفات خطوط `woff2` من `fonts.gstatic.com` بمجموع 316 كيلو (منها ملفين لخط `Amiri` بحجم 109 كيلو و101 كيلو) في أطول سلسلة تحميل (`network-dependency-tree-insight` بطول 531 م.ث) من غير `preconnect` لـ `fonts.gstatic.com`. وكمان `home.html` السطور 21 لـ 54 فيها تنسيقات `wp-block-library` و`global-styles` المدمجة من `WordPress` والقالب مش بيستخدمها.
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا): إضافة `<link rel="preconnect" href="https://fonts.googleapis.com">` و`<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>`، وتقليل أوزان الخطوط المطلوبة إن أمكن، وإزالة استدعاء `wp-block-library` و`global-styles` في `functions.php` وفي `tools/sync-from-wp.js`، وإضافة `defer` للسكربتات.
+
+### 15. نقص `headers` الأمان في إعدادات `Vercel`
+- **Location:** ملف `vercel.json` (السطور 19 لـ 21).
+- **Expected:** وجود ترويسات الحماية الأساسية (`X-Content-Type-Options`، و`X-Frame-Options`، و`Referrer-Policy`، و`Cross-Origin-Opener-Policy`، و`Permissions-Policy` مع السماح بالكاميرا لنطاق الموقع عشان مسح `QR`).
+- **Actual:** فحص `curl -sI https://church-st-mina.vercel.app/` وفحوصات الأمان في `Lighthouse` بيوضّحوا إن `Strict-Transport-Security` شغّالة تلقائيًا من `Vercel` (`has-hsts` سليمة)، لكن ناقص:
+  - `X-Frame-Options` أو `frame-ancestors` (`clickjacking-mitigation`: خطورة `High`).
+  - `Cross-Origin-Opener-Policy` (`origin-isolation`: خطورة `High`).
+  - `X-Content-Type-Options: nosniff` و`Referrer-Policy: strict-origin-when-cross-origin` و`Permissions-Policy`.
+  - `Content-Security-Policy` (`csp-xss` و`trusted-types-xss`، وتحتاج مرحلة `Report-Only` الأول).
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا في `vercel.json`): إضافة الترويسات الخمسة الآمنة لكل المسارات `/(.*)` مع `Permissions-Policy: camera=(self), microphone=(), geolocation=()` عشان كاميرا الحضور تفضل شغّالة، وتأجيل `CSP` لمرحلة `Report-Only`.
+
+### 16. إعادة حساب التخطيط القسرية (`Forced reflow`) أثناء تحميل الصفحة
+- **Location:** ملف `design/assets/site.js` (السطر 96 والسطر 145 والسطر 291) ومكتبة `ScrollTrigger.min.js`.
+- **Expected:** عدم قراءة أبعاد العناصر (`offsetHeight` و`getBoundingClientRect`) مباشرة بعد تعديل الـ `DOM` في وقت التحميل.
+- **Actual:** فحص `forced-reflow-insight` يسجّل 84 م.ث في `site.js` (عند السطر 96 `frame.offsetHeight`، والسطر 145 في `qslider`، والسطر 291 `frame.getBoundingClientRect()` في `dust`) بالإضافة إلى 135 م.ث في `ScrollTrigger` بعد تقسيم الكلمات في `[data-split]` وإضافة أزرار القوائم المنسدلة.
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا): قراءة أبعاد `frame` مرة واحدة قبل التعديلات على الـ `DOM` أو تأجيل قياس `dust` و`floatNav` لـ `requestAnimationFrame`.
+
+## Low
+
+### 17. حجم ومسافة أزرار القوائم المنسدلة في الهيدر على الكمبيوتر (`target-size`)
+- **Location:** الهيدر في الكمبيوتر، العناصر `nav.top-nav > ul > li.has-dd > button.dd-btn` للخمس أقسام (الكنيسة، والعبادة، والخدمات، والمكتبة، والأخبار). الكود في `design/assets/site.css` (السطور 576 لـ 579) و`design/assets/site.js` (السطر 56).
+- **Expected:** مساحة الضغط لكل زر 24×24 بكسل على الأقل مع عدم التداخل مع الرابط المجاور حسب معيار `WCAG 2.5.8`.
+- **Actual:** الزر `.dd-btn` مقاسه `22px × 22px` ومحطوط بـ `position: absolute` فوق طرف الرابط `<a href="...">`، فخصم 5 درجات من `Accessibility` على الكمبيوتر (95 بدل 100).
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا في `site.css`): جعل `.has-dd > .dd-btn` بمقاس `24px × 24px` وفصله عن مساحة الرابط (أو جعل `.has-dd` يرتّب الرابط والزر جنب بعض بـ `position: static` بدل التداخل فوق الرابط).
+
+### 18. قفز مستوى العناوين في التذييل (`heading-order`)
+- **Location:** عناوين أعمدة الفوتر (`<h4>الموقع</h4>` و`<h4>الخدمات</h4>` و`<h4>تواصل معنا</h4>`) في `design/home.html` (السطور 620 لـ 622) و`wordpress/themes/st-mina/footer.php` (السطور 27 لـ 29) و`design/assets/site.css` (السطر 285).
+- **Expected:** تسلسل العناوين من غير قفز (`h2` ثم `h3`).
+- **Actual:** في الفوتر فيه `<h2 data-split>عندك مكان معنا في بيت الله</h2>` وبعده مباشرة `<h4>` من غير `<h3>`، وده السبب الوحيد لخصم درجة `Accessibility` على الموبايل (99 بدل 100) وكمان على الكمبيوتر.
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا): تحويل `<h4>` في الفوتر إلى `<h3>` وتحديث `.footer h4` إلى `.footer h3` في `site.css`.
+
+### 19. عدم تطابق نسبة أبعاد الشعار (`image-aspect-ratio`) وتصغير `site.js`
+- **Location:** صورة `media/brand/logo.png` في `design/home.html` (السطر 107 في القائمة الجانبية، والسطر 128 في الهيدر، والسطر 612 في الفوتر) و`design/assets/site.css` (السطر 90).
+- **Expected:** الصورة تظهر بنفس نسبتها الحقيقية أو بخاصية `object-fit: contain` مع تحديد `width` و`height`.
+- **Actual:** الملف أبعاده 146×140 (نسبة 1.04) وبيتعرض مربع 52×52 (نسبة 1.00) فيسجّل خطأ `image-aspect-ratio` في `Best Practices`. وكمان فحص `unminified-javascript` يشير لتوفير 3 كيلو من ضغط `site.js`.
+- **Status:** Fixed (بانتظار فحص جديد بعد النشر)
+- **Notes:** التصليح (عندنا): إضافة `object-fit: contain` لـ `.brand img` في `site.css` (أو قص صورة الشعار مربعة 140×140) مع وضع `width="52" height="52"` في HTML.
+
+## ملاحظات مش أخطاء (في فحص `Vercel`)
+
+| الملاحظة | السبب |
+|---|---|
+| وسم `noindex, nofollow` وملف `robots.txt` (خصم `SEO` لـ 66) | مقصود لأن رابط `church-st-mina.vercel.app` نسخة معاينة (`tools/build-preview.js` السطور 53 و99 و100). كل فحوصات `SEO` التانية (8 من 9) ناجحة 100% |
+| ترويسة `Strict-Transport-Security` | شغّالة فعلًا على `Vercel` بقيمة سنتين مع `preload`، فمفيش مشكلة `HSTS` على `Vercel` |
+| مدة `cache` في `cache-insight` (43 كيلو) | الملفين اللي ظهروا في الفحص هما `tags.js` و`api.js` من سيرفر `SoundCloud` نفسه مش من سيرفرنا، وهيختفوا لما نأجّل تحميل المشغّل |
+| حركات غير مركّبة (`non-composited-animations`) على `.qs` و`.qs-dots button` و`button.hymn` | تأثيرها بسيط جدًا ودرجة `CLS` هي `0` على الموبايل و`0.005` على الكمبيوتر |
+| عدد عناصر الصفحة (`1,303` عنصر) | في الحدود الطبيعية وأخد درجة كاملة في `dom-size-insight` |
+
+## خطة وترتيب التصليح المقترح
+
+| المجموعة | البنود | الأثر المتوقع |
+|---|---|---|
+| المجموعة 1 | بند 12 (تأجيل تحميل مشغّل `SoundCloud` لحد ضغط الزائر + إصلاح خصائص الـ `iframe`) | توفير حوالي 1.5 ميجا، ورفع `Best Practices` من 50 لحوالي 96–100، وتوفير 1.6 ث على الموبايل |
+| المجموعة 2 | بند 11 وبند 14 وبند 16 (إظهار `h1` والواجهة بدون حجب + `defer` للسكربتات + `preconnect` للخطوط + إزالة تنسيقات المحرر غير المستخدمة + تقليل `reflow`) | علاج تأخر الـ 9.0 ثواني في `FCP` و`LCP` على الموبايل ورفع `Performance` بشكل كبير |
+| المجموعة 3 | بند 13 (تحويل وضغط الصور الثقيلة لـ `WebP` + إضافة `loading="lazy"` للصور تحت الشاشة + تحويل خلفيات وجوه الآباء لـ `<img>` كسولة + إزالة `fetchpriority="high"` من صورة آخر الصفحة) | توفير حوالي 1.7 ميجا لـ 2.4 ميجا من التحميل الأولي على الموبايل |
+| المجموعة 4 | بند 17 وبند 18 وبند 19 (مقاس وموضع `.dd-btn` + تحويل `h4` الفوتر لـ `h3` + `object-fit: contain` للشعار) | رفع `Accessibility` إلى 100 على الموبايل والكمبيوتر، وإغلاق تحذير أبعاد الشعار |
+| المجموعة 5 | بند 15 (إضافة ترويسات الأمان الأساسية في `vercel.json` وحفظ `Cache-Control` للأصول الثابتة) | إغلاق تحذيرات الأمان (`XFO` و`COOP` و`nosniff` و`Referrer-Policy` و`Permissions-Policy`) |

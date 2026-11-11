@@ -39,9 +39,9 @@
     .to(".hero-bg img", { scale: 1, duration: 2.8, ease: "power2.out" }, 0)
     .to(".rays", { opacity: 1, duration: 2.4 }, .2)
     .to("#dust", { opacity: 1, duration: 2 }, .8)
-    .to(".hero h1 .w > span", { y: 0, duration: 1.3, stagger: .1 }, .4)
-    .to(".hero [data-intro]", { opacity: 1, duration: 1.1, stagger: .07, startAt: { y: 24 }, y: 0 }, .9)
-    .to("[data-tile]", { opacity: 1, duration: 1.3, stagger: .14, startAt: { scale: .7 }, scale: 1, ease: "back.out(1.4)" }, 1.1);
+    .fromTo(".hero h1 .w > span", { yPercent: 25 }, { yPercent: 0, y: 0, duration: 1.1, stagger: .08 }, 0)
+    .fromTo(".hero [data-intro]", { y: 18 }, { opacity: 1, y: 0, duration: 1, stagger: .06 }, .1)
+    .fromTo("[data-tile]", { scale: .88 }, { opacity: 1, scale: 1, duration: 1.1, stagger: .1, ease: "back.out(1.4)" }, .2);
 
   // زووم إن وآوت بطيء ومستمر لصورة الواجهة
   gsap.to(".hero-bg img", { scale: 1.1, duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 2.8 });

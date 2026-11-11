@@ -8,6 +8,7 @@
   const animate = root.classList.contains('anim') && window.gsap && window.ScrollTrigger;
   if (!animate) root.classList.remove('anim');
   const frame = $('.hero, .page-hero');
+  let frameW = frame ? frame.clientWidth : 0, frameH = frame ? frame.offsetHeight : 0;
   window.Site = { $, $$, animate, frame };
 
   // ---------- القوائم المنسدلة: صفحات كل قسم، ودخول الخدام لكل اجتماع ----------
@@ -94,7 +95,7 @@
   // ---------- الشريط العائم ----------
   const floatNav = $('#floatNav');
   if (floatNav && frame) {
-    const onScroll = () => floatNav.classList.toggle('show', scrollY > frame.offsetHeight * .7);
+    const onScroll = () => floatNav.classList.toggle('show', scrollY > (frameH || frame.offsetHeight) * .7);
     addEventListener('scroll', onScroll, { passive: true }); onScroll();
   }
 
@@ -185,6 +186,19 @@
     lb.addEventListener('keydown', e => { if (e.key === 'ArrowLeft') show(idx + 1); if (e.key === 'ArrowRight') show(idx - 1); });
   }
 
+  // ---------- تأجيل تحميل خلفيات الآباء والأقوال حتى الاقتراب منها ----------
+  const bgSecs = $$('#about, #quotes');
+  if (bgSecs.length) {
+    if ('IntersectionObserver' in window) {
+      const bgObs = new IntersectionObserver(entries => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('bg-ready'); bgObs.unobserve(e.target); }
+      }), { rootMargin: '600px' });
+      bgSecs.forEach(s => bgObs.observe(s));
+    } else {
+      bgSecs.forEach(s => s.classList.add('bg-ready'));
+    }
+  }
+
   // ---------- مشغّل يوتيوب بأجزاء: صورة الفيديو أولًا، ويُحمَّل يوتيوب عند الضغط فقط ----------
   $$('[data-yt]').forEach(box => {
     const frame = $('.yt-frame', box), parts = $$('.yt-part', box);
@@ -229,7 +243,7 @@
     // يُحمَّل ساوند كلاود عند أول حاجة فقط
     const load = () => ready || (ready = new Promise(res => {
       const f = document.createElement('iframe');
-      f.className = 'hymn-frame'; f.title = 'مشغّل الترانيم'; f.allow = 'autoplay'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
+      f.className = 'hymn-frame'; f.title = 'مشغّل الترانيم'; f.allow = 'autoplay; encrypted-media'; f.tabIndex = -1; f.setAttribute('aria-hidden', 'true');
       f.src = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(TRACK) + '&auto_play=false&visual=false&show_artwork=false&buying=false&sharing=false&download=false';
       // السكربت أولًا ثم الإطار، حتى لا تفوتنا إشارة READY
       const s = document.createElement('script'); s.src = 'https://w.soundcloud.com/player/api.js';
@@ -261,15 +275,13 @@
     const start = () => { disarm(); save({ off: false }); set('loading'); play(); setTimeout(() => { if (btn.dataset.state === 'loading') set('off'); }, 8000); };
     btn.addEventListener('click', () => playing ? stop(true) : start());
 
-    // التشغيل افتراضي: نحاول نبدأ مع فتح الصفحة، ولو المتصفح منع الصوت (وده المعتاد قبل أي ضغطة)
-    // تبدأ الترنيمة مع أول لمسة أو ضغطة في أي مكان في الصفحة
+    // يُحمَّل ساوند كلاود عند ضغط الزائر على زر الشمعة فقط (أو مع أول لمسة لو كان مُشغَّلًا من صفحة سابقة)
     const first = e => { if (!btn.contains(e.target)) start(); else disarm(); };
     const arm = () => ['pointerdown', 'keydown'].forEach(t => addEventListener(t, first, { capture: true, once: true }));
     function disarm() { ['pointerdown', 'keydown'].forEach(t => removeEventListener(t, first, { capture: true })); }
-    if (!read().off) {
-      const wasPlaying = read().playing;
-      set('loading'); play();
-      setTimeout(() => { if (!playing) { set(wasPlaying ? 'resume' : 'off'); arm(); } }, 2500);
+    if (!read().off && read().playing) {
+      set('resume');
+      arm();
     }
     // صوت آخر في الصفحة (فيديو القداس أو مشغّل صوت) يوقف الترنيمة
     addEventListener('site:media', () => { disarm(); if (playing) stop(); });
@@ -289,7 +301,11 @@
   const cv = $('#dust');
   if (cv && frame && !reduced) {
     const ctx = cv.getContext('2d'); let W, H, motes = [], running = true;
-    const size = () => { const r = frame.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2); W = r.width; H = r.height; cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'; ctx.setTransform(dpr, 0, 0, dpr, 0, 0); };
+    const size = (reflow = false) => {
+      if (reflow || !frameW || !frameH) { const r = frame.getBoundingClientRect(); frameW = r.width; frameH = r.height; }
+      const dpr = Math.min(devicePixelRatio || 1, 2); W = frameW; H = frameH;
+      cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
     const seed = () => { const n = (W < 700 ? 40 : 90) * (frame.classList.contains('page-hero') ? .6 : 1); motes = Array.from({ length: Math.round(n) }, () => ({ x: Math.random() * W * .65, y: Math.random() * H, r: Math.random() * 1.8 + .4, vx: Math.random() * .25 + .05, vy: -(Math.random() * .2 + .05), a: Math.random() * .6 + .2, p: Math.random() * Math.PI * 2 })); };
     const draw = () => {
       if (!running) return;
@@ -302,8 +318,8 @@
       }
       requestAnimationFrame(draw);
     };
-    size(); seed(); draw();
-    addEventListener('resize', () => { size(); seed(); });
+    size(false); seed(); draw();
+    addEventListener('resize', () => { size(true); seed(); });
     new IntersectionObserver(([e]) => { const was = running; running = e.isIntersecting; if (running && !was) draw(); }).observe(frame);
   }
 
@@ -335,8 +351,8 @@
       .to('.page-hero .hero-bg img', { scale: 1, duration: 2.2, ease: 'power2.out' }, 0)
       .to('.page-hero .rays', { opacity: .75, duration: 1.8 }, .1)
       .to('.page-hero #dust', { opacity: 1, duration: 1.6 }, .4)
-      .to('.page-hero [data-split] .w > span', { y: 0, duration: 1.1, stagger: .08 }, .3)
-      .to('.page-hero [data-intro]', { opacity: 1, duration: 1, stagger: .06, startAt: { y: 20 }, y: 0 }, .5);
+      .fromTo('.page-hero [data-split] .w > span', { yPercent: 25 }, { yPercent: 0, y: 0, duration: 1, stagger: .06 }, 0)
+      .fromTo('.page-hero [data-intro]', { y: 16 }, { opacity: 1, y: 0, duration: .9, stagger: .05 }, .1);
     gsap.to('.page-hero .hero-bg img', { yPercent: 8, ease: 'none', scrollTrigger: { trigger: '.page-hero', start: 'top top', end: 'bottom top', scrub: true } });
   }
 

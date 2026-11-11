@@ -6,6 +6,7 @@
 // التشغيل: node tools/sync-from-wp.js   ثم   node tools/build-preview.js
 const fs = require('fs');
 const path = require('path');
+const { optimize } = require('./perf-transform');
 
 const BASE = 'https://st-mina.abanoubmaurice.com';
 const root = path.resolve(__dirname, '..');
@@ -158,7 +159,7 @@ const transform = html => {
 
   // 4) تحويل وحفظ كل الصفحات
   for (const [file, { path: p, dir, html: raw }] of rawHtml.entries()) {
-    const html = transform(raw);
+    const html = optimize(transform(raw));
     if (!html.includes('</html>')) throw new Error(`صفحة ناقصة: ${p}`);
     const note = `<!-- نسخة من ${decodeURI(BASE + p)} اتعملت بـ tools/sync-from-wp.js. ماتعدّلش هنا: عدّل القالب أو المحتوى، وشغّل السكربت تاني -->\n`;
     fs.writeFileSync(path.join(dir, file), html.replace(/^(<!doctype html>\s*)/i, `$1${note}`));

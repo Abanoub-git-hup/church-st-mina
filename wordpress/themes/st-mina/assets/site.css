@@ -87,7 +87,7 @@ button{font:inherit;color:inherit}
 
 .hero-top .wrap{display:flex;justify-content:space-between;align-items:center;gap:var(--s-6);padding-block:var(--s-6)}
 .brand{display:flex;align-items:center;gap:var(--s-3);min-width:0}
-.brand img{width:52px;height:52px;border-radius:50%;box-shadow:0 0 0 1px rgba(243,201,135,.6);flex:none}
+.brand img{width:52px;height:52px;object-fit:contain;border-radius:50%;box-shadow:0 0 0 1px rgba(243,201,135,.6);flex:none}
 .brand span{font-size:.88rem;line-height:1.5;font-weight:300}
 .brand b{display:block;font-weight:500}
 .socials{display:flex;gap:var(--s-2)}
@@ -282,7 +282,7 @@ button{font:inherit;color:inherit}
 .f-cta h2 b{font-weight:300;color:var(--gold-soft)}
 .f-grid{display:grid;gap:var(--s-10);padding-block:var(--s-12)}
 @media (min-width:768px){.f-grid{grid-template-columns:1.4fr 1fr 1fr 1.2fr}}
-.footer h4{font-size:.85rem;font-weight:500;color:var(--gold);margin-bottom:var(--s-4)}
+.footer :is(h3,h4){font-size:.85rem;font-weight:500;color:var(--gold);margin-bottom:var(--s-4)}
 .footer ul{display:grid;gap:var(--s-2)}
 .footer ul a,.footer li{color:var(--cream-2);font-size:.95rem}
 .footer ul a:hover{color:#fff}
@@ -433,10 +433,12 @@ body{background:var(--umber-700)}
 .anim [data-rise]{opacity:0;transform:translateY(40px)}
 .anim .w{display:inline-block;overflow:hidden;vertical-align:top;padding-block:.1em;margin-block:-.1em}
 .anim .w>span{display:inline-block;transform:translateY(110%)}
+.anim :is(.hero,.page-hero) [data-split] .w>span{transform:none}
 .anim [data-clip]{clip-path:inset(100% 0 0 0)}
 .anim [data-bub]{opacity:0;transform:scale(.6)}
 .anim .hero-bg img{transform:scale(1.15)}
-.anim .rays,.anim #dust,.anim :is(.hero,.page-hero) [data-intro],.anim [data-tile]{opacity:0}
+.anim .rays,.anim #dust{opacity:0}
+.anim :is(#about,#quotes):not(.bg-ready) :is(.fp,.qs-face){background-image:none!important}
 
 /* =====================================================================
    الصفحات الداخلية (القالب: design/_inner.html)
@@ -567,19 +569,20 @@ body{background:var(--umber-700)}
 .hymn-tip{position:absolute;left:calc(100% + 10px);top:50%;translate:0 -50%;white-space:nowrap;padding:6px 14px;border-radius:var(--r-full);background:var(--cream);color:var(--ink);font-size:.82rem;font-weight:500;opacity:0;pointer-events:none;transition:opacity var(--t-base)}
 .hymn[data-state=resume] .hymn-tip{opacity:1}
 .hymn[data-state=resume]{border-color:var(--gold)}
-.hymn-frame{position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none}
+.hymn-frame{position:absolute;width:1px;height:1px;overflow:hidden;border:0;opacity:0;pointer-events:none}
 
 /* ===== القوائم المنسدلة والأيقونات في الهيدر: زجاج (السلوك في site.js) ===== */
 :root{--glass:rgba(48,32,20,.42);--glass-2:rgba(255,244,228,.12);--glass-3:rgba(255,244,228,.2);--glass-line:rgba(255,244,228,.24);--glass-blur:blur(22px) saturate(1.35)}
 
-/* القسم اللي ليه صفحات: الاسم والسهم حاجة واحدة */
-.has-dd{position:relative;display:flex;align-items:center}
-.top-nav .has-dd > a,.float-nav nav .has-dd > a{padding-inline-end:26px}
-.has-dd > .dd-btn{position:absolute;inset-inline-end:4px;top:50%;translate:0 -50%;display:grid;place-items:center;width:22px;height:22px;border:0;border-radius:6px;background:none;color:currentColor;opacity:.7;cursor:pointer}
+/* القسم اللي ليه صفحات: الاسم والسهم جنب بعض جوه الكبسولة من غير تداخل، ومقاس الزر 28×28 لسهولة الوصول */
+.has-dd{position:relative;display:flex;align-items:center;border-radius:var(--r-full);transition:background var(--t-fast)}
+.top-nav .has-dd > a,.float-nav nav .has-dd > a{padding-inline-end:4px}
+.has-dd > .dd-btn{position:static;translate:none;flex:none;margin-inline-end:4px;display:grid;place-items:center;width:28px;height:28px;border:0;border-radius:50%;background:none;color:currentColor;opacity:.7;cursor:pointer}
 .has-dd > .dd-btn .icon{width:14px;height:14px;transition:rotate var(--t-fast)}
 .has-dd:hover > .dd-btn,.has-dd.open > .dd-btn{opacity:1}
 .has-dd.open > .dd-btn .icon,.has-dd:hover > .dd-btn .icon{rotate:180deg}
-.top-nav .has-dd:hover > a,.top-nav .has-dd.open > a,.float-nav nav .has-dd:hover > a,.float-nav nav .has-dd.open > a{color:var(--cream);background:rgba(246,236,220,.08)}
+.top-nav .has-dd:hover,.top-nav .has-dd.open,.float-nav nav .has-dd:hover,.float-nav nav .has-dd.open{color:var(--cream);background:rgba(246,236,220,.08)}
+.top-nav .has-dd > a:hover,.float-nav nav .has-dd > a:hover{background:none}
 
 /* اللوح المنسدل: زجاج فاتح خفيف، وإطار فضي رفيع متدرّج (أوضح فوق ويخف لتحت) */
 .dd{position:absolute;top:calc(100% + 12px);left:50%;z-index:140;min-width:200px;padding:8px;border-radius:20px;
@@ -615,7 +618,7 @@ body{background:var(--umber-700)}
 
 /* قائمة الموبايل: الأقسام بتفتح صفحاتها تحتها في لوح زجاج */
 .drawer .has-dd{display:block}
-.drawer .has-dd > .dd-btn{inset-inline-end:0;top:var(--s-3);translate:none;width:48px;height:48px;border-radius:50%;opacity:1}
+.drawer .has-dd > .dd-btn{position:absolute;inset-inline-end:0;top:var(--s-3);translate:none;margin:0;width:48px;height:48px;border-radius:50%;opacity:1}
 .drawer .has-dd > .dd-btn .icon{width:20px;height:20px}
 .drawer .has-dd:hover > .dd-btn .icon{rotate:none}
 .drawer .has-dd.open > .dd-btn .icon{rotate:180deg}
@@ -710,7 +713,8 @@ section[id],h2[id],h3[id]{scroll-margin-top:96px}
 }
 .float-nav::before{background:linear-gradient(180deg,rgba(240,242,248,.13),rgba(226,230,238,.05)),rgba(30,20,13,.18)}
 .top-nav::after,.float-nav::after{display:none}
-.top-nav a:hover,.top-nav .has-dd:hover > a,.top-nav .has-dd.open > a,.float-nav nav .has-dd:hover > a,.float-nav nav .has-dd.open > a{background:rgba(236,238,244,.12)}
+.top-nav a:hover,.top-nav .has-dd:hover,.top-nav .has-dd.open,.float-nav nav .has-dd:hover,.float-nav nav .has-dd.open{background:rgba(236,238,244,.12)}
+.top-nav .has-dd > a:hover,.float-nav nav .has-dd > a:hover{background:none}
 .top-nav a[aria-current=page],.float-nav nav a[aria-current=page],.top-nav .dd a[aria-current=page]{color:#F6F7FA;background:rgba(236,238,244,.16)}
 .dd-title{color:rgba(236,238,244,.72)}
 .hero-top .socials .circle,.has-dd > .login-btn,.menu-btn{border-color:transparent;background:rgba(240,242,248,.12)}
