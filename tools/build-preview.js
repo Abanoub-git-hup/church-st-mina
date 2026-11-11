@@ -49,8 +49,10 @@ const build = ({ file, dir }) => {
       .replace(/href="(?!https?:|#|\/|tel:|mailto:)([^"]+)"/g, 'href="/$1"');
   }
 
-  // منع الفهرسة
-  html = html.replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<meta name="robots" content="noindex, nofollow">');
+  // منع الفهرسة لصفحات الحضور والإدارة فقط
+  if (file.startsWith('attend-')) {
+    html = html.replace(/<head>/i, '<head>\n<meta name="robots" content="noindex, nofollow">');
+  }
 
   // تحقق: لا صور حساسة
   const leaked = Object.keys(SENSITIVE).filter(k => html.includes(k));
@@ -96,7 +98,6 @@ for (const rel of used) {
   bytes += fs.statSync(src).size;
 }
 
-fs.writeFileSync(path.join(dist, 'robots.txt'), 'User-agent: *\nDisallow: /\n');
-fs.writeFileSync(path.join(dist, '_headers'), '/*\n  X-Robots-Tag: noindex, nofollow\n');
+fs.writeFileSync(path.join(dist, 'robots.txt'), 'User-agent: *\nAllow: /\nDisallow: /attend*\nDisallow: /api/\n');
 
 console.log(`تم: ${pages.length} صفحة (${pages.map(outName).join('، ')})، و${used.size} صورة (${(bytes / 1048576).toFixed(1)} MB) في dist/`);
