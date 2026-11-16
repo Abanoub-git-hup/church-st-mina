@@ -3,6 +3,18 @@
   "buildCommand": "node tools/build-preview.js && node tools/build-attend.js",
   "outputDirectory": "dist",
   "framework": null,
+  "redirects": [
+    { "source": "/attend-login.html", "destination": "/attend-login", "permanent": true },
+    { "source": "/attend-sessions.html", "destination": "/attend/sessions", "permanent": true },
+    { "source": "/attend-members.html", "destination": "/attend/members", "permanent": true },
+    { "source": "/attend-scan.html", "destination": "/attend/scan", "permanent": true },
+    { "source": "/attend-dashboard.html", "destination": "/attend/dashboard", "permanent": true },
+    { "source": "/attend-more.html", "destination": "/attend/more", "permanent": true },
+    { "source": "/attend-import.html", "destination": "/attend/import", "permanent": true },
+    { "source": "/attend-invite.html", "destination": "/attend/invite", "permanent": true },
+    { "source": "/attend-followup.html", "destination": "/attend/more", "permanent": true },
+    { "source": "/attend-:slug.html", "destination": "/attend/:slug", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/api/v1/:path*", "destination": "/api/att?__p=/api/v1/:path*" },
     { "source": "/api/v1/:path*/", "destination": "/api/att?__p=/api/v1/:path*" },

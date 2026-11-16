@@ -14,9 +14,9 @@ const dist = path.join(root, 'dist');
 const SENSITIVE = {};
 const NEUTRAL_CAP = 'من داخل الكنيسة';
 
-// اسم الصفحة في المعاينة
+// اسم الصفحة في المعاينة (استبعاد صفحات النماذج القديمة attend-*.html لأنها تخدم ديناميكيًا من api/att)
 const outName = f => f === 'home.html' ? 'index.html' : f.replace(/^_/, '');
-const rootPages = fs.readdirSync(design).filter(f => f.endsWith('.html')).map(f => ({ file: f, dir: design }));
+const rootPages = fs.readdirSync(design).filter(f => f.endsWith('.html') && !f.startsWith('attend-')).map(f => ({ file: f, dir: design }));
 const postsDir = path.join(design, 'posts');
 const postPages = fs.existsSync(postsDir) ? fs.readdirSync(postsDir).filter(f => f.endsWith('.html')).map(f => ({ file: f, dir: postsDir })) : [];
 const allPages = [...rootPages, ...postPages];
@@ -40,6 +40,8 @@ const build = ({ file, dir }) => {
 
   // المسارات: الصفحات تصبح في جذر الموقع
   html = html.split('../media/').join('media/');
+  // تحويل روابط الحضور إلى المسار الفعلي المباشر
+  html = html.replace(/href="attend-login\.html"/g, 'href="/attend-login/"');
   // الروابط بين الصفحات بأسمائها في المعاينة
   for (const p of pages) html = html.split(`href="${p}`).join(`href="${p === 'home.html' ? './' : outName(p)}`);
 
