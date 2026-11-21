@@ -392,3 +392,39 @@
   // تزحزح داخل الصور
   $$('[data-parallax]').forEach(img => gsap.fromTo(img, { yPercent: -6, scale: 1.12 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: img.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
 })();
+
+// شاشة البداية: فيديو فتح ستر الهيكل في أول زيارة بس، وبعده الموقع يظهر بهدوء.
+// السطر اللي في head بيحدد الزيارة الأولى وبيحط مسار الفيديو في window.STMINA_INTRO.
+(() => {
+  const root = document.documentElement, src = window.STMINA_INTRO;
+  if (!root.classList.contains('intro')) return;
+  if (!src || !document.body) { root.classList.remove('intro'); return; }
+  try { localStorage.setItem('stmina-intro', '1'); } catch (e) {}
+  // حركات الواجهة تستنى لحد ما الستر يتفتح
+  const tl = window.gsap && window.gsap.globalTimeline;
+  if (tl) tl.pause();
+  const veil = document.createElement('div');
+  veil.className = 'intro-veil';
+  veil.style.backgroundImage = `url("${src.p}")`;
+  veil.innerHTML = '<video muted playsinline autoplay preload="auto" aria-hidden="true"></video><button class="intro-skip" type="button">تخطَّ</button>';
+  const video = veil.querySelector('video');
+  video.muted = true;
+  video.src = src.v;
+  document.body.appendChild(veil);
+  let done = false;
+  const end = () => {
+    if (done) return;
+    done = true;
+    root.classList.remove('intro');
+    veil.classList.add('out');
+    if (tl) tl.resume();
+    setTimeout(() => veil.remove(), 1000);
+  };
+  video.addEventListener('timeupdate', () => { if (video.duration && video.currentTime >= video.duration - .7) end(); });
+  video.addEventListener('ended', end);
+  video.addEventListener('error', end);
+  veil.querySelector('.intro-skip').addEventListener('click', end);
+  const p = video.play();
+  if (p) p.catch(end);
+  setTimeout(end, 12000); // لو النت بطيء أو الفيديو علّق، الموقع يظهر
+})();

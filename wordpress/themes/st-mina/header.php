@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-<script>document.documentElement.classList.add('anim');</script>
+<script>document.documentElement.classList.add('anim');try{if(!localStorage.getItem('stmina-intro')){document.documentElement.classList.add('intro');window.STMINA_INTRO={v:'<?php stmina_media( 'motion/veil-intro.mp4' ); ?>',p:'<?php stmina_media( 'motion/veil-intro-poster.jpg' ); ?>'}}}catch(e){}</script>
 <?php wp_head(); ?>
 </head>
 <body <?php body_class(); ?>>
